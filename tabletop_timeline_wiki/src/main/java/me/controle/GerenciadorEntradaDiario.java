@@ -8,7 +8,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.time.LocalDate;
 
-public abstract class GerenciadorEntradaDiario<T extends EntradaDiario> {
+/**
+ * Classe abstrata que centraliza a lógica de gerenciamento de entradas do diário (Evento e Nota).
+ * Permite listagem por data, atualização e busca genérica.
+ * Demonstra uso avançado de herança com generics para reaproveitar funcionalidades.
+ */
+public class GerenciadorEntradaDiario<T extends EntradaDiario> {
     protected List<T> entradas = new ArrayList<>();
 
     public void adicionar(T entrada) {

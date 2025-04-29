@@ -9,7 +9,11 @@ public class Usuario {
     private final String nome;
     private final String senha;
     private final TipoUsuario tipo;
-
+    /**
+ * Representa um usuário do sistema, podendo ser mestre ou jogador.
+ * Controla permissões e autoria, sendo base para validação de interações e filtros de acesso.
+ * Demonstra encapsulamento e uso de enum para modelar papéis.
+ */
     public Usuario(String nome, String senha, TipoUsuario tipo) {
         this.id = UUID.randomUUID().toString();
         this.nome = nome;

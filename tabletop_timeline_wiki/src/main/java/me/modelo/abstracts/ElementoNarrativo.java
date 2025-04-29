@@ -11,6 +11,11 @@ import me.modelo.entidades.Personagem;
 import me.modelo.interfaces.Associavel;
 import me.modelo.interfaces.Exportavel;
 
+/**
+ * Classe abstrata que representa um elemento narrativo do sistema (como personagem, objeto, local).
+ * Implementa as interfaces Associavel e Exportavel para garantir integração com outros elementos da narrativa.
+ * Aplica herança, reutilização de código e polimorfismo.
+ */
 public abstract class ElementoNarrativo implements Associavel, Exportavel {
     protected String id;
     protected String nome;

@@ -8,7 +8,11 @@ import java.util.UUID;
 
 import me.modelo.abstracts.ElementoNarrativo;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
-
+/**
+ * Representa uma campanha de RPG, contendo todos os eventos e gerenciada por um mestre.
+ * Aplica agregação e controle de propriedade sobre os elementos narrativos associados.
+ * Permite centralizar a estrutura da narrativa.
+ */
 public class Campanha {
     private String id;
     private String nome;

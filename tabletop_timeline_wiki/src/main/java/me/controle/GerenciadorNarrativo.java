@@ -5,8 +5,12 @@ import me.modelo.exceptions.ElementoNaoEncontradoException;
 
 import java.util.ArrayList;
 import java.util.List;
-
-public abstract class GerenciadorNarrativo<T extends ElementoNarrativo> {
+/**
+ * Gerenciador genérico para elementos narrativos como Personagem, Local e Objeto.
+ * Aplica polimorfismo parametrizado com generics e contém métodos padrão de CRUD e busca.
+ * Exemplo de reutilização de lógica entre diferentes entidades.
+ */
+public class GerenciadorNarrativo<T extends ElementoNarrativo> {
     protected List<T> elementos = new ArrayList<>();
 
     public void adicionar(T elemento) {

@@ -6,7 +6,11 @@ import java.util.Set;
 
 import me.modelo.abstracts.EntradaDiario;
 import me.modelo.enums.TipoNota;
-
+/**
+ * Representa uma anotação do jogador ou mestre, com controle de visibilidade.
+ * Pode ser pública, restrita (a certos usuários) ou privada.
+ * Usa encapsulamento para proteger autor e visibilidade, e aplica herança de EntradaDiario.
+ */
 public class Nota extends EntradaDiario {
     private final Usuario autor;
     private TipoNota tipo;

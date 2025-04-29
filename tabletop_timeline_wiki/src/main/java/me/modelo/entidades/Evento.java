@@ -8,6 +8,11 @@ import me.modelo.abstracts.EntradaDiario;
 import me.modelo.interfaces.Associavel;
 import me.modelo.interfaces.Exportavel;
 
+/**
+ * Representa um evento temporal dentro de uma campanha.
+ * Estende EntradaDiario e implementa comportamento associativo entre locais, personagens, objetos e outros eventos.
+ * Demonstra composição, encapsulamento e comportamento relacional.
+ */
 public class Evento extends EntradaDiario implements Associavel, Exportavel {
     private List<Personagem> personagensRelacionados = new ArrayList<>();
     private List<Local> locaisRelacionados = new ArrayList<>();

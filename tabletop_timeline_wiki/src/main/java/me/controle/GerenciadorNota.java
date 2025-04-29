@@ -8,7 +8,11 @@ import me.modelo.exceptions.AssociacaoInvalidaException;
 
 import java.time.LocalDate;
 import java.util.List;
-
+/**
+ * Gerenciador responsável por criar e gerenciar notas com controle de visibilidade e autoria.
+ * Contém lógica de verificação de permissões e regras de acesso.
+ * Exemplo claro de encapsulamento e regras de negócio separadas da camada de apresentação.
+ */
 public class GerenciadorNota extends GerenciadorEntradaDiario<Nota> {
 
     public Nota criarNota(String titulo, String texto, LocalDate data, TipoNota tipo, Usuario autor) {
