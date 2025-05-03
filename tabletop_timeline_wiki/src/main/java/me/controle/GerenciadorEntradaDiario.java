@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 /**
  * Classe abstrata que centraliza a lógica de gerenciamento de entradas do diário (Evento e Nota).
@@ -32,13 +33,13 @@ public class GerenciadorEntradaDiario<T extends EntradaDiario> {
     public List<T> listarOrdenadoPorData() {
         return entradas.stream()
             .sorted(Comparator.comparing(EntradaDiario::getDate))
-            .toList();
+            .collect(Collectors.toList());
     }
 
     public List<T> listarEntreDatas(LocalDate inicio, LocalDate fim) {
         return entradas.stream()
             .filter(e -> !e.getDate().isBefore(inicio) && !e.getDate().isAfter(fim))
-            .toList();
+            .collect(Collectors.toList());
     }
 
     public T buscarPorId(String id) throws ElementoNaoEncontradoException {
@@ -51,7 +52,7 @@ public class GerenciadorEntradaDiario<T extends EntradaDiario> {
     public List<T> buscarPorTitulo(String titulo) {
         return entradas.stream()
             .filter(e -> e.getTitulo().equalsIgnoreCase(titulo))
-            .toList();
+            .collect(Collectors.toList());
     }
 
     public void atualizarDescricao(String id, String novaDescricao) throws ElementoNaoEncontradoException {

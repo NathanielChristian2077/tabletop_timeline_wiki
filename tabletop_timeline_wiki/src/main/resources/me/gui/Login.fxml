@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="me.gui.controladores.ControladorLogin">
+    <VBox alignment="CENTER" spacing="10" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
+        <Label text="Animated Forms" style="-fx-font-size: 24px;" fx:id="tituloPrincipal"/>
+        <HBox spacing="20.0" alignment="CENTER">
+            <Button fx:id="botaoTrocarLogin" text="Login"/>
+            <Button fx:id="botaoTrocarCadastro" text="Sign up"/>
+        </HBox>
+
+        <StackPane fx:id="formContainer">
+            <!-- Form de Login -->
+            <VBox fx:id="formLogin" spacing="10" alignment="CENTER">
+                <Label text="Insira seu nome de usuário e senha para prosseguir."/>
+                <TextField fx:id="campoNomeLogin" promptText="Usuário"/>
+                <PasswordField fx:id="campoSenhaLogin" promptText="Senha"/>
+                <Button fx:id="botaoLogin" text="Login" onAction="#realizarLogin"/>
+            </VBox>
+            <!-- Form de Cadastro -->
+            <VBox fx:id="formCadastro" spacing="10" alignment="CENTER" visible="false" managed="false">
+                <Label text="Insira seu nome de usuário, senha e confirmação de senha para prosseguir."/>
+                <TextField promptText="Usuário" fx:id="campoNomeCadastro"/>
+                <PasswordField promptText="Senha" fx:id="campoSenhaCadastro"/>
+                <PasswordField promptText="Confirmar Senha" fx:id="campoSenhaConfirm"/>
+                <ChoiceBox fx:id="choiceTipo"/>
+                <Button fx:id="botaoCadastrar" text="Continue" onAction="#realizarCadastro"/>
+            </VBox>
+        </StackPane>
+
+        <Label fx:id="labelMensagem" style="-fx-text-fill: red;"/>
+    </VBox>
+
+</AnchorPane>

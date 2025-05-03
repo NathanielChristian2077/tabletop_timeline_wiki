@@ -8,6 +8,8 @@ import me.modelo.exceptions.AssociacaoInvalidaException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Gerenciador responsável por criar e gerenciar notas com controle de visibilidade e autoria.
  * Contém lógica de verificação de permissões e regras de acesso.
@@ -25,8 +27,7 @@ public class GerenciadorNota extends GerenciadorEntradaDiario<Nota> {
         return entradas.stream().filter(nota ->
             nota.getTipo() == TipoNota.PUBLICA ||
             (nota.getTipo() == TipoNota.RESTRITA && nota.getDestinatarios().contains(usuario.getId())) ||
-            (nota.getTipo() == TipoNota.PRIVADA && nota.getAutor().getId().equals(usuario.getId()))
-        ).toList();
+            (nota.getTipo() == TipoNota.PRIVADA && nota.getAutor().getId().equals(usuario.getId()))).collect(Collectors.toList());
     }
 
     public void atualizarDescricao(String id, String novaDescricao, Usuario solicitante)
