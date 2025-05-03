@@ -1,0 +1,28 @@
+.root {
+    -fx-background-color: #3b4465;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8;
+    -fx-padding: 8px 16px;
+}
+
+.text-field, .password-field {
+    -fx-background-color: #f1f1f1;
+    -fx-background-radius: 6;
+    -fx-font-size: 14px;
+    -fx-padding: 8px;
+}
+
+.choice-box {
+    -fx-background-color: #f1f1f1;
+}
