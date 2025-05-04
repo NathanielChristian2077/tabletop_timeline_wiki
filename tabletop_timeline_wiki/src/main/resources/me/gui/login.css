@@ -1,0 +1,110 @@
+.root {
+    -fx-background-color: #2d2a32;
+    background-color: #2d2a32;
+    -fx-font-family: "Segoe UI", "Georgia", serif;
+    font-family: "Segoe UI", "Georgia", serif;
+}
+
+.label {
+    -fx-text-fill: #2d2a32;
+    color: #2d2a32;
+    -fx-font-size: 14px;
+    font-size: 14px;
+}
+
+.button {
+    -fx-background-color: #c9b37c;
+    background-color: #c9b37c;
+    -fx-text-fill: #2d2a32;
+    color: #2d2a32;
+    -fx-font-size: 14px;
+    font-size: 14px;
+    -fx-background-radius: 12;
+    border-radius: 12px;
+    -fx-padding: 8px 16px;
+    padding: 8px 16px;
+    -fx-cursor: hand;
+    cursor: pointer;
+    -fx-effect: dropshadow(gaussian, #7c3f5833,2,0,0,1);
+    -fx-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.button:hover {
+    -fx-background-color: #7c3f58;
+    background-color: #7c3f58;
+    -fx-text-fill: #f5ecd6;
+    color: #f5ecd6;
+    -fx-background-radius: 20;
+    border-radius: 20px;
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-effect: dropshadow(gaussian, #2d2a32aa,4,0,0,2);
+}
+
+.action-button {
+    -fx-background-color: #c9b37c;
+    background-color: #c9b37c;
+    -fx-background-radius: 20px;
+    border-radius: 20px;
+    -fx-text-fill: #2d2a32;
+    color: #2d2a32;
+    -fx-font-size: 18px;
+    font-size: 18px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #7c3f5833,2,0,0,1);
+}
+
+.action-button:hover {
+    -fx-background-color: #7c3f58;
+    background-color: #7c3f58;
+    -fx-text-fill: #f5ecd6;
+    color: #f5ecd6;
+}
+
+.text-field, .password-field {
+    -fx-background-color: #f5ecd6;
+    background-color: #f5ecd6;
+    -fx-background-radius: 10;
+    border-radius: 10px;
+    -fx-font-size: 14px;
+    font-size: 14px;
+    -fx-padding: 10px;
+    padding: 10px;
+    -fx-text-fill: #2d2a32;
+    color: #2d2a32;
+}
+
+.choice-box {
+    -fx-background-color: #f5ecd6;
+    background-color: #f5ecd6;
+}
+
+.choice-box .label {
+    -fx-text-fill: #2d2a32;
+    color: #2d2a32;
+}
+
+.form-box {
+    -fx-background-color: #f5ecd6;
+    background-color: #f5ecd6;
+    -fx-background-radius: 12;
+    border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, #2d2a32aa,12,0.2,0,4);
+    -fx-padding: 32px 24px;
+    padding: 32px 24px;
+    -fx-opacity: 0.93;
+    opacity: 0.93;
+}
+
+.title {
+    -fx-font-size: 32px;
+    font-size: 32px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-text-fill: #c9b37c;
+    color: #c9b37c;
+    -fx-alignment: center;
+    padding-bottom: 16px;
+}

@@ -3,34 +3,37 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="me.gui.controladores.ControladorLogin">
-    <VBox alignment="CENTER" spacing="10" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
-        <Label text="Animated Forms" style="-fx-font-size: 24px;" fx:id="tituloPrincipal"/>
-        <HBox spacing="20.0" alignment="CENTER">
-            <Button fx:id="botaoTrocarLogin" text="Login"/>
-            <Button fx:id="botaoTrocarCadastro" text="Sign up"/>
+<AnchorPane styleClass="root" stylesheets="@login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorLogin">
+    <!-- Título em destaque -->
+    <Label styleClass="title" text="RPG Campaign Manager"
+           AnchorPane.topAnchor="32" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+           alignment="CENTER"/>
+    <VBox alignment="CENTER" spacing="20" styleClass="container"
+          AnchorPane.topAnchor="80" AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <!-- Botões de troca -->
+        <HBox fx:id="botaoTrocaBox" alignment="CENTER" spacing="10">
+            <Button fx:id="botaoTrocarLogin" styleClass="switch-button" text="Login" />
+            <Button fx:id="botaoTrocarCadastro" styleClass="switch-button" text="Sign up" />
         </HBox>
 
-        <StackPane fx:id="formContainer">
-            <!-- Form de Login -->
-            <VBox fx:id="formLogin" spacing="10" alignment="CENTER">
-                <Label text="Insira seu nome de usuário e senha para prosseguir."/>
-                <TextField fx:id="campoNomeLogin" promptText="Usuário"/>
-                <PasswordField fx:id="campoSenhaLogin" promptText="Senha"/>
-                <Button fx:id="botaoLogin" text="Login" onAction="#realizarLogin"/>
+        <StackPane fx:id="formContainer" maxWidth="400" minWidth="300">
+            <!-- Login Form -->
+            <VBox fx:id="formLogin" alignment="CENTER" spacing="10" styleClass="form-box">
+                <TextField fx:id="campoNomeLogin" promptText="Usuário" styleClass="input-field" />
+                <PasswordField fx:id="campoSenhaLogin" promptText="Senha" styleClass="input-field" />
+                <Button fx:id="botaoLogin" onAction="#realizarLogin" styleClass="action-button" text="Login" />
             </VBox>
-            <!-- Form de Cadastro -->
-            <VBox fx:id="formCadastro" spacing="10" alignment="CENTER" visible="false" managed="false">
-                <Label text="Insira seu nome de usuário, senha e confirmação de senha para prosseguir."/>
-                <TextField promptText="Usuário" fx:id="campoNomeCadastro"/>
-                <PasswordField promptText="Senha" fx:id="campoSenhaCadastro"/>
-                <PasswordField promptText="Confirmar Senha" fx:id="campoSenhaConfirm"/>
-                <ChoiceBox fx:id="choiceTipo"/>
-                <Button fx:id="botaoCadastrar" text="Continue" onAction="#realizarCadastro"/>
+            <!-- Cadastro Form -->
+            <VBox fx:id="formCadastro" alignment="CENTER" managed="false" spacing="10" styleClass="form-box" visible="false">
+                <TextField fx:id="campoNomeCadastro" promptText="Usuário" styleClass="input-field" />
+                <PasswordField fx:id="campoSenhaCadastro" promptText="Senha" styleClass="input-field" />
+                <PasswordField fx:id="campoSenhaConfirm" promptText="Confirmar Senha" styleClass="input-field" />
+                <ChoiceBox fx:id="choiceTipo" styleClass="input-field" />
+                <Button fx:id="botaoCadastrar" onAction="#realizarCadastro" styleClass="action-button" text="Sign up" />
             </VBox>
         </StackPane>
 
-        <Label fx:id="labelMensagem" style="-fx-text-fill: red;"/>
+        <Label fx:id="labelMensagem" textFill="red" />
     </VBox>
-
 </AnchorPane>

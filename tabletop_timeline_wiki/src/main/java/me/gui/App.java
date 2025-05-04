@@ -17,7 +17,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        System.out.println("Tentando carregar: " + App.class.getResource("Login.fxml"));
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Login.fxml"));
         Parent root = fxmlLoader.load();
 
@@ -28,9 +27,10 @@ public class App extends Application {
         fadein.play();
 
         Scene scene = new Scene(root, 640, 480);
-        scene.getStylesheets().add(getClass().getResource("/css/login.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("login.css").toExternalForm());
         stage.setTitle("RPG Campaign Manager - Login");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 

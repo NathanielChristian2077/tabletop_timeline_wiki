@@ -1,12 +1,12 @@
 package me.gui.controladores;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import javafx.animation.*;
 import me.controle.GerenciadorUsuario;
 import me.modelo.entidades.Usuario;
 import me.modelo.enums.TipoUsuario;
@@ -28,81 +28,144 @@ public class ControladorLogin {
     @FXML private PasswordField campoSenhaConfirm;
 
     private final GerenciadorUsuario gerenciadorUsuario = new GerenciadorUsuario();
+    private boolean showingLogin = true;
 
     @FXML
-    public void init() {
+    public void initialize() {
+        mostrarLoginAnimado();
         choiceTipo.getItems().addAll(TipoUsuario.values());
 
-        botaoTrocarLogin.setOnAction(e -> mostrarLoginAnimado());
-        botaoTrocarCadastro.setOnAction(e -> mostrarCadastroAnimado());
+        botaoTrocarLogin.setOnAction(e -> {
+            if (!showingLogin) {
+                mostrarLoginAnimado();
+            }
+        });
+        botaoTrocarCadastro.setOnAction(e -> {
+            if (showingLogin) {   
+                mostrarCadastroAnimado();
+            }
+        });
     }
 
     private void mostrarLoginAnimado() {
+        if (showingLogin) return;
+        showingLogin = true;
+        botaoTrocarLogin.setDisable(true);
+        botaoTrocarCadastro.setDisable(true);
+
         FadeTransition fadeOut = new FadeTransition(Duration.millis(200), formCadastro);
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
+        fadeOut.setInterpolator(Interpolator.EASE_BOTH);
 
-        TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), formLogin);
-        slideIn.setFromX(-50);
-        slideIn.setToX(0);
-
-        fadeOut.setOnFinished(event -> {
-            formLogin.setVisible(true);
-            formLogin.setManaged(true);
+        fadeOut.setOnFinished(e -> {
             formCadastro.setVisible(false);
             formCadastro.setManaged(false);
 
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(200), formLogin);
+            formLogin.setTranslateX(-50);
+            formLogin.setOpacity(0);
+            formLogin.setScaleX(0.95);
+            formLogin.setScaleY(0.95);
+            formLogin.setVisible(true);
+            formLogin.setManaged(true);
+
+            TranslateTransition slideIn = new TranslateTransition(Duration.millis(350), formLogin);
+            slideIn.setFromX(-50);
+            slideIn.setToX(0);
+            slideIn.setInterpolator(Interpolator.EASE_BOTH);
+
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(350), formLogin);
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
+            fadeIn.setInterpolator(Interpolator.EASE_BOTH);
 
-            new SequentialTransition(slideIn, fadeIn).play();
+            ScaleTransition scaleIn = new ScaleTransition(Duration.millis(350), formLogin);
+            scaleIn.setFromX(0.95);
+            scaleIn.setFromY(0.95);
+            scaleIn.setToX(1.0);
+            scaleIn.setToY(1.0);
+            scaleIn.setInterpolator(Interpolator.EASE_BOTH);
+
+            ParallelTransition show = new ParallelTransition(slideIn, fadeIn, scaleIn);
+            show.setOnFinished(ev -> {
+                botaoTrocarLogin.setDisable(false);
+                botaoTrocarCadastro.setDisable(false);
+            });
+            show.play();
         });
 
         fadeOut.play();
-        labelMensagem.setText("");
     }
 
     private void mostrarCadastroAnimado() {
+        if (!showingLogin) return;
+        showingLogin = false;
+        botaoTrocarLogin.setDisable(true);
+        botaoTrocarCadastro.setDisable(true);
+
         FadeTransition fadeOut = new FadeTransition(Duration.millis(200), formLogin);
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
+        fadeOut.setInterpolator(Interpolator.EASE_BOTH);
 
-        TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), formCadastro);
-        slideIn.setFromX(50);
-        slideIn.setToX(0);
-
-        fadeOut.setOnFinished(event -> {
+        fadeOut.setOnFinished(e -> {
             formLogin.setVisible(false);
             formLogin.setManaged(false);
+
+            formCadastro.setTranslateX(50);
+            formCadastro.setOpacity(0);
+            formCadastro.setScaleX(0.95);
+            formCadastro.setScaleY(0.95);
             formCadastro.setVisible(true);
             formCadastro.setManaged(true);
 
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(200), formCadastro);
+            TranslateTransition slideIn = new TranslateTransition(Duration.millis(350), formCadastro);
+            slideIn.setFromX(50);
+            slideIn.setToX(0);
+            slideIn.setInterpolator(Interpolator.EASE_BOTH);
+
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(350), formCadastro);
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
+            fadeIn.setInterpolator(Interpolator.EASE_BOTH);
 
-            new SequentialTransition(slideIn, fadeIn).play();
+            ScaleTransition scaleIn = new ScaleTransition(Duration.millis(350), formCadastro);
+            scaleIn.setFromX(0.95);
+            scaleIn.setFromY(0.95);
+            scaleIn.setToX(1.0);
+            scaleIn.setToY(1.0);
+            scaleIn.setInterpolator(Interpolator.EASE_BOTH);
+
+            ParallelTransition show = new ParallelTransition(slideIn, fadeIn, scaleIn);
+            show.setOnFinished(ev -> {
+                botaoTrocarLogin.setDisable(false);
+                botaoTrocarCadastro.setDisable(false);
+            });
+            show.play();
         });
-
         fadeOut.play();
-        labelMensagem.setText("");
     }
 
     public void realizarLogin() {
-        String nome = campoNomeLogin.getText();
+        String nome = campoNomeLogin.getText().trim();
         String senha = campoSenhaLogin.getText();
+
+        if (nome.isEmpty() || senha.isEmpty()) {
+            labelMensagem.setStyle("-fx-text-fill: red;");
+            labelMensagem.setText("Todos os campos devem ser preenchidos.");
+            return;
+        }
 
         try {
             Usuario u = gerenciadorUsuario.buscarPorNome(nome);
             if (u.autenticar(senha)) {
-                labelMensagem.setText("Bem-vindo " + u.getNome());
+                labelMensagem.setStyle("-fx-text-fill : green;");
+                labelMensagem.setText("Bem-vindo " + u.getNome() + "!");
                 // UsuarioSession.getInstance().setUsuario(u); // opcional
-            } else {
-                labelMensagem.setText("Senha Incorreta.");
             }
         } catch (ElementoNaoEncontradoException e) {
-            labelMensagem.setText("Usuário não encontrado.");
+            labelMensagem.setStyle("-fx-text-fill: red;");
+            labelMensagem.setText("Usuário ou senha inválido.");
         }
     }
 
@@ -114,6 +177,7 @@ public class ControladorLogin {
         TipoUsuario tipo = choiceTipo.getValue();
 
         if (nome.isEmpty() || senha.isEmpty() || tipo == null || senhaConfirm.isEmpty()) {
+            labelMensagem.setStyle("-fx-text-fill: red;");
             labelMensagem.setText("Todos os campos devem ser informados.");
             return;
         }
@@ -125,6 +189,8 @@ public class ControladorLogin {
 
         Usuario novo = new Usuario(nome, senha, tipo);
         gerenciadorUsuario.adicionarUsuario(novo);
-        labelMensagem.setText("Cadastro bem sucedido.");
+        labelMensagem.setStyle("-fx-text-fill: green;");
+        labelMensagem.setText("Cadastro realizado com sucesso.");
+        mostrarLoginAnimado();
     }
 }
