@@ -3,9 +3,16 @@ package me.gui.controladores;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.io.IOException;
+
 import javafx.animation.*;
 import me.controle.GerenciadorUsuario;
 import me.modelo.entidades.Usuario;
@@ -162,6 +169,7 @@ public class ControladorLogin {
                 labelMensagem.setStyle("-fx-text-fill : green;");
                 labelMensagem.setText("Bem-vindo " + u.getNome() + "!");
                 // UsuarioSession.getInstance().setUsuario(u); // opcional
+                irParaTelaPrincipal();
             }
         } catch (ElementoNaoEncontradoException e) {
             labelMensagem.setStyle("-fx-text-fill: red;");
@@ -192,5 +200,31 @@ public class ControladorLogin {
         labelMensagem.setStyle("-fx-text-fill: green;");
         labelMensagem.setText("Cadastro realizado com sucesso.");
         mostrarLoginAnimado();
+    }
+
+    private void irParaTelaPrincipal() {
+        try {
+            System.out.println(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
+            Parent root = loader.load();
+            Scene novaCena = new Scene(root, 800, 600);
+
+            Stage stage = (Stage) campoNomeLogin.getScene().getWindow();
+            stage.setScene(novaCena);
+            stage.setTitle("RPG Campaign Manager - Tela Principal");
+            stage.setResizable(true);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            motrarAlerta("Erro", "Não foi possível carregar a tela principal.");
+        }
+    }
+
+    private void motrarAlerta(String titulo, String msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }
