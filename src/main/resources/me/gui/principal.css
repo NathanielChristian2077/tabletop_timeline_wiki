@@ -1,0 +1,197 @@
+.root {
+    -fx-background-color: linear-gradient(to bottom, #2d2a32, #343139);
+    background-color: #2d2a32; /* fallback for compatibility */
+    -fx-font-family: "Segoe UI", "Georgia", serif;
+    font-family: "Segoe UI", "Georgia", serif;
+    -fx-padding: 30px;
+    padding: 30px;
+    -fx-border-color: transparent;
+    border-color: transparent;
+    -fx-border-width: 0;
+    border-width: 0;
+}
+
+HBox {
+    -fx-background-color: #2d2a32;
+    background-color: #2d2a32;
+}
+
+/* --- Título principal --- */
+.title {
+    -fx-font-size: 32px;
+    font-size: 32px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-text-fill: linear-gradient(to bottom, #f5e6b8, #c9b37c);
+    color: #f5e6b8; /* fallback */
+    -fx-alignment: center;
+    -fx-padding: 20 0 40 0;
+    padding: 20 0 40 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 0, 4, 0, 2);
+}
+
+/* --- Subtítulos --- */
+.subtitle {
+    -fx-font-size: 20px;
+    font-size: 20px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-text-fill: #f5e6b8;
+    color: #f5e6b8;
+    -fx-border-color: linear-gradient(to right, transparent, #7c3f58, transparent);
+    border-color: #7c3f58; /* fallback */
+    -fx-border-width: 0 0 2px 0;
+    border-width: 0 0 2px 0;
+    -fx-border-insets: 0 0 10px 0;
+    -fx-padding: 0 0 8px 0;
+    padding: 0 0 8px 0;
+}
+
+/* --- Botões modernos --- */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #d4c49e, #c9b37c);
+    background-color: #d4c49e;
+    -fx-text-fill: #2d2a32;
+    color: #2d2a32;
+    -fx-font-size: 15px;
+    font-size: 15px;
+    -fx-background-radius: 14px;
+    border-radius: 14px;
+    -fx-padding: 10px 24px;
+    padding: 10px 24px;
+    -fx-cursor: hand;
+    cursor: pointer;
+    -fx-effect: dropshadow(gaussian, rgba(125,63,88,0.3), 0, 2, 0, 2);
+    -fx-min-width: 120px;
+    min-width: 120px;
+    /* -fx-transition: all 0.2s ease;  Não suportado em JavaFX */
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #8a4560, #7c3f58);
+    background-color: #8a4560;
+    -fx-text-fill: #f5ecd6;
+    color: #f5ecd6;
+    -fx-effect: dropshadow(gaussian, rgba(45,42,50,0.5), 0, 4, 0, 3);
+}
+
+/* --- Campos de texto e área --- */
+.text-field,
+.text-area {
+    -fx-background-color: #f5ecd6;
+    background-color: #f5ecd6;
+    -fx-background-radius: 10px;
+    border-radius: 10px;
+    -fx-font-size: 14px;
+    font-size: 14px;
+    -fx-padding: 10px;
+    padding: 10px;
+    -fx-text-fill: #2d2a32;
+    color: #2d2a32;
+    -fx-border-color: #c9b37c;
+    border-color: #c9b37c;
+    -fx-border-width: 2px;
+    border-width: 2px;
+    -fx-border-radius: 10px;
+    border-radius: 10px;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 2);
+}
+
+.text-field:focused,
+.text-area:focused {
+    -fx-border-color: #7c3f58;
+    border-color: #7c3f58;
+    -fx-border-width: 2px;
+    border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(125,63,88,0.3), 0, 2, 0, 2);
+}
+
+.text-area .content {
+    -fx-background-color: #f5ecd6;
+    background-color: #f5ecd6;
+    -fx-padding: 0;
+    padding: 0;
+}
+
+/* --- ListView estilizado --- */
+.list-view {
+    -fx-background-color: #f5ecd6;
+    background-color: #f5ecd6;
+    -fx-background-radius: 10px;
+    border-radius: 10px;
+    -fx-border-color: #c9b37c;
+    border-color: #c9b37c;
+    -fx-border-width: 2px;
+    border-width: 2px;
+    -fx-border-radius: 10px;
+    border-radius: 10px;
+    -fx-padding: 8px;
+    padding: 8px;
+    -fx-cell-size: 40px;
+}
+
+.list-cell {
+    -fx-padding: 8px 12px;
+    padding: 8px 12px;
+    -fx-background-radius: 6px;
+    border-radius: 6px;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: #c9b37c;
+    background-color: #c9b37c;
+    -fx-text-fill: #2d2a32;
+    color: #2d2a32;
+}
+
+/* --- Scroll personalizado --- */
+.scroll-pane {
+    -fx-background-color: transparent;
+    background-color: transparent;
+    -fx-border-color: transparent;
+    border-color: transparent;
+    -fx-padding: 0;
+    padding: 0;
+    -fx-background-insets: 0;
+}
+
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #7c3f58;
+    background-color: #7c3f58;
+    -fx-background-radius: 5px;
+    border-radius: 5px;
+}
+
+/* --- Layout containers --- */
+HBox, VBox {
+    -fx-spacing: 20px;
+    /* Não existe spacing em CSS padrão, só JavaFX */
+    -fx-border-color: transparent;
+    border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    padding: 0;
+    -fx-border-width: 0;
+    border-width: 0;
+}
+
+VBox {
+    -fx-alignment: TOP_LEFT;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    background-color: transparent;
+}
+
+.hbox, .vbox, .border-pane {
+    -fx-border-color: transparent;
+    border-color: transparent;
+    -fx-border-width: 0;
+    border-width: 0;
+}

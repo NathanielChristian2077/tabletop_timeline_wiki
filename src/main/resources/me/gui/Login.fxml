@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<?import javafx.scene.image.Image?>
+<StackPane styleClass="root" stylesheets="@login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorLogin">
+
+    <ImageView fx:id="backgroundImage" opacity="0.3">
+        <Image url="@images/loginBackground.png"/>
+    </ImageView>
+
+    <AnchorPane>
+        <HBox fx:id="mainPane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+            <VBox fx:id="loginPane" alignment="CENTER" spacing="15" HBox.hgrow="ALWAYS" styleClass="login-pane">
+                <Label text="Login" styleClass="title" />
+                <TextField fx:id="campoNomeLogin" promptText="Username" />
+                <PasswordField fx:id="campoSenhaLogin" promptText="Password" />
+                <Button fx:id="botaoLogin" text="login" onAction="#realizarLogin" />
+                <Button fx:id="botaoTrocarParaCadastro" text="create account" />
+            </VBox>
+
+            <VBox fx:id="signUpPane" alignment="CENTER" spacing="15" HBox.hgrow="ALWAYS" styleClass="signUp-pane">
+                <Label text="Sign Up" styleClass="title" />
+                <TextField fx:id="campoNomeCadastro" promptText="Username" />
+                <PasswordField fx:id="campoSenhaCadastro" promptText="Password" />
+                <PasswordField fx:id="campoSenhaConfirm" promptText="Confirm password" />
+                <ChoiceBox fx:id="choiceTipo" />
+                <Button fx:id="botaoCadastrar" text="sign up" onAction="#realizarCadastro" />
+                <Button fx:id="botaoTrocarParaLogin" text="login" />
+            </VBox>
+        </HBox>
+    </AnchorPane>
+</StackPane>
