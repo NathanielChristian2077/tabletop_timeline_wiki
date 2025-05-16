@@ -1,6 +1,6 @@
 # Story Telling Manager (nome provisório) — Projeto Acadêmico
 
-Este projeto foi desenvolvido como parte da disciplina **Desenvolvimento de Sistemas Orientados a Objetos (DOO)**, no curso de **Ciência da Computação (3º Semestre) da Instituição Federal de Santa Catarina (IFSC)**.
+Este projeto está sendo desenvolvido como parte da disciplina **Desenvolvimento de Sistemas Orientados a Objetos (DOO)**, no curso de **Ciência da Computação (3º Semestre) da Instituição Federal de Santa Catarina (IFSC)**.
 
 Seu principal objetivo é demonstrar, de forma prática, a aplicação dos **conceitos fundamentais de Programação Orientada a Objetos (POO)** por meio do desenvolvimento de uma aplicação desktop em **Java**, voltada à organização de campanhas de RPG de mesa, podendo também ser aplicada a qualquer história que deseja a ser sintetisada de modo mais prático e flúido.
 
@@ -34,7 +34,7 @@ Seu principal objetivo é demonstrar, de forma prática, a aplicação dos **con
 
 ## Tecnologias Utilizadas
 
-- **Java 17 (a ser atualizado para Java 21)**
+- **Java 17 (a ser atualizado para Java 24)**
 - **JavaFX 20**
 - **Maven**
 - **FXML**
