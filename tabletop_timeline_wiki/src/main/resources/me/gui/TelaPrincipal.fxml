@@ -1,114 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-
-
-
 <?import javafx.geometry.*?>
-
 <?import javafx.scene.control.*?>
-
 <?import javafx.scene.layout.*?>
 
-
-
 <BorderPane stylesheets="@principal.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorTelaPrincipal">
-
-
-
-
     <!-- Título centralizado -->
-
-
     <top>
-
-
-        <Label styleClass="title" text="RPG Campaign Manager" BorderPane.alignment="CENTER" />
-
-
+        <HBox spacing="20" alignement="CENTER_LEFT" styleClass="header">
+            <Label fx:id="labelSaudacao" styleClass="title"/>
+            <Button text="+" onAction="#criarCampanha"/>
+        </HBox> 
     </top>
-
-
-
-
-    <!-- Conteúdo principal responsivo com rolagem -->
-
+    <!-- Conteúdo com rolagem -->
     <center>
-
-
         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" vbarPolicy="NEVER">
-
-
-            <HBox alignment="TOP_CENTER" spacing="30.0">
-
-
-                <padding>
-
-
-                    <Insets bottom="30" left="30" right="30" top="30" />
-
-
-                </padding>
-
-
-
-
-
-                <!-- Lista de campanhas existentes -->
-
-
-                <VBox spacing="15.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-
-
-                    <Label styleClass="subtitle" text="Campanhas" />
-
-
-                    <ListView fx:id="listaCampanhas" VBox.vgrow="ALWAYS" />
-
-
-                    <Button onAction="#abrirCampanha" text="Iniciar" />
-
-
-                </VBox>
-
-
-
-
-
-                <!-- Criar nova Campanha -->
-
-
-                <VBox spacing="15.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-
-
-                    <Label styleClass="subtitle" text="Criar Nova Campanha" />
-
-
-                    <TextField fx:id="campoNomeCampanha" promptText="Nome da Campanha" />
-
-
-                    <TextArea fx:id="campoDescricaoCampanha" promptText="Descrição" VBox.vgrow="ALWAYS" />
-
-
-                    <Button onAction="#criarCampanha" text="Criar" />
-
-
-                </VBox>
-
-
-
-
-
-            </HBox>
-
-
+            <FlowPane fx:id="gridCampanhas" hgap="20" vgap="20"/>
         </ScrollPane>
-
-
-        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" vbarPolicy="NEVER" />
-
     </center>
-
-
-
 </BorderPane>

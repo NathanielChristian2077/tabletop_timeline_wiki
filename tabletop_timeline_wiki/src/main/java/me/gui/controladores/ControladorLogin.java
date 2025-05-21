@@ -257,7 +257,6 @@ public class ControladorLogin {
             if (u.autenticar(senha)) {
                 labelMensagem.setStyle("-fx-text-fill : green;");
                 labelMensagem.setText("Bem-vindo " + u.getNome() + "!");
-                // UsuarioSession.getInstance().setUsuario(u); // opcional
                 irParaTelaPrincipal();
             }
         } catch (ElementoNaoEncontradoException e) {
@@ -304,7 +303,7 @@ public class ControladorLogin {
             Scene novaCena = new Scene(root, root.getScene().getWidth(), root.getScene().getHeight());
             Stage stage = (Stage) campoNomeLogin.getScene().getWindow();
             stage.setScene(novaCena);
-            stage.setTitle("RPG Campaign Manager - Tela Principal");
+            stage.setTitle("Codex Core");
             stage.setResizable(true);
             stage.show();
         } catch (IOException e) {
