@@ -14,14 +14,18 @@
 }
 
 .button {
-    -fx-background-color: #4A4E69;
-    background-color: #4A4E69;
+    -fx-background-color: transparent;
+    background-color: transparent;
     -fx-text-fill: #C8A96A;
     color: #C8A96A;
     -fx-font-size: 14px;
     font-size: 14px;
-    -fx-background-radius: 12;
-    border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-border-color: linear-gradient(to top, transparent, #c9b37c, transparent);
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-radius: 20px;
+    border-radius: 20px;
     -fx-padding: 8px 16px;
     padding: 8px 16px;
     -fx-cursor: hand;
@@ -32,8 +36,8 @@
 }
 
 .button:hover {
-    -fx-background-color: #9A8C98;
-    background-color: #9A8C98;
+    -fx-background-color: transparent;
+    background-color: transparent;
     -fx-text-fill: #f5ecd6;
     color: #f5ecd6;
     -fx-background-radius: 20;
@@ -44,8 +48,8 @@
 }
 
 .action-button {
-    -fx-background-color: #4A4E69;
-    background-color: #4A4E69;
+    -fx-background-color: transparent;
+    background-color: transparent;
     -fx-background-radius: 20px;
     border-radius: 20px;
     -fx-text-fill: #C8A96A;
@@ -58,8 +62,8 @@
 }
 
 .action-button:hover {
-    -fx-background-color: #9A8C98;
-    background-color: #9A8C98;
+    -fx-background-color: transparent;
+    background-color: transparent;
     -fx-text-fill: #f5ecd6;
     color: #f5ecd6;
 }
