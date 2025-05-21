@@ -7,6 +7,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -20,6 +24,12 @@ import me.modelo.enums.TipoUsuario;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
 
 public class ControladorLogin {
+
+    @FXML private AnchorPane root;
+    @FXML private ImageView backgroundImage;
+    @FXML private Label titulo1;
+    @FXML private Label titulo2;
+    @FXML private HBox botaoTrocaBox;
     @FXML private TextField campoNomeLogin;
     @FXML private TextField campoNomeCadastro;
     @FXML private PasswordField campoSenhaLogin;
@@ -30,17 +40,52 @@ public class ControladorLogin {
     @FXML private Label labelMensagem;
     @FXML private VBox formLogin;
     @FXML private VBox formCadastro;
+    @FXML private StackPane container;
     @FXML private Button botaoTrocarLogin;
     @FXML private Button botaoTrocarCadastro;
     @FXML private PasswordField campoSenhaConfirm;
 
+
     private final GerenciadorUsuario gerenciadorUsuario = new GerenciadorUsuario();
     private boolean showingLogin = true;
+    private double targetOffsetX = 0;
+    private double targetOffsetY = 0;
+
+    // Fatores de movimento (ajustáveis)
+    private double bgFactorX = 1.25;
+    private double bgFactorY = .75;
+    private double fgFactorX = -10;
+    private double fgFactorY = -5;
+
+    private double maxImageOffsetX;
+    private double maxImageOffsetY;
 
     @FXML
     public void initialize() {
         mostrarLoginAnimado();
         choiceTipo.getItems().addAll(TipoUsuario.values());
+
+        backgroundImage.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                backgroundImage.fitWidthProperty().bind(newScene.widthProperty());
+                backgroundImage.fitHeightProperty().bind(newScene.heightProperty());
+
+                maxImageOffsetX = bgFactorX;
+                maxImageOffsetY = bgFactorY;
+
+                newScene.setOnMouseMoved(event -> {
+                    double centerX = newScene.getWidth() / 2;
+                    double centerY = newScene.getHeight() / 2;
+                    double offsetX = (event.getSceneX() - centerX) / centerX;
+                    double offsetY = (event.getSceneY() - centerY) / centerY;
+
+                    targetOffsetX = offsetX;
+                    targetOffsetY = offsetY;
+                });
+
+                startParallax();
+            }
+        });
 
         botaoTrocarLogin.setOnAction(e -> {
             if (!showingLogin) {
@@ -48,11 +93,53 @@ public class ControladorLogin {
             }
         });
         botaoTrocarCadastro.setOnAction(e -> {
-            if (showingLogin) {   
+            if (showingLogin) {
                 mostrarCadastroAnimado();
             }
         });
     }
+
+    private void startParallax() {
+        Timeline parallaxAnim = new Timeline(new KeyFrame(Duration.millis(16), e -> {
+            // Suavização
+            double currentX = backgroundImage.getTranslateX();
+            double currentY = backgroundImage.getTranslateY();
+
+            double nextX = currentX + (targetOffsetX * bgFactorX - currentX) * 0.08;
+            double nextY = currentY + (targetOffsetY * bgFactorY - currentY) * 0.08;
+
+            double minTranslateX = -maxImageOffsetX * root.getWidth() / 2;
+            double maxTranslateX = maxImageOffsetX * root.getWidth() / 2;
+            double minTranslateY = -maxImageOffsetY * root.getHeight() / 2;
+            double maxTranslateY = maxImageOffsetY * root.getHeight() / 2;
+
+            nextX = Math.max(Math.min(nextX, maxTranslateX), minTranslateX);
+            nextY = Math.max(Math.min(nextY, maxTranslateY), minTranslateY);
+
+            backgroundImage.setTranslateX(nextX);
+            backgroundImage.setTranslateY(nextY);
+
+            double formX = container.getTranslateX();
+            double formY = container.getTranslateY();
+
+            double nextFormX = formX + (targetOffsetX * fgFactorX - formX) * 0.08;
+            double nextFormY = formY + (targetOffsetY * fgFactorY - formY) * 0.08;
+            container.setTranslateX(nextFormX);
+            container.setTranslateY(nextFormY);
+
+            titulo1.setTranslateX(titulo1.getTranslateX() + (targetOffsetX * -10 - titulo1.getTranslateX())* 0.08);
+            titulo1.setTranslateY(titulo1.getTranslateY() + (targetOffsetY * -5 - titulo1.getTranslateY())* 0.08);
+
+            titulo2.setTranslateX(titulo2.getTranslateX() + (targetOffsetX * -10 - titulo2.getTranslateX())* 0.08);
+            titulo2.setTranslateY(titulo2.getTranslateY() + (targetOffsetY * -5 - titulo2.getTranslateY())* 0.08);
+
+            botaoTrocaBox.setTranslateX(botaoTrocaBox.getTranslateX() + (targetOffsetX * -10 - botaoTrocaBox.getTranslateX()) * 0.08);
+            botaoTrocaBox.setTranslateY(botaoTrocaBox.getTranslateY() + (targetOffsetY * -5 - botaoTrocaBox.getTranslateY()) * 0.08);
+        }));
+        parallaxAnim.setCycleCount(Animation.INDEFINITE);
+        parallaxAnim.play();
+    }
+
 
     private void mostrarLoginAnimado() {
         if (showingLogin) return;
@@ -150,6 +237,7 @@ public class ControladorLogin {
             });
             show.play();
         });
+
         fadeOut.play();
     }
 
@@ -157,10 +245,11 @@ public class ControladorLogin {
         String nome = campoNomeLogin.getText().trim();
         String senha = campoSenhaLogin.getText();
 
-        if (nome.isEmpty() || senha.isEmpty()) {
-            labelMensagem.setStyle("-fx-text-fill: red;");
-            labelMensagem.setText("Todos os campos devem ser preenchidos.");
+        if (nome.isEmpty()) {
+            mostrarErro(campoNomeLogin, "* obrigatório");
             return;
+        } else if (senha.isEmpty()) {
+            mostrarErro(campoSenhaLogin, "* obrigatório");
         }
 
         try {
@@ -173,7 +262,7 @@ public class ControladorLogin {
             }
         } catch (ElementoNaoEncontradoException e) {
             labelMensagem.setStyle("-fx-text-fill: red;");
-            labelMensagem.setText("Usuário ou senha inválido.");
+            labelMensagem.setText("Usuário ou senha inválido(s).");
         }
     }
 
@@ -184,14 +273,19 @@ public class ControladorLogin {
         String senhaConfirm = campoSenhaConfirm.getText();
         TipoUsuario tipo = choiceTipo.getValue();
 
-        if (nome.isEmpty() || senha.isEmpty() || tipo == null || senhaConfirm.isEmpty()) {
-            labelMensagem.setStyle("-fx-text-fill: red;");
-            labelMensagem.setText("Todos os campos devem ser informados.");
+        if (nome.isEmpty()) {
+            mostrarErro(campoNomeCadastro, "* obrigatório");
+            return;
+        } else if (senha.isEmpty()) {
+            mostrarErro(campoSenhaCadastro, "* obrigatório");
+            return;
+        } else if (senhaConfirm.isEmpty()) {
+            mostrarErro(campoSenhaConfirm, "* obrigatório");
             return;
         }
 
         if (!senha.equals(senhaConfirm)) {
-            labelMensagem.setText("As senhas são diferentes.");
+            mostrarErro(campoSenhaConfirm, "As senhas não coincidem.");
             return;
         }
 
@@ -207,8 +301,7 @@ public class ControladorLogin {
             System.out.println(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
             Parent root = loader.load();
-            Scene novaCena = new Scene(root, 800, 600);
-
+            Scene novaCena = new Scene(root, root.getScene().getWidth(), root.getScene().getHeight());
             Stage stage = (Stage) campoNomeLogin.getScene().getWindow();
             stage.setScene(novaCena);
             stage.setTitle("RPG Campaign Manager - Tela Principal");
@@ -216,15 +309,12 @@ public class ControladorLogin {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            motrarAlerta("Erro", "Não foi possível carregar a tela principal.");
         }
     }
 
-    private void motrarAlerta(String titulo, String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
-        alert.showAndWait();
+    private void mostrarErro(TextField campo, String msg) {
+        campo.setStyle("-fx-border-color: red; -fx-border-radius: 10px;");
+        labelMensagem.setStyle("-fx-text-fill: red;");
+        labelMensagem.setText(msg);
     }
 }

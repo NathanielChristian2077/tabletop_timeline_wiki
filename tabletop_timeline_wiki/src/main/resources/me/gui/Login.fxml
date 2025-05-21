@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane styleClass="root" stylesheets="@login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorLogin">
+<AnchorPane fx:id="root" prefHeight="720" prefWidth="1280" styleClass="root" stylesheets="@login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorLogin">
+    <ImageView fx:id="backgroundBase" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Image url="@images/loginBackground_1080p.jpg" />
+    </ImageView>
+    <ImageView fx:id="backgroundImage" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Image url="@images/loginBackground_1080p.jpg" />
+    </ImageView>
+
     <!-- Título em destaque -->
-    <Label styleClass="title" text="RPG Campaign Manager"
-           AnchorPane.topAnchor="32" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
-           alignment="CENTER"/>
-    <VBox alignment="CENTER" spacing="20" styleClass="container"
-          AnchorPane.topAnchor="80" AnchorPane.bottomAnchor="0"
-          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+    <Label fx:id="titulo1" alignment="CENTER" styleClass="title" text="Codex" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="85.0" />
+    <Label fx:id="titulo2" alignment="CENTER" styleClass="title" text="Core" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="140.0"/>
+    <VBox alignment="CENTER" spacing="20" styleClass="container" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="70.0">
         <!-- Botões de troca -->
         <HBox fx:id="botaoTrocaBox" alignment="CENTER" spacing="10">
             <Button fx:id="botaoTrocarLogin" styleClass="switch-button" text="Login" />
             <Button fx:id="botaoTrocarCadastro" styleClass="switch-button" text="Sign up" />
         </HBox>
 
-        <StackPane fx:id="formContainer" maxWidth="400" minWidth="300">
+        <StackPane fx:id="container" maxWidth="400" minWidth="300">
             <!-- Login Form -->
             <VBox fx:id="formLogin" alignment="CENTER" spacing="10" styleClass="form-box">
                 <TextField fx:id="campoNomeLogin" promptText="Usuário" styleClass="input-field" />
