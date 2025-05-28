@@ -54,7 +54,7 @@ public class ControladorTelaPrincipal {
         if (c.imageExists()) {
             imagem = new Image(new File(c.getImagePath()).toURI().toString());
         } else {
-            imagem = new Image(getClass().getResource("/me/gui/images/placeholder.jpg").toExternalForm());
+            imagem = new Image(getClass().getResource("/me/gui/images/nullPlaceholder.jpg").toExternalForm());
         }
 
         capa.setImage(imagem);
@@ -74,7 +74,7 @@ public class ControladorTelaPrincipal {
         StackPane novo = new StackPane();
         novo.getStyleClass().add("campanha-card");
 
-        ImageView placeholder = new ImageView(new Image(getClass().getResource("/me/gui/images/placeholder.jpg").toExternalForm()));
+        ImageView placeholder = new ImageView(new Image(getClass().getResource("/me/gui/images/createCampaignPlaceholder.jpg").toExternalForm()));
         placeholder.setFitWidth(180);
         placeholder.setFitHeight(120);
         placeholder.setPreserveRatio(true);

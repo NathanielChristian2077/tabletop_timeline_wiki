@@ -1,29 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
 
-<BorderPane stylesheets="@principal.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorTelaPrincipal">
-    <ImageView fx:id="backgroundImage">
-        <Image url="@images/mainBackground.jpg" />
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.2"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="me.gui.controladores.ControladorTelaPrincipal"
+            stylesheets="@principal.css">
+
+    <ImageView fx:id="backgroundImage"
+               fitWidth="Infinity"
+               fitHeight="Infinity"
+               preserveRatio="false"
+               AnchorPane.topAnchor="0.0"
+               AnchorPane.leftAnchor="0.0"
+               AnchorPane.rightAnchor="0.0"
+               AnchorPane.bottomAnchor="0.0">
+        <image>
+            <Image url="@images/mainBackground.jpg" />
+        </image>
     </ImageView>
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header">
-            <Label fx:id="labelSaudacao" styleClass="title" />
-            <Button onAction="#criarCampanha" text="+" />
-           <!-- <Button text="Upload" onAction="#uploadCampanha" /> -->
-        </HBox>
-    </top>
-    <!-- Conteúdo principal responsivo com rolagem -->
-    <center>
-        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" vbarPolicy="NEVER">
-            <FlowPane fx:id="gridCampanhas" hgap="20" vgap="20">
-            <padding>
-               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-            </padding></FlowPane>
-        </ScrollPane>
-    </center>
 
-</BorderPane>
+    <VBox spacing="24" fillWidth="true"
+          AnchorPane.topAnchor="0.0"
+          AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0"
+          AnchorPane.bottomAnchor="0.0">
+
+        <HBox fx:id="header" alignment="CENTER_LEFT" spacing="16"
+              styleClass="header"
+              VBox.vgrow="NEVER">
+            <padding>
+                <Insets top="10.0" right="20.0" bottom="10.0" left="20.0"/> </padding>
+            <Label fx:id="labelSaudacao" styleClass="titulo-campanhas"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="botaoCriar" text="+" onAction="#criarCampanha" />
+        </HBox>
+
+        <ScrollPane fx:id="scrollWrapper"
+                    fitToWidth="true"
+                    fitToHeight="true"
+                    hbarPolicy="NEVER"
+                    vbarPolicy="AS_NEEDED"
+                    VBox.vgrow="ALWAYS"
+                    styleClass="scroll-area">
+            <FlowPane fx:id="gridCampanhas"
+                      hgap="24"
+                      vgap="24"
+                      prefWrapLength="1200"
+                      styleClass="campanha-grid">
+                <padding>
+                    <Insets top="10.0" right="20.0" bottom="10.0" left="20.0"/> </padding> <!--24-->
+            </FlowPane>
+        </ScrollPane>
+    </VBox>
+
+    <Button fx:id="botaoPerfil"
+            AnchorPane.bottomAnchor="16.0"
+            AnchorPane.leftAnchor="16.0"
+            styleClass="botao-perfil">
+        <graphic>
+            <ImageView fitWidth="42" fitHeight="42">
+                <image>
+                    <Image url="@images/profilePlaceholder.jpg"/>
+                </image>
+            </ImageView>
+        </graphic>
+    </Button>
+</AnchorPane>
