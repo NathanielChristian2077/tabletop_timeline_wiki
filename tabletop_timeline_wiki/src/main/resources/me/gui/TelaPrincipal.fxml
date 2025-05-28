@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <BorderPane stylesheets="@principal.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorTelaPrincipal">
-
+    <ImageView fx:id="backgroundImage">
+        <Image url="@images/mainBackground.jpg" />
+    </ImageView>
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header">
+            <Label fx:id="labelSaudacao" styleClass="title" />
+            <Button onAction="#criarCampanha" text="+" />
+           <!-- <Button text="Upload" onAction="#uploadCampanha" /> -->
+        </HBox>
+    </top>
     <!-- Conteúdo principal responsivo com rolagem -->
     <center>
-        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" vbarPolicy="NEVER" />
+        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" vbarPolicy="NEVER">
+            <FlowPane fx:id="gridCampanhas" hgap="20" vgap="20">
+            <padding>
+               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding></FlowPane>
+        </ScrollPane>
     </center>
 
 </BorderPane>

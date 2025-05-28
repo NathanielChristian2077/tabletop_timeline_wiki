@@ -1,5 +1,6 @@
 package me.modelo.entidades;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,8 @@ public class Campanha {
     private String nome;
     private String descricao;
 
+    private String imagePath;
+
     private Map<String, ElementoNarrativo> elementos;
     private List<Evento> eventos;
 
@@ -27,6 +30,7 @@ public class Campanha {
         this.descricao = descricao;
         this.elementos = new HashMap<>();
         this.eventos = new ArrayList<>();
+        this.imagePath = null;
     }
 
     public String getId() {
@@ -44,6 +48,8 @@ public class Campanha {
     public String getDescricao() {
         return descricao;
     }
+
+    public String getImagePath() { return imagePath; }
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
@@ -115,5 +121,13 @@ public class Campanha {
             if (p.getNome().equalsIgnoreCase(nome)) encontrados.add(p);
         }
         return encontrados;
+    }
+
+    public void setCaminhoImagem(String imagePath) {
+        this.imagePath = Campanha.this.imagePath;
+    }
+
+    public boolean imageExists() {
+        return imagePath != null && !imagePath.isBlank() && new File(imagePath).exists();
     }
 }

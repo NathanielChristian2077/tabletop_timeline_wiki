@@ -257,7 +257,6 @@ public class ControladorLogin {
             if (u.autenticar(senha)) {
                 labelMensagem.setStyle("-fx-text-fill : green;");
                 labelMensagem.setText("Bem-vindo " + u.getNome() + "!");
-                // UsuarioSession.getInstance().setUsuario(u); // opcional
                 irParaTelaPrincipal();
             }
         } catch (ElementoNaoEncontradoException e) {
@@ -301,10 +300,10 @@ public class ControladorLogin {
             System.out.println(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
             Parent root = loader.load();
-            Scene novaCena = new Scene(root, root.getScene().getWidth(), root.getScene().getHeight());
+            Scene novaCena = new Scene(root, (int)campoNomeLogin.getScene().getWidth(), (int)campoNomeLogin.getScene().getHeight());
             Stage stage = (Stage) campoNomeLogin.getScene().getWindow();
             stage.setScene(novaCena);
-            stage.setTitle("RPG Campaign Manager - Tela Principal");
+            stage.setTitle("Codex Core - Tela Principal");
             stage.setResizable(true);
             stage.show();
         } catch (IOException e) {
