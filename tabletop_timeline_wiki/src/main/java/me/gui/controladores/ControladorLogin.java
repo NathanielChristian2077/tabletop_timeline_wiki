@@ -1,7 +1,5 @@
 package me.gui.controladores;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -84,6 +82,8 @@ public class ControladorLogin {
                 });
 
                 startParallax();
+                // Tester
+                gerenciadorUsuario.adicionarUsuario(new Usuario("1", "1",TipoUsuario.MESTRE));
             }
         });
 
@@ -305,6 +305,8 @@ public class ControladorLogin {
             stage.setScene(novaCena);
             stage.setTitle("Codex Core");
             stage.setResizable(true);
+            stage.setMinWidth(640);
+            stage.setMinHeight(480);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

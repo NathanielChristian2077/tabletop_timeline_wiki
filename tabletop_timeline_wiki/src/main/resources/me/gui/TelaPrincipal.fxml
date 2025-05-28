@@ -1,72 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.2"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="me.gui.controladores.ControladorTelaPrincipal"
-            stylesheets="@principal.css">
-
-    <ImageView fx:id="backgroundImage"
-               fitWidth="Infinity"
-               fitHeight="Infinity"
-               preserveRatio="false"
-               AnchorPane.topAnchor="0.0"
-               AnchorPane.leftAnchor="0.0"
-               AnchorPane.rightAnchor="0.0"
-               AnchorPane.bottomAnchor="0.0">
-        <image>
-            <Image url="@images/mainBackground.jpg" />
-        </image>
+<AnchorPane fx:id="root" minHeight="300" minWidth="400" prefHeight="1080" prefWidth="1920" stylesheets="@principal.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorTelaPrincipal">
+    <ImageView fx:id="backgroundImage" preserveRatio="false" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <Image url="@images/mainBackground.jpg" />
     </ImageView>
-
-    <VBox spacing="24" fillWidth="true"
-          AnchorPane.topAnchor="0.0"
-          AnchorPane.leftAnchor="0.0"
-          AnchorPane.rightAnchor="0.0"
-          AnchorPane.bottomAnchor="0.0">
-
-        <HBox fx:id="header" alignment="CENTER_LEFT" spacing="16"
-              styleClass="header"
-              VBox.vgrow="NEVER">
+   <VBox fx:id="sidebar" alignment="BOTTOM_LEFT" nodeOrientation="LEFT_TO_RIGHT" prefWidth="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+         <HBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="70.0" prefWidth="70.0" VBox.vgrow="ALWAYS">
             <padding>
-                <Insets top="10.0" right="20.0" bottom="10.0" left="20.0"/> </padding>
-            <Label fx:id="labelSaudacao" styleClass="titulo-campanhas"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button fx:id="botaoCriar" text="+" onAction="#criarCampanha" />
-        </HBox>
-
-        <ScrollPane fx:id="scrollWrapper"
-                    fitToWidth="true"
-                    fitToHeight="true"
-                    hbarPolicy="NEVER"
-                    vbarPolicy="AS_NEEDED"
-                    VBox.vgrow="ALWAYS"
-                    styleClass="scroll-area">
-            <FlowPane fx:id="gridCampanhas"
-                      hgap="24"
-                      vgap="24"
-                      prefWrapLength="1200"
-                      styleClass="campanha-grid">
-                <padding>
-                    <Insets top="10.0" right="20.0" bottom="10.0" left="20.0"/> </padding> <!--24-->
-            </FlowPane>
-        </ScrollPane>
-    </VBox>
-
-    <Button fx:id="botaoPerfil"
-            AnchorPane.bottomAnchor="16.0"
-            AnchorPane.leftAnchor="16.0"
-            styleClass="botao-perfil">
-        <graphic>
-            <ImageView fitWidth="42" fitHeight="42">
-                <image>
-                    <Image url="@images/profilePlaceholder.jpg"/>
-                </image>
-            </ImageView>
-        </graphic>
-    </Button>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <children>
+               <ImageView fitHeight="60.0" fitWidth="60.0" nodeOrientation="INHERIT" pickOnBounds="true" styleClass="profile-button" />
+            </children>
+         </HBox>
+      </children>
+   </VBox>
+   <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <padding>
+         <Insets left="20.0" />
+      </padding>
+      <children>
+         <Label text="Campaigns" textFill="#c8a96a">
+            <font>
+               <Font name="Times New Roman Bold" size="96.0" />
+            </font>
+         </Label>
+      </children>
+   </VBox>
+    
 </AnchorPane>

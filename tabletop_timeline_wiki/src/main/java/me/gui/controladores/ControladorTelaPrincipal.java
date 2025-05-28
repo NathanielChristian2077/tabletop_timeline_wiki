@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -23,13 +24,13 @@ public class ControladorTelaPrincipal {
     @FXML private ListView<Campanha> listaCampanhas;
 
     @FXML private FlowPane gridCampanhas;
-    @FXML private Label labelSaudacao;
+    @FXML private Label labelTitle;
 
     private final GerenciadorCampanha gerenciadorCampanha = new GerenciadorCampanha();
 
     @FXML
     public void initialize() {
-        labelSaudacao.setText("Bem-vindo!");
+        labelTitle.setText("Campanhas");
         carregarCampanhas();
     }
 
@@ -78,11 +79,13 @@ public class ControladorTelaPrincipal {
         placeholder.setFitWidth(180);
         placeholder.setFitHeight(120);
         placeholder.setPreserveRatio(true);
-        placeholder.setOpacity(0.3);
+        placeholder.setOpacity(0.2);
 
         Label mais = new Label("+");
         mais.getStyleClass().add("plus-icon");
-        novo.getChildren().addAll(placeholder, mais);
+        VBox card = new VBox(placeholder, mais);
+        card.setAlignment(Pos.BASELINE_RIGHT);
+        novo.getChildren().add(card);
 
         novo.setOnMouseClicked(e -> criarCampanha());
         return novo;
@@ -94,7 +97,7 @@ public class ControladorTelaPrincipal {
         String descricao = campoDescricaoCampanha.getText().trim();
 
         if (nome.isEmpty() || descricao.isEmpty()) {
-            labelMensagem.setText("Todos os campos devem estar preenchidos.");
+            labelMensagem.setText("Todos os campos devem ser preenchidos.");
             return;
         }
 
@@ -147,4 +150,5 @@ public class ControladorTelaPrincipal {
         menu.getItems().addAll(editar, excluir);
         menu.show((Node) event.getSource(), event.getScreenX(), event.getScreenY());
     }
+
 }

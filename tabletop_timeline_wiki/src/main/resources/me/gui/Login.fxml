@@ -6,9 +6,6 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane fx:id="root" minHeight="300" minWidth="400" prefHeight="720" prefWidth="1280" styleClass="root" stylesheets="@login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorLogin">
-    <ImageView fx:id="backgroundBase" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <Image url="@images/loginBackground_1080p.jpg" />
-    </ImageView>
     <ImageView fx:id="backgroundImage" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <Image url="@images/loginBackground_1080p.jpg" />
     </ImageView>

@@ -1,44 +1,79 @@
 .root {
-    -fx-background-color: linear-gradient(to bottom, #2d2a32, #343139);
-    background-color: #2d2a32;
+    -fx-background-color: #222831;
     -fx-font-family: "Times New Roman", serif;
-    font-family: "Times New Roman", serif;
-    -fx-padding: 30px;
-    padding: 30px;
-    -fx-border-color: transparent;
-    border-color: transparent;
-    -fx-border-width: 0;
-    border-width: 0;
 }
 
-.header {
-    -fx-padding: 20;
-    -fx-background-color: rgba(255,255,255,0.9);
+.gradient-overlay {
+    -fx-background-color: linear-gradient(to right, rgba(0,0,0,0.65), transparent);
+    -fx-position: absolute;
+    -fx-top: 0;
+    -fx-left: 0;
+    -fx-bottom: 0;
+    -fx-width: 70px;
+}
+
+.sidebar {
+    -fx-background-color: linear-gradient(to right, rgba(0,0,0,0.65), transparent);
+    -fx-padding: 20px;
+    -fx-border-color: #c8a96a;
+}
+
+.profile-button {
+    -fx-background-radius: 50%;
+    -fx-background-color: white;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-max-height: 40;
+    -fx-max-width: 40;
+    -fx-shape: "M 0 0 A 20 20 0 1 1 40 0 A 20 20 0 1 1 0 0";
+}
+
+.topbar {
+    -fx-padding: 0 0 20 90;
 }
 
 .title {
-    -fx-font-size: 22px;
-    -fx-font-weight: bold;
+    -fx-font-size: 95.64px;
+    -fx-text-fill: #c8a96a;
+    -fx-border-color: linear-gradient(to right, transparent, #c9b37c, transparent);
+    -fx-border-width: 2px;
 }
 
-.campanha-card {
-    -fx-background-color: white;
-    -fx-border-radius: 10;
-    -fx-padding: 10;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0.1, 0, 4);
+.campaign-grid {
+    -fx-padding: 40;
+    -fx-background: transparent;
 }
 
-.novo-card {
-    -fx-background-color: #f0f0f0;
-    -fx-border-color: #bbb;
-    -fx-border-style: dashed;
-    -fx-border-radius: 10;
-    -fx-padding: 30;
-    -fx-alignment: center;
+.scrollp {
+    -fx-background: transparent;
+}
+
+.campaign-card {
+    -fx-pref-width: 440;
+    -fx-pref-height: 270;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 15, 0, 0, 4);
+    -fx-background-color: transparent;
+    -fx-alignment: CENTER;
+    -fx-spacing: 10;
+    -fx-alignment: 15;
+}
+
+.campaign-card Label {
+    -fx-font-size: 24px;
+    -fx-alignment: CENTER;
+    -fx-text-alignment: CENTER;
 }
 
 .plus-icon {
-    -fx-font-size: 48px;
-    -fx-text-fill: black;
-    -fx-font-weight: bold;
+    -fx-shape: "M 35 0 L 35 70 M 0 35 L 70 35";
+    -fx-background-color: transparent;
+    -fx-stroke: white;
+    -fx-stroke-width: 4;
+    -fx-min-height: 70; 
+    -fx-max-height: 70;
+    -fx-min-width:70; 
+    -fx-max-width: 70;
+    -fx-translate-x: 10;
+    -fx-translate-y: -10;
 }
