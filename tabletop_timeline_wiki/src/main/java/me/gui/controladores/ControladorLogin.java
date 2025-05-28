@@ -303,7 +303,7 @@ public class ControladorLogin {
             Scene novaCena = new Scene(root, (int)campoNomeLogin.getScene().getWidth(), (int)campoNomeLogin.getScene().getHeight());
             Stage stage = (Stage) campoNomeLogin.getScene().getWindow();
             stage.setScene(novaCena);
-            stage.setTitle("Codex Core - Tela Principal");
+            stage.setTitle("Codex Core");
             stage.setResizable(true);
             stage.show();
         } catch (IOException e) {
