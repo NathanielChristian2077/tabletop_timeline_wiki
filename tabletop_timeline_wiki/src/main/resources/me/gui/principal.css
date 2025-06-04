@@ -16,8 +16,13 @@
     -fx-background-color: transparent;
 }
 
+.grid-pane {
+    -fx-background-color: transparent;
+    -fx-fill-height: true;
+}
+
 .campanha-card {
-    -fx-background-color: rgba(255, 255, 255, 0.85);
+    -fx-background-color: transparent;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 12, 0.2, 0, 4);
@@ -25,8 +30,7 @@
 
 .campanha-label {
     -fx-font-family: "Constantia";
-    -fx-font-size: 24px;
-    -fx-text-fill: #2e2e2e;
+    -fx-text-fill: white;
     -fx-padding: 10px;
 }
 
@@ -49,15 +53,10 @@
     -fx-background-insets: 0;
     -fx-background-color: linear-gradient(from 0% 0% to 25% 100%, #f0f0f0, #808080, #1a1a1a);
     -fx-text-fill: white;
-    -fx-font-size: 54px;
     -fx-font-family: "Courier New";
-    -fx-alignement: center;
+    -fx-alignment: center;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0.5, 0, 4);
     -fx-padding: 0;
-    -fx-min-width: 70px;
-    -fx-min-height: 70px;
-    -fx-max-width: 70px;
-    -fx-max-height: 70px;
 }
 
 .plus-icon:hover {

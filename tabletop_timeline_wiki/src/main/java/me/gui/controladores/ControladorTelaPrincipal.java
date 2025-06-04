@@ -6,7 +6,6 @@ import java.util.List;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -39,6 +38,9 @@ public class ControladorTelaPrincipal {
     @FXML private Label labelTitle;
     @FXML private GridPane gridCampanhas;
     @FXML private VBox sidebar;
+
+    private double larguraCard = 440;
+    private double alturaCard = 270;
 
     private double bgFactorX = 1.25;
     private double bgFactorY = 0.75;
@@ -80,7 +82,15 @@ public class ControladorTelaPrincipal {
                 startParallax();
             }
         });
-        carregarCampanhas();
+        root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+            double escala = newWidth.doubleValue() / 1920.0;
+            labelTitle.setStyle("-fx-font-family:"+"Constantia"+"; -fx-font-size:" + (96 * escala) + "px;");
+            larguraCard = 440 * escala;
+            alturaCard = 270 * escala;
+            carregarCampanhas();
+        });
+        gridCampanhas.prefWidthProperty().bind(root.widthProperty().subtract(100));
+        gridCampanhas.prefHeightProperty().bind(root.heightProperty().subtract(200));
         backgroundImage.fitWidthProperty().bind(root.widthProperty());
         backgroundImage.fitHeightProperty().bind(root.heightProperty());
         sidebar.prefHeightProperty().bind(root.heightProperty());
@@ -126,10 +136,9 @@ public class ControladorTelaPrincipal {
     private void carregarCampanhas() {
         gridCampanhas.getChildren().clear();
         List<Campanha> campanhas = gerenciadorCampanha.listarCampanhas();
-
+        int MAX_COLUNAS = 3;
         int col = 0;
         int row = 0;
-        int MAX_COLUNAS = 3;
 
         if (campanhas != null && !campanhas.isEmpty()) {
             for (Campanha c : campanhas) {
@@ -160,13 +169,13 @@ public class ControladorTelaPrincipal {
             imagem = new Image(getClass().getResource("/me/gui/images/nullPlaceholder.jpg").toExternalForm());
         }
         ImageView capa = new ImageView(imagem);
-        capa.setFitWidth(440);
-        capa.setFitHeight(270);
+        capa.setFitWidth(larguraCard);
+        capa.setFitHeight(alturaCard);
         capa.setPreserveRatio(false);
 
-        Rectangle clip = new Rectangle(440, 270);
-        clip.setArcWidth(20);
-        clip.setArcHeight(20);
+        Rectangle clip = new Rectangle(larguraCard, alturaCard);
+        clip.setArcWidth(10);
+        clip.setArcHeight(10);
         capa.setClip(clip);
 
         SnapshotParameters parameters = new SnapshotParameters();
@@ -177,8 +186,12 @@ public class ControladorTelaPrincipal {
 
         Label nome = new Label(c.getNome());
         nome.getStyleClass().add("campanha-label");
+        nome.setStyle("-fx-font-family:"+"Constantia"+";-fx-font-size:" + (24 * larguraCard / 440) + "px;");
+        StackPane.setAlignment(nome, Pos.BOTTOM_CENTER);
+        StackPane.setMargin(nome, new Insets(0, 0, 8, 0));
 
         cartao.setOnContextMenuRequested(e -> abrirMenuContextual(e, c));
+        cartao.setMaxHeight(270);
         cartao.getChildren().addAll(capa, nome);
         return cartao;
     }
@@ -186,14 +199,13 @@ public class ControladorTelaPrincipal {
     private Node criarCartaoNovaCampanha() {
         StackPane novo = new StackPane();
         novo.getStyleClass().add("campanha-card");
-
         ImageView placeholder = new ImageView(new Image(getClass().getResource("/me/gui/images/createCampaignPlaceholder.jpg").toExternalForm()));
-        placeholder.setFitWidth(440);
-        placeholder.setFitHeight(270);
+        placeholder.setFitWidth(larguraCard);
+        placeholder.setFitHeight(alturaCard);
         placeholder.setPreserveRatio(false);
-        Rectangle clip = new Rectangle(440, 270);
-        clip.setArcWidth(20);
-        clip.setArcHeight(20);
+        Rectangle clip = new Rectangle(larguraCard, alturaCard);
+        clip.setArcWidth(10);
+        clip.setArcHeight(10);
         placeholder.setClip(clip);
 
         SnapshotParameters parameters = new SnapshotParameters();
@@ -202,8 +214,16 @@ public class ControladorTelaPrincipal {
         placeholder.setClip(null);
         placeholder.setImage(image);
 
+        double proporcaoBotao = 0.16;
+        double tamanhoBotao = larguraCard * proporcaoBotao;
+        double fontSize = tamanhoBotao * 0.75;
+
         Button mais = new Button("+");
+        mais.setMinSize(tamanhoBotao, tamanhoBotao);
+        mais.setMaxSize(tamanhoBotao, tamanhoBotao);
+        mais.setPrefSize(tamanhoBotao, tamanhoBotao);
         mais.getStyleClass().add("plus-icon");
+        mais.setStyle("-fx-font-size: " + fontSize + "px;");
         mais.setFocusTraversable(true);
         mais.setOnMouseClicked(this::mostrarPopupCriacao);
 
@@ -219,7 +239,7 @@ public class ControladorTelaPrincipal {
 
         MenuItem editar = new MenuItem("Editar");
         editar.setOnAction(e -> {
-            labelMensagem.setText("Editar " + campanha.getNome());
+            editar.setText("Editar " + campanha.getNome());
             // TODO: implementar edição
         });
 
@@ -239,6 +259,9 @@ public class ControladorTelaPrincipal {
 
     @FXML
     private void mostrarPopupCriacao(MouseEvent event) {
+        double mouseX = event.getSceneX();
+        double mouseY = event.getSceneY();
+
         popupContainer.setVisible(true);
         popupForm.setVisible(true);
         labelMensagem.setText("");
@@ -246,6 +269,9 @@ public class ControladorTelaPrincipal {
         campoDescricaoCampanha.clear();
         labelImagemSelecionada.setText("Nenhuma imagem");
         imagemSelecionada = null;
+
+        popupContainer.setLayoutX(mouseX);
+        popupContainer.setLayoutY(mouseY);
     }
 
 
