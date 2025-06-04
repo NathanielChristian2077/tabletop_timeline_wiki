@@ -3,68 +3,180 @@ package me.gui.controladores;
 import java.io.File;
 import java.util.List;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
+import javafx.util.Duration;
 import me.controle.GerenciadorCampanha;
 import me.modelo.entidades.Campanha;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
 
 public class ControladorTelaPrincipal {
+    @FXML private AnchorPane root;
+    @FXML private ImageView backgroundImage;
     @FXML private TextField campoNomeCampanha;
     @FXML private TextArea campoDescricaoCampanha;
     @FXML private Label labelMensagem;
-    @FXML private ListView<Campanha> listaCampanhas;
-
-    @FXML private FlowPane gridCampanhas;
     @FXML private Label labelTitle;
+    @FXML private GridPane gridCampanhas;
+    @FXML private VBox sidebar;
+
+    private double bgFactorX = 1.25;
+    private double bgFactorY = 0.75;
+    private double fgFactorX = -10;
+    private double fgFactorY = -5;
+
+    private double maxImageOffsetX;
+    private double maxImageOffsetY;
+
+    private double targetOffsetX = 0;
+    private double targetOffsetY = 0;
+
+    @FXML private StackPane popupContainer;
+    @FXML private VBox popupForm;
+
+    @FXML private Label labelImagemSelecionada;
+
+    private File imagemSelecionada = null;
 
     private final GerenciadorCampanha gerenciadorCampanha = new GerenciadorCampanha();
 
     @FXML
     public void initialize() {
-        labelTitle.setText("Campanhas");
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                backgroundImage.fitWidthProperty().bind(newScene.widthProperty());
+                backgroundImage.fitHeightProperty().bind(newScene.heightProperty());
+
+                maxImageOffsetX = bgFactorX;
+                maxImageOffsetY = bgFactorY;
+
+                newScene.setOnMouseMoved(event -> {
+                    double centerX = newScene.getWidth() / 2;
+                    double centerY = newScene.getHeight() / 2;
+                    targetOffsetX = (event.getSceneX() - centerX) / centerX;
+                    targetOffsetY = (event.getSceneY() - centerY) / centerY;
+                });
+
+                startParallax();
+            }
+        });
         carregarCampanhas();
+        backgroundImage.fitWidthProperty().bind(root.widthProperty());
+        backgroundImage.fitHeightProperty().bind(root.heightProperty());
+        sidebar.prefHeightProperty().bind(root.heightProperty());
+    }
+
+    private void startParallax() {
+        Timeline parallaxAnim = new Timeline(new KeyFrame(Duration.millis(16), e -> {
+            // Fundo
+            double currentX = backgroundImage.getTranslateX();
+            double currentY = backgroundImage.getTranslateY();
+
+            double nextX = currentX + (targetOffsetX * bgFactorX - currentX) * 0.08;
+            double nextY = currentY + (targetOffsetY * bgFactorY - currentY) * 0.08;
+
+            double minTranslateX = -maxImageOffsetX * root.getWidth() / 2;
+            double maxTranslateX = maxImageOffsetX * root.getWidth() / 2;
+            double minTranslateY = -maxImageOffsetY * root.getHeight() / 2;
+            double maxTranslateY = maxImageOffsetY * root.getHeight() / 2;
+
+            nextX = Math.max(Math.min(nextX, maxTranslateX), minTranslateX);
+            nextY = Math.max(Math.min(nextY, maxTranslateY), minTranslateY);
+
+            backgroundImage.setTranslateX(nextX);
+            backgroundImage.setTranslateY(nextY);
+
+            // Campanhas (fg)
+            double gridX = gridCampanhas.getTranslateX();
+            double gridY = gridCampanhas.getTranslateY();
+
+            double nextGridX = gridX + (targetOffsetX * fgFactorX - gridX) * 0.08;
+            double nextGridY = gridY + (targetOffsetY * fgFactorY - gridY) * 0.08;
+            gridCampanhas.setTranslateX(nextGridX);
+            gridCampanhas.setTranslateY(nextGridY);
+
+            // Título
+            labelTitle.setTranslateX(labelTitle.getTranslateX() + (targetOffsetX * -10 - labelTitle.getTranslateX()) * 0.08);
+            labelTitle.setTranslateY(labelTitle.getTranslateY() + (targetOffsetY * -5 - labelTitle.getTranslateY()) * 0.08);
+        }));
+        parallaxAnim.setCycleCount(Animation.INDEFINITE);
+        parallaxAnim.play();
     }
 
     private void carregarCampanhas() {
         gridCampanhas.getChildren().clear();
         List<Campanha> campanhas = gerenciadorCampanha.listarCampanhas();
 
+        int col = 0;
+        int row = 0;
+        int MAX_COLUNAS = 3;
+
         if (campanhas != null && !campanhas.isEmpty()) {
-            for (Campanha c : listaCampanhas.getItems()) {
-                gridCampanhas.getChildren().add(criarCartaoCampanha(c));
+            for (Campanha c : campanhas) {
+                Node card = criarCartaoCampanha(c);
+                gridCampanhas.add(card, col, row);
+
+                col++;
+                if (col >= MAX_COLUNAS) {
+                    col = 0;
+                    row++;
+                }
             }
         }
-        gridCampanhas.getChildren().add(criarCartaoNovaCampanha());
+
+        Node novoCard = criarCartaoNovaCampanha();
+        gridCampanhas.add(novoCard, col, row);
     }
 
     private Node criarCartaoCampanha(Campanha c) {
-        VBox cartao = new VBox();
+        VBox cartao = new VBox(10);
         cartao.getStyleClass().add("campanha-card");
+        cartao.setAlignment(Pos.CENTER);
 
-        ImageView capa = new ImageView();
         Image imagem;
         if (c.imageExists()) {
             imagem = new Image(new File(c.getImagePath()).toURI().toString());
         } else {
             imagem = new Image(getClass().getResource("/me/gui/images/nullPlaceholder.jpg").toExternalForm());
         }
+        ImageView capa = new ImageView(imagem);
+        capa.setFitWidth(440);
+        capa.setFitHeight(270);
+        capa.setPreserveRatio(false);
 
-        capa.setImage(imagem);
-        capa.setFitWidth(180);
-        capa.setFitHeight(120);
-        capa.setPreserveRatio(true);
-        capa.setSmooth(true);
+        Rectangle clip = new Rectangle(440, 270);
+        clip.setArcWidth(20);
+        clip.setArcHeight(20);
+        capa.setClip(clip);
+
+        SnapshotParameters parameters = new SnapshotParameters();
+        parameters.setFill(Color.TRANSPARENT);
+        WritableImage image = capa.snapshot(parameters, null);
+        capa.setClip(null);
+        capa.setImage(image);
 
         Label nome = new Label(c.getNome());
+        nome.getStyleClass().add("campanha-label");
 
         cartao.setOnContextMenuRequested(e -> abrirMenuContextual(e, c));
         cartao.getChildren().addAll(capa, nome);
@@ -76,56 +188,30 @@ public class ControladorTelaPrincipal {
         novo.getStyleClass().add("campanha-card");
 
         ImageView placeholder = new ImageView(new Image(getClass().getResource("/me/gui/images/createCampaignPlaceholder.jpg").toExternalForm()));
-        placeholder.setFitWidth(180);
-        placeholder.setFitHeight(120);
-        placeholder.setPreserveRatio(true);
-        placeholder.setOpacity(0.2);
+        placeholder.setFitWidth(440);
+        placeholder.setFitHeight(270);
+        placeholder.setPreserveRatio(false);
+        Rectangle clip = new Rectangle(440, 270);
+        clip.setArcWidth(20);
+        clip.setArcHeight(20);
+        placeholder.setClip(clip);
 
-        Label mais = new Label("+");
+        SnapshotParameters parameters = new SnapshotParameters();
+        parameters.setFill(Color.TRANSPARENT);
+        WritableImage image = placeholder.snapshot(parameters, null);
+        placeholder.setClip(null);
+        placeholder.setImage(image);
+
+        Button mais = new Button("+");
         mais.getStyleClass().add("plus-icon");
-        VBox card = new VBox(placeholder, mais);
-        card.setAlignment(Pos.BASELINE_RIGHT);
-        novo.getChildren().add(card);
+        mais.setFocusTraversable(true);
+        mais.setOnMouseClicked(this::mostrarPopupCriacao);
 
-        novo.setOnMouseClicked(e -> criarCampanha());
+        StackPane.setAlignment(mais, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(mais, new Insets(0, 10, 10, 0));
+
+        novo.getChildren().addAll(placeholder, mais);
         return novo;
-    }
-
-    @FXML
-    private void criarCampanha() {
-        String nome = campoNomeCampanha.getText().trim();
-        String descricao = campoDescricaoCampanha.getText().trim();
-
-        if (nome.isEmpty() || descricao.isEmpty()) {
-            labelMensagem.setText("Todos os campos devem ser preenchidos.");
-            return;
-        }
-
-        Campanha nova =  new Campanha(nome,descricao);
-        gerenciadorCampanha.criarCampanha(nova.getNome(), nova.getDescricao());
-        campoNomeCampanha.clear();
-        campoDescricaoCampanha.clear();
-        atualizarListaCampanhas();
-    }
-
-    @FXML
-    private void abrirCampanha() {
-        Campanha selecionada = listaCampanhas.getSelectionModel().getSelectedItem();
-        
-        if (selecionada == null) {
-            labelMensagem.setText("Nenhuma campanha selecionada.");
-        }
-
-        //TODO: Carregar interface da Campanha
-    }
-
-    private void atualizarListaCampanhas() {
-        List<Campanha> campanhas = gerenciadorCampanha.listarCampanhas();
-        if (campanhas == null || campanhas.isEmpty()) {
-            listaCampanhas.getItems().clear();
-        } else {
-            listaCampanhas.getItems().setAll(campanhas);
-        }
     }
 
     private void abrirMenuContextual(ContextMenuEvent event, Campanha campanha) {
@@ -133,15 +219,15 @@ public class ControladorTelaPrincipal {
 
         MenuItem editar = new MenuItem("Editar");
         editar.setOnAction(e -> {
-            // TODO: abrir tela de edição de campanha
             labelMensagem.setText("Editar " + campanha.getNome());
+            // TODO: implementar edição
         });
 
         MenuItem excluir = new MenuItem("Excluir");
         excluir.setOnAction(e -> {
             try {
                 gerenciadorCampanha.removerCapanha(campanha.getId());
-                atualizarListaCampanhas();
+                carregarCampanhas();
             } catch (ElementoNaoEncontradoException ex) {
                 throw new RuntimeException(ex);
             }
@@ -151,4 +237,53 @@ public class ControladorTelaPrincipal {
         menu.show((Node) event.getSource(), event.getScreenX(), event.getScreenY());
     }
 
+    @FXML
+    private void mostrarPopupCriacao(MouseEvent event) {
+        popupContainer.setVisible(true);
+        popupForm.setVisible(true);
+        labelMensagem.setText("");
+        campoNomeCampanha.clear();
+        campoDescricaoCampanha.clear();
+        labelImagemSelecionada.setText("Nenhuma imagem");
+        imagemSelecionada = null;
+    }
+
+
+    @FXML
+    private void fecharPopup() {
+        popupContainer.setVisible(false);
+    }
+
+    @FXML
+    private void selecionarImagem() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose an image");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Imagens", "*.jpg", "*.png", "*.jpeg"));
+        File file = fileChooser.showOpenDialog(popupContainer.getScene().getWindow());
+        if (file != null) {
+            imagemSelecionada = file;
+            labelImagemSelecionada.setText(file.getName());
+        }
+    }
+
+    @FXML
+    private void confirmarCriacao() {
+        String nome = campoNomeCampanha.getText().trim();
+        String descricao = campoDescricaoCampanha.getText().trim();
+
+        if (nome.isEmpty() || descricao.isEmpty()) {
+            labelMensagem.setText("All fields must be filled.");
+            return;
+        }
+
+        Campanha nova = new Campanha(nome, descricao);
+        if (imagemSelecionada != null) {
+            nova.setCaminhoImagem(imagemSelecionada.getAbsolutePath());
+        }
+
+        gerenciadorCampanha.criarCampanha(nova.getNome(), nova.getDescricao());
+        gridCampanhas.getChildren().add(criarCartaoCampanha(nova));
+        fecharPopup();
+        carregarCampanhas();
+    }
 }

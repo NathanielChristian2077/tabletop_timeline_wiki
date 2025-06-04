@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
@@ -11,8 +12,14 @@
     </ImageView>
     <VBox fx:id="elementsRoot" alignment="CENTER" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <!-- Título em destaque -->
-        <Label fx:id="titulo1" alignment="CENTER" styleClass="title" text="Codex" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="85.0" />
-        <Label fx:id="titulo2" alignment="CENTER" styleClass="title" text="Core" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="130.0" />
+        <Label fx:id="titulo1" alignment="CENTER" styleClass="title" text="Codex" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="85.0">
+         <effect>
+            <Glow level="0.45" />
+         </effect></Label>
+        <Label fx:id="titulo2" alignment="CENTER" styleClass="title" text="Core" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="130.0">
+         <effect>
+            <Glow level="0.45" />
+         </effect></Label>
         <VBox alignment="CENTER" spacing="20" styleClass="container" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="70.0">
             <!-- Botões de troca -->
             <HBox fx:id="botaoTrocaBox" alignment="CENTER" spacing="10">

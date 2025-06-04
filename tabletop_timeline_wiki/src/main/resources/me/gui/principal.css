@@ -1,79 +1,111 @@
-.root {
+#root {
     -fx-background-color: #222831;
-    -fx-font-family: "Times New Roman", serif;
 }
 
-.gradient-overlay {
-    -fx-background-color: linear-gradient(to right, rgba(0,0,0,0.65), transparent);
-    -fx-position: absolute;
-    -fx-top: 0;
-    -fx-left: 0;
-    -fx-bottom: 0;
-    -fx-width: 70px;
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .content {
+    -fx-background-color: transparent;
+}
+
+.campanha-card {
+    -fx-background-color: rgba(255, 255, 255, 0.85);
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 12, 0.2, 0, 4);
+}
+
+.campanha-label {
+    -fx-font-family: "Constantia";
+    -fx-font-size: 24px;
+    -fx-text-fill: #2e2e2e;
+    -fx-padding: 10px;
+}
+
+.labelTitle {
+    -fx-border-radius: 20px;
+    -fx-border-color: linear-gradient(to right, transparent, #c9b37c, transparent);
+    -fx-border-style: solid
 }
 
 .sidebar {
-    -fx-background-color: linear-gradient(to right, rgba(0,0,0,0.65), transparent);
-    -fx-padding: 20px;
-    -fx-border-color: #c8a96a;
+    -fx-background-color: rgba(0, 0, 0, 0.75);
 }
 
-.profile-button {
-    -fx-background-radius: 50%;
-    -fx-background-color: white;
-    -fx-min-width: 40;
-    -fx-min-height: 40;
-    -fx-max-height: 40;
-    -fx-max-width: 40;
-    -fx-shape: "M 0 0 A 20 20 0 1 1 40 0 A 20 20 0 1 1 0 0";
-}
-
-.topbar {
-    -fx-padding: 0 0 20 90;
-}
-
-.title {
-    -fx-font-size: 95.64px;
-    -fx-text-fill: #c8a96a;
-    -fx-border-color: linear-gradient(to right, transparent, #c9b37c, transparent);
-    -fx-border-width: 2px;
-}
-
-.campaign-grid {
-    -fx-padding: 40;
-    -fx-background: transparent;
-}
-
-.scrollp {
-    -fx-background: transparent;
-}
-
-.campaign-card {
-    -fx-pref-width: 440;
-    -fx-pref-height: 270;
-    -fx-background-radius: 10;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 15, 0, 0, 4);
-    -fx-background-color: transparent;
-    -fx-alignment: CENTER;
-    -fx-spacing: 10;
-    -fx-alignment: 15;
-}
-
-.campaign-card Label {
-    -fx-font-size: 24px;
-    -fx-alignment: CENTER;
-    -fx-text-alignment: CENTER;
+.sidebar-border {
+    -fx-background-color: #c9b37c;
 }
 
 .plus-icon {
-    -fx-shape: "M 35 0 L 35 70 M 0 35 L 70 35";
-    -fx-background-color: transparent;
-    -fx-stroke: white;
-    -fx-stroke-width: 4;
-    -fx-min-height: 70; 
-    -fx-max-height: 70;
-    -fx-min-width:70; 
-    -fx-max-width: 70;
-    -fx-translate-x: 10;
-    -fx-translate-y: -10;
+    -fx-background-radius: 100%;
+    -fx-background-insets: 0;
+    -fx-background-color: linear-gradient(from 0% 0% to 25% 100%, #f0f0f0, #808080, #1a1a1a);
+    -fx-text-fill: white;
+    -fx-font-size: 54px;
+    -fx-font-family: "Courier New";
+    -fx-alignement: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0.5, 0, 4);
+    -fx-padding: 0;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-max-width: 70px;
+    -fx-max-height: 70px;
+}
+
+.plus-icon:hover {
+    -fx-text-fill: black;
+    -fx-background-color: linear-gradient(from 25% 100% to 0% 0%, #f0f0f0, #808080, #1a1a1a);
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.3), 8, 0.4, 0, 3);
+    -fx-cursor: hand;
+}
+
+.popup-form {
+    -fx-background-color: rgba(22, 22, 22, 0.92);
+    -fx-padding: 30;
+    -fx-spacing: 15;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.65), 20, 0.3, 0, 8);
+    -fx-max-width: 450px;
+    -fx-min-width: 320px;
+}
+
+.popup-title {
+    -fx-font-size: 38px;
+    -fx-text-fill: #c8a96a;
+    -fx-font-family: "Constantia";
+    -fx-font-weight: bold;
+}
+
+.text-field, .text-area {
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #cccccc;
+    -fx-font-size: 14px;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-border-color: #555;
+    -fx-border-width: 1px;
+}
+
+.popup-form .button {
+    -fx-background-color: #c8a96a;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 8px 16px;
+}
+
+.popup-form .button:hover {
+    -fx-background-color: #d8ba76;
 }
