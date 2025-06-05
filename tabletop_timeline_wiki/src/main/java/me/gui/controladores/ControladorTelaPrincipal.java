@@ -27,6 +27,7 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import me.controle.GerenciadorCampanha;
 import me.modelo.entidades.Campanha;
+import me.modelo.entidades.Usuario;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
 
 public class ControladorTelaPrincipal {
@@ -64,6 +65,8 @@ public class ControladorTelaPrincipal {
     private ContextMenu menuAtual;
     private Campanha campanhaEditando = null;
     @FXML private Button createButton;
+
+    @FXML private Button profileButton;
 
     private final GerenciadorCampanha gerenciadorCampanha = new GerenciadorCampanha();
 
@@ -364,11 +367,23 @@ public class ControladorTelaPrincipal {
         carregarCampanhas();
     }
 
-    public void abrirMenuPerfil(MouseEvent event) {
+    public void abrirMenuPerfil(MouseEvent event, Usuario usuario) {
         ContextMenu menuPerfil = new ContextMenu();
 
         MenuItem editar = new MenuItem("Edit Profile");
-        // TODO: terminar implementação da edição e exclusão
+        editar.setOnAction(e -> mostrarPopupEditarPerfil(event.getScreenX(), event.getScreenY()));
 
+        MenuItem delete = new MenuItem("Delete Account");
+        delete.setOnAction(e -> confirmarDeleteAccount());
+
+        menuPerfil.getItems().addAll(editar, delete);
+        menuPerfil.show(profileButton, event.getScreenX(), event.getScreenY());
+    }
+
+    public void mostrarPopupEditarPerfil(double x, double y){
+        // TODO: Implementar
+    }
+    public void confirmarDeleteAccount(){
+        // TODO: Implementar
     }
 }
