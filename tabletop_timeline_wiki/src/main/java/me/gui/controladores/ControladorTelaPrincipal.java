@@ -42,10 +42,10 @@ public class ControladorTelaPrincipal {
     private double larguraCard = 440;
     private double alturaCard = 270;
 
-    private double bgFactorX = 1.25;
-    private double bgFactorY = 0.75;
-    private double fgFactorX = -10;
-    private double fgFactorY = -5;
+    private final double bgFactorX = 1.25;
+    private final double bgFactorY = 0.75;
+    private final double fgFactorX = -10;
+    private final double fgFactorY = -5;
 
     private double maxImageOffsetX;
     private double maxImageOffsetY;
@@ -55,10 +55,15 @@ public class ControladorTelaPrincipal {
 
     @FXML private StackPane popupContainer;
     @FXML private VBox popupForm;
+    @FXML private Label popupTitle;
 
     @FXML private Label labelImagemSelecionada;
 
     private File imagemSelecionada = null;
+
+    private ContextMenu menuAtual;
+    private Campanha campanhaEditando = null;
+    @FXML private Button createButton;
 
     private final GerenciadorCampanha gerenciadorCampanha = new GerenciadorCampanha();
 
@@ -94,6 +99,8 @@ public class ControladorTelaPrincipal {
         backgroundImage.fitWidthProperty().bind(root.widthProperty());
         backgroundImage.fitHeightProperty().bind(root.heightProperty());
         sidebar.prefHeightProperty().bind(root.heightProperty());
+
+        gerenciadorCampanha.criarCampanha("Campanha de Teste", "Descrição de teste que nem sequer da pra ver na real.");
     }
 
     private void startParallax() {
@@ -158,9 +165,14 @@ public class ControladorTelaPrincipal {
     }
 
     private Node criarCartaoCampanha(Campanha c) {
-        VBox cartao = new VBox(10);
+        StackPane cartao = new StackPane();
         cartao.getStyleClass().add("campanha-card");
-        cartao.setAlignment(Pos.CENTER);
+        cartao.setAlignment(Pos.TOP_CENTER);
+        cartao.setPrefSize(larguraCard, alturaCard);
+        cartao.setMaxSize(440, 270);
+
+        StackPane imageWrapper = new StackPane();
+        imageWrapper.setPrefSize(larguraCard, alturaCard);
 
         Image imagem;
         if (c.imageExists()) {
@@ -185,13 +197,13 @@ public class ControladorTelaPrincipal {
         capa.setImage(image);
 
         Label nome = new Label(c.getNome());
+        nome.setText(c.getNome().length() > 29 ? c.getNome().substring(0, 29) : c.getNome());
         nome.getStyleClass().add("campanha-label");
-        nome.setStyle("-fx-font-family:"+"Constantia"+";-fx-font-size:" + (24 * larguraCard / 440) + "px;");
+        nome.setStyle("-fx-font-family:"+"Constantia"+";-fx-font-size:" + (28 * larguraCard / 440) + "px;");
         StackPane.setAlignment(nome, Pos.BOTTOM_CENTER);
-        StackPane.setMargin(nome, new Insets(0, 0, 8, 0));
+        StackPane.setMargin(nome, new Insets(0, 0, 10, 0));
 
         cartao.setOnContextMenuRequested(e -> abrirMenuContextual(e, c));
-        cartao.setMaxHeight(270);
         cartao.getChildren().addAll(capa, nome);
         return cartao;
     }
@@ -235,18 +247,35 @@ public class ControladorTelaPrincipal {
     }
 
     private void abrirMenuContextual(ContextMenuEvent event, Campanha campanha) {
-        ContextMenu menu = new ContextMenu();
+        if (menuAtual != null && menuAtual.isShowing()) {
+            menuAtual.hide();
+        }
 
-        MenuItem editar = new MenuItem("Editar");
+        ContextMenu menu = new ContextMenu();
+        menu.getStyleClass().add("menu-context");
+        menu.setStyle("-fx-font-family: "+"Constantia"+"; -fx-font-size:"+ (20 * larguraCard / 440) + "px;");
+
+
+
+        MenuItem editar = new MenuItem("Edit " + campanha.getNome());
+        editar.getStyleClass().add("menu-item");
         editar.setOnAction(e -> {
-            editar.setText("Editar " + campanha.getNome());
-            // TODO: implementar edição
+            popupTitle.setText(campanha.getNome());
+            campanhaEditando = campanha;
+            campoNomeCampanha.setText(campanha.getNome());
+            campoDescricaoCampanha.setText(campanha.getDescricao());
+            labelImagemSelecionada.setText(campanha.imageExists() ? new File(campanha.getImagePath()).getName():"Empty");
+            imagemSelecionada = campanha.imageExists() ? new File(campanha.getImagePath()) : null;
+            createButton.setText("Edit");
+            popupContainer.setVisible(true);
         });
 
-        MenuItem excluir = new MenuItem("Excluir");
+        MenuItem excluir = new MenuItem("Delete");
+        excluir.getStyleClass().add("menu-item");
+        excluir.setStyle("-fx-text-fill: red;");
         excluir.setOnAction(e -> {
             try {
-                gerenciadorCampanha.removerCapanha(campanha.getId());
+                gerenciadorCampanha.removerCapanha(campanha.getNome());
                 carregarCampanhas();
             } catch (ElementoNaoEncontradoException ex) {
                 throw new RuntimeException(ex);
@@ -255,19 +284,21 @@ public class ControladorTelaPrincipal {
 
         menu.getItems().addAll(editar, excluir);
         menu.show((Node) event.getSource(), event.getScreenX(), event.getScreenY());
+        menuAtual = menu;
     }
 
     @FXML
     private void mostrarPopupCriacao(MouseEvent event) {
         double mouseX = event.getSceneX();
         double mouseY = event.getSceneY();
-
+        popupTitle.setText("New Campaign");
         popupContainer.setVisible(true);
         popupForm.setVisible(true);
         labelMensagem.setText("");
         campoNomeCampanha.clear();
         campoDescricaoCampanha.clear();
-        labelImagemSelecionada.setText("Nenhuma imagem");
+        labelImagemSelecionada.setText("Empty");
+        createButton.setText("Create");
         imagemSelecionada = null;
 
         popupContainer.setLayoutX(mouseX);
@@ -277,6 +308,11 @@ public class ControladorTelaPrincipal {
 
     @FXML
     private void fecharPopup() {
+        campanhaEditando = null;
+        imagemSelecionada = null;
+        campoNomeCampanha.clear();
+        campoDescricaoCampanha.clear();
+        labelImagemSelecionada.setText("Empty");
         popupContainer.setVisible(false);
     }
 
@@ -295,6 +331,11 @@ public class ControladorTelaPrincipal {
     @FXML
     private void confirmarCriacao() {
         String nome = campoNomeCampanha.getText().trim();
+        campoNomeCampanha.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue.length() > 29) {
+                campoNomeCampanha.setText(oldValue);
+            }
+        });
         String descricao = campoDescricaoCampanha.getText().trim();
 
         if (nome.isEmpty() || descricao.isEmpty()) {
@@ -302,14 +343,32 @@ public class ControladorTelaPrincipal {
             return;
         }
 
-        Campanha nova = new Campanha(nome, descricao);
-        if (imagemSelecionada != null) {
-            nova.setCaminhoImagem(imagemSelecionada.getAbsolutePath());
+        if (campanhaEditando != null) {
+            campanhaEditando.setNome(nome);
+            campanhaEditando.setDescricao(descricao);
+            if (imagemSelecionada != null) {
+                campanhaEditando.setCaminhoImagem(imagemSelecionada.getAbsolutePath());
+            }
+            campanhaEditando = null;
+        } else {
+            Campanha nova = new Campanha(nome, descricao);
+            if (imagemSelecionada != null) {
+                nova.setCaminhoImagem(imagemSelecionada.getAbsolutePath());
+            }
+            gerenciadorCampanha.criarCampanha(nova.getNome(), nova.getDescricao());
+            gridCampanhas.getChildren().add(criarCartaoCampanha(nova));
         }
 
-        gerenciadorCampanha.criarCampanha(nova.getNome(), nova.getDescricao());
-        gridCampanhas.getChildren().add(criarCartaoCampanha(nova));
+
         fecharPopup();
         carregarCampanhas();
+    }
+
+    public void abrirMenuPerfil(MouseEvent event) {
+        ContextMenu menuPerfil = new ContextMenu();
+
+        MenuItem editar = new MenuItem("Edit Profile");
+        // TODO: terminar implementação da edição e exclusão
+
     }
 }

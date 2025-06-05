@@ -31,7 +31,12 @@
 .campanha-label {
     -fx-font-family: "Constantia";
     -fx-text-fill: white;
-    -fx-padding: 10px;
+    -fx-padding: 6px 12px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, #1a1a1a, 2, 0.8, 0, 0),
+                dropshadow(gaussian, #1a1a1a, 2, 0.8, 1, 1),
+                dropshadow(gaussian, #1a1a1a, 2, 0.8, 1, -1),
+                dropshadow(gaussian, #1a1a1a, 2, 0.8, -1, 1);
 }
 
 .labelTitle {
@@ -81,7 +86,6 @@
     -fx-font-size: 38px;
     -fx-text-fill: #c8a96a;
     -fx-font-family: "Constantia";
-    -fx-font-weight: bold;
 }
 
 .text-field, .text-area {
@@ -100,11 +104,28 @@
     -fx-text-fill: black;
     -fx-font-weight: bold;
     -fx-cursor: hand;
-    -fx-border-radius: 12;
-    -fx-background-radius: 12;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
     -fx-padding: 8px 16px;
 }
 
 .popup-form .button:hover {
     -fx-background-color: #d8ba76;
+}
+
+.menu-context {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #f0f0f0, #808080, #1a1a1a);
+    -fx-background-radius: 5px 20px 20px 20px;
+    -fx-padding: 10px;
+}
+
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-padding: 8px 12px;
+}
+
+.menu-item:hover {
+    -fx-background-color: #c8a96a;
 }

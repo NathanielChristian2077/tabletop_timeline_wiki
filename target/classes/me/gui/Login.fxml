@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="root" minHeight="300" minWidth="400" prefHeight="720" prefWidth="1280" styleClass="root" stylesheets="@login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorLogin">
+    <ImageView fx:id="backgroundImage" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Image url="@images/loginBackground_1080p.jpg" />
+    </ImageView>
+    <VBox fx:id="elementsRoot" alignment="CENTER" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <!-- Título em destaque -->
+        <Label fx:id="titulo1" alignment="CENTER" styleClass="title" text="Codex" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="85.0">
+         <effect>
+            <Glow level="0.45" />
+         </effect></Label>
+        <Label fx:id="titulo2" alignment="CENTER" styleClass="title" text="Core" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="130.0">
+         <effect>
+            <Glow level="0.45" />
+         </effect></Label>
+        <VBox alignment="CENTER" spacing="20" styleClass="container" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="70.0">
+            <!-- Botões de troca -->
+            <HBox fx:id="botaoTrocaBox" alignment="CENTER" spacing="10">
+                <Button fx:id="botaoTrocarLogin" styleClass="switch-button" text="Login" />
+                <Button fx:id="botaoTrocarCadastro" styleClass="switch-button" text="Sign up" />
+            </HBox>
+
+            <StackPane fx:id="container" maxWidth="400" minWidth="300">
+                <!-- Login Form -->
+                <VBox fx:id="formLogin" alignment="CENTER" spacing="10" styleClass="form-box">
+                    <TextField fx:id="campoNomeLogin" promptText="Usuário" styleClass="input-field" />
+                    <PasswordField fx:id="campoSenhaLogin" promptText="Senha" styleClass="input-field" />
+                    <Button fx:id="botaoLogin" onAction="#realizarLogin" styleClass="action-button" text="Login" />
+                </VBox>
+                <!-- Cadastro Form -->
+                <VBox fx:id="formCadastro" alignment="CENTER" managed="false" spacing="10" styleClass="form-box" visible="false">
+                    <TextField fx:id="campoNomeCadastro" promptText="Usuário" styleClass="input-field" />
+                    <PasswordField fx:id="campoSenhaCadastro" promptText="Senha" styleClass="input-field" />
+                    <PasswordField fx:id="campoSenhaConfirm" promptText="Confirmar Senha" styleClass="input-field" />
+                    <ChoiceBox fx:id="choiceTipo" styleClass="input-field" />
+                    <Button fx:id="botaoCadastrar" onAction="#realizarCadastro" styleClass="action-button" text="Sign up" />
+                </VBox>
+            </StackPane>
+
+            <Label fx:id="labelMensagem" textFill="red" />
+        </VBox>
+      <opaqueInsets>
+         <Insets />
+      </opaqueInsets>
+    </VBox>
+</AnchorPane>
