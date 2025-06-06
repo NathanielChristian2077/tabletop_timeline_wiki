@@ -29,13 +29,7 @@ public class GerenciadorCampanha {
                         .orElseThrow(() -> new ElementoNaoEncontradoException("Campanha '"+ nome + "' nao encontrada."));
     }
 
-    public void removerCapanha(String nome) throws ElementoNaoEncontradoException {
-        Campanha c = buscarCampanhaPorNome(nome);
+    public void removerCapanha(Campanha c) throws ElementoNaoEncontradoException {
         campanhas.remove(c);
-    }
-
-    public void atualizarDescricao(String nome, String novaDescricao) throws ElementoNaoEncontradoException {
-        Campanha c = buscarCampanhaPorNome(nome);
-        c.setDescricao(novaDescricao);
     }
 }

@@ -38,13 +38,12 @@ public class GerenciadorNarrativo<T extends ElementoNarrativo> {
         return encontrados;
     }
 
-    public void atualizarDescricao(String id, String novaDescricao) throws ElementoNaoEncontradoException {
-        T elemento = buscarPorId(id);
-        elemento.setDescricao(novaDescricao);
-    }
-
     public void removerPorId(String id) throws ElementoNaoEncontradoException {
         T elemento = buscarPorId(id);
         elementos.remove(elemento);
+    }
+
+    public void remover(T t) {
+        elementos.remove(t);
     }
 }

@@ -8,6 +8,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -26,6 +27,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import me.controle.GerenciadorCampanha;
+import me.controle.GerenciadorUsuario;
 import me.modelo.entidades.Campanha;
 import me.modelo.entidades.Usuario;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
@@ -67,8 +69,18 @@ public class ControladorTelaPrincipal {
     @FXML private Button createButton;
 
     @FXML private Button profileButton;
+    @FXML private StackPane popupEditarPerfil;
+    @FXML private TextField campoNovoNome;
+    @FXML private PasswordField campoSenhaAtual;
+    @FXML private PasswordField campoNovaSenha;
 
     private final GerenciadorCampanha gerenciadorCampanha = new GerenciadorCampanha();
+    private final GerenciadorUsuario gerenciadorUsuario = new GerenciadorUsuario();
+    private Usuario usuario;
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 
     @FXML
     public void initialize() {
@@ -278,7 +290,8 @@ public class ControladorTelaPrincipal {
         excluir.setStyle("-fx-text-fill: red;");
         excluir.setOnAction(e -> {
             try {
-                gerenciadorCampanha.removerCapanha(campanha.getNome());
+                // TODO: Substituir ou implementar no DAO
+                gerenciadorCampanha.removerCapanha(campanha);
                 carregarCampanhas();
             } catch (ElementoNaoEncontradoException ex) {
                 throw new RuntimeException(ex);
@@ -367,23 +380,91 @@ public class ControladorTelaPrincipal {
         carregarCampanhas();
     }
 
-    public void abrirMenuPerfil(MouseEvent event, Usuario usuario) {
+    @FXML
+    private void abrirMenuPerfil(MouseEvent event) {
+        if (usuario == null) return;
+        if (menuAtual != null && menuAtual.isShowing()) {
+            menuAtual.hide();
+        }
+
         ContextMenu menuPerfil = new ContextMenu();
+        menuPerfil.getStyleClass().add("menu-context");
+        menuPerfil.setStyle("-fx-font-family: "+"Constantia"+"; -fx-font-size:"+ (20 * larguraCard / 440) + "px;");
 
         MenuItem editar = new MenuItem("Edit Profile");
-        editar.setOnAction(e -> mostrarPopupEditarPerfil(event.getScreenX(), event.getScreenY()));
+        editar.getStyleClass().add("menu-item");
+        editar.setOnAction(e -> mostrarPopupEditarPerfil(event));
 
-        MenuItem delete = new MenuItem("Delete Account");
-        delete.setOnAction(e -> confirmarDeleteAccount());
+        MenuItem excluir = new MenuItem("Delete Account");
+        excluir.getStyleClass().add("menu-item");
+        excluir.setStyle("-fx-text-fill: red;");
+        excluir.setOnAction(e -> confirmarDeleteAccount());
 
-        menuPerfil.getItems().addAll(editar, delete);
-        menuPerfil.show(profileButton, event.getScreenX(), event.getScreenY());
+        menuPerfil.getItems().addAll(editar, excluir);
+        menuPerfil.show((Node) event.getSource(), event.getScreenX(), event.getScreenY());
+        menuAtual = menuPerfil;
     }
 
-    public void mostrarPopupEditarPerfil(double x, double y){
-        // TODO: Implementar
+    @FXML
+    private void mostrarPopupEditarPerfil(MouseEvent event){
+        double mouseX = event.getSceneX();
+        double mouseY = event.getSceneY();
+        popupEditarPerfil.setVisible(true);
+        labelMensagem.setText("");
+        campoNovoNome.clear();
+        campoSenhaAtual.clear();
+        campoNovaSenha.clear();
+        popupEditarPerfil.setLayoutX(mouseX);
+        popupEditarPerfil.setLayoutY(mouseY);
     }
-    public void confirmarDeleteAccount(){
-        // TODO: Implementar
+
+    @FXML
+    private void fecharPopupPerfil() {
+        popupEditarPerfil.setVisible(false);
+        campoNovoNome.clear();
+        campoSenhaAtual.clear();
+        campoNovaSenha.clear();
+    }
+
+    @FXML
+    private void salvarEdicaoPerfil() {
+        String novoNome = campoNovoNome.getText().trim();
+        String senhaAtual = campoSenhaAtual.getText().trim();
+        String novaSenha = campoNovaSenha.getText().trim();
+
+        if (!usuario.getSenha().equals(senhaAtual)) {
+            labelMensagem.setText("Incorrect current password.");
+            labelMensagem.setTextFill(Color.RED);
+            return;
+        }
+
+        if (!novoNome.isEmpty()) {
+            usuario.setNome(novoNome);
+        }
+
+        if (!novaSenha.isEmpty()) {
+            usuario.setSenha(novaSenha);
+        }
+
+        //  TODO: atualizar no DAO
+
+        labelMensagem.setText("Profile updated.");
+        labelMensagem.setTextFill(Color.GREEN);
+        fecharPopupPerfil();
+    }
+
+
+    private void confirmarDeleteAccount() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Account");
+        alert.setHeaderText("Are you sure?");
+        alert.setContentText("This action is irreversible.");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                gerenciadorUsuario.getUsuarios().remove(usuario);
+                System.exit(0);
+            }
+        });
     }
 }

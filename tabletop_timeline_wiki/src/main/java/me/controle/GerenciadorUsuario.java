@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GerenciadorUsuario {
-    private final List<Usuario> usuarios = new ArrayList<>();
+    private List<Usuario> usuarios = new ArrayList<>();
+
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
 
     public void adicionarUsuario(Usuario usuario) {
         usuarios.add(usuario);
@@ -42,4 +46,20 @@ public class GerenciadorUsuario {
         Usuario u = buscarPorId(id);
         usuarios.remove(u);
     }
+
+    public void remover(Usuario u) {
+        usuarios.remove(u);
+    }
+
+    public void atualizarUsuario(Usuario usuarioAtualizado) throws ElementoNaoEncontradoException {
+        for (Usuario u : usuarios) {
+            if (u.getId().equals(usuarioAtualizado.getId())) {
+                u.setNome(usuarioAtualizado.getNome());
+                u.setSenha(usuarioAtualizado.getSenha());
+                return;
+            }
+        }
+        throw new ElementoNaoEncontradoException("Usuário com ID " + usuarioAtualizado.getId() + " não encontrado.");
+    }
+
 }

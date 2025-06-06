@@ -43,6 +43,8 @@ public class ControladorLogin {
     @FXML private Button botaoTrocarCadastro;
     @FXML private PasswordField campoSenhaConfirm;
 
+    private ControladorTelaPrincipal controlador;
+    private Usuario usuarioLogado = null;
 
     private final GerenciadorUsuario gerenciadorUsuario = new GerenciadorUsuario();
     private boolean showingLogin = true;
@@ -257,6 +259,7 @@ public class ControladorLogin {
             if (u.autenticar(senha)) {
                 labelMensagem.setStyle("-fx-text-fill : green;");
                 labelMensagem.setText("Bem-vindo " + u.getNome() + "!");
+                usuarioLogado = u;
                 irParaTelaPrincipal();
             }
         } catch (ElementoNaoEncontradoException e) {
@@ -297,9 +300,10 @@ public class ControladorLogin {
 
     private void irParaTelaPrincipal() {
         try {
-            System.out.println(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
             Parent root = loader.load();
+            ControladorTelaPrincipal controlador = loader.getController();
+            controlador.setUsuario(usuarioLogado);
             Scene novaCena = new Scene(root, (int)campoNomeLogin.getScene().getWidth(), (int)campoNomeLogin.getScene().getHeight());
             Stage stage = (Stage) campoNomeLogin.getScene().getWindow();
             stage.setScene(novaCena);

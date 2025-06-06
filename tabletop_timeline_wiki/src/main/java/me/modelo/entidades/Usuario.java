@@ -6,9 +6,9 @@ import me.modelo.enums.TipoUsuario;
 
 public class Usuario {
     private final String id;
-    private final String nome;
-    private final String senha;
-    private final TipoUsuario tipo;
+    private String nome;
+    private String senha;
+    private TipoUsuario tipo;
     /**
  * Representa um usuário do sistema, podendo ser mestre ou jogador.
  * Controla permissões e autoria, sendo base para validação de interações e filtros de acesso.
@@ -29,13 +29,19 @@ public class Usuario {
         return nome;
     }
 
+    public void setNome(String nome) { this.nome = nome; }
+
     public String getSenha() {
         return senha;
     }
 
+    public void setSenha(String senha) { this.senha = senha; }
+
     public TipoUsuario getTipo() {
         return tipo;
     }
+
+    public void setTipo(TipoUsuario tipo) { this.tipo = tipo; }
 
     public boolean isMestre() {
         return tipo == TipoUsuario.MESTRE;
