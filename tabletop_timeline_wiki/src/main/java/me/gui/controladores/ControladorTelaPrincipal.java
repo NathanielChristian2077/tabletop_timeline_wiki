@@ -2,17 +2,18 @@ package me.gui.controladores;
 
 import java.io.File;
 import java.util.List;
-
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -23,6 +24,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -68,7 +70,7 @@ public class ControladorTelaPrincipal {
     private Campanha campanhaEditando = null;
     @FXML private Button createButton;
 
-    @FXML private Button profileButton;
+    @FXML private ImageView botaoPerfil;
     @FXML private StackPane popupEditarPerfil;
     @FXML private TextField campoNovoNome;
     @FXML private PasswordField campoSenhaAtual;
@@ -77,6 +79,18 @@ public class ControladorTelaPrincipal {
     private final GerenciadorCampanha gerenciadorCampanha = new GerenciadorCampanha();
     private final GerenciadorUsuario gerenciadorUsuario = new GerenciadorUsuario();
     private Usuario usuario;
+
+    public void setBotaoPerfil(ImageView botaoPerfil) {
+        this.botaoPerfil = botaoPerfil;
+        botaoPerfil.setFitHeight(50);
+        botaoPerfil.setFitWidth(50);
+        botaoPerfil.setPreserveRatio(true);
+        botaoPerfil.setSmooth(true);
+        botaoPerfil.setCache(true);
+
+        Circle clip = new Circle(25, 25, 25);
+        botaoPerfil.setClip(clip);
+    }
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
@@ -114,6 +128,8 @@ public class ControladorTelaPrincipal {
         backgroundImage.fitWidthProperty().bind(root.widthProperty());
         backgroundImage.fitHeightProperty().bind(root.heightProperty());
         sidebar.prefHeightProperty().bind(root.heightProperty());
+        setBotaoPerfil(botaoPerfil);
+        botaoPerfil.setOnContextMenuRequested(this::abrirMenuPerfil);
 
         gerenciadorCampanha.criarCampanha("Campanha de Teste", "Descrição de teste que nem sequer da pra ver na real.");
     }
@@ -196,6 +212,8 @@ public class ControladorTelaPrincipal {
             imagem = new Image(getClass().getResource("/me/gui/images/nullPlaceholder.jpg").toExternalForm());
         }
         ImageView capa = new ImageView(imagem);
+        capa.setSmooth(true);
+        capa.setCache(true);
         capa.setFitWidth(larguraCard);
         capa.setFitHeight(alturaCard);
         capa.setPreserveRatio(false);
@@ -380,8 +398,7 @@ public class ControladorTelaPrincipal {
         carregarCampanhas();
     }
 
-    @FXML
-    private void abrirMenuPerfil(MouseEvent event) {
+    private void abrirMenuPerfil(ContextMenuEvent event) {
         if (usuario == null) return;
         if (menuAtual != null && menuAtual.isShowing()) {
             menuAtual.hide();
@@ -391,31 +408,33 @@ public class ControladorTelaPrincipal {
         menuPerfil.getStyleClass().add("menu-context");
         menuPerfil.setStyle("-fx-font-family: "+"Constantia"+"; -fx-font-size:"+ (20 * larguraCard / 440) + "px;");
 
-        MenuItem editar = new MenuItem("Edit Profile");
-        editar.getStyleClass().add("menu-item");
-        editar.setOnAction(e -> mostrarPopupEditarPerfil(event));
+        MenuItem edit = new MenuItem("Edit Profile");
+        edit.getStyleClass().add("menu-item");
+        edit.setOnAction(e -> mostrarPopupEditarPerfil(event));
 
-        MenuItem excluir = new MenuItem("Delete Account");
-        excluir.getStyleClass().add("menu-item");
-        excluir.setStyle("-fx-text-fill: red;");
-        excluir.setOnAction(e -> confirmarDeleteAccount());
+        MenuItem delete = new MenuItem("Delete Account");
+        delete.getStyleClass().add("menu-item");
+        delete.setStyle("-fx-text-fill: red;");
+        delete.setOnAction(e -> confirmarDeleteAccount());
 
-        menuPerfil.getItems().addAll(editar, excluir);
-        menuPerfil.show((Node) event.getSource(), event.getScreenX(), event.getScreenY());
+        Node anchorNode = event.getPickResult().getIntersectedNode();
+        menuPerfil.getItems().addAll(edit, delete);
+        menuPerfil.show(anchorNode, event.getScreenX(), event.getScreenY());
+        Platform.runLater(() -> {
+            if (menuPerfil.getScene() != null) {
+                menuPerfil.getScene().getStylesheets().add(getClass().getResource("/me/gui/principal.css").toExternalForm());
+            }
+        });
         menuAtual = menuPerfil;
     }
 
     @FXML
-    private void mostrarPopupEditarPerfil(MouseEvent event){
-        double mouseX = event.getSceneX();
-        double mouseY = event.getSceneY();
+    private void mostrarPopupEditarPerfil(ContextMenuEvent event){
         popupEditarPerfil.setVisible(true);
         labelMensagem.setText("");
         campoNovoNome.clear();
         campoSenhaAtual.clear();
         campoNovaSenha.clear();
-        popupEditarPerfil.setLayoutX(mouseX);
-        popupEditarPerfil.setLayoutY(mouseY);
     }
 
     @FXML

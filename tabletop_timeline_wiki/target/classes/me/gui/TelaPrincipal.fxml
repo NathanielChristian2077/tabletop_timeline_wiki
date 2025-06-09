@@ -16,20 +16,17 @@
       <HBox StackPane.alignment="TOP_LEFT">
          <StackPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-               <VBox id="sidebar" fx:id="sidebar" alignment="BOTTOM_LEFT" blendMode="COLOR_BURN" prefWidth="70.0" styleClass="sidebar">
+               <VBox id="sidebar" fx:id="sidebar" alignment="BOTTOM_LEFT" prefWidth="70.0" styleClass="sidebar">
                   <children>
                      <HBox alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="70.0" prefWidth="70.0" VBox.vgrow="ALWAYS">
                         <padding>
                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                         </padding>
                         <children>
-                           <ImageView fx:id="botaoPerfil" fitHeight="50.0" fitWidth="50.0" nodeOrientation="INHERIT" onMouseClicked="#abrirMenuPerfil" pickOnBounds="true" styleClass="profile-button">
+                           <ImageView fx:id="botaoPerfil" cache="true" nodeOrientation="INHERIT" styleClass="profile-button">
                               <Image url="@images/profilePlaceholder.jpg" />
-                              <viewport>
-                                 <Rectangle2D height="50.0" width="50.0" />
-                              </viewport>
                               <cursor>
-                                 <Cursor fx:constant="HAND" />
+                                 <Cursor fx:constant="DEFAULT" />
                               </cursor>
                            </ImageView>
                         </children>
@@ -90,7 +87,7 @@
          </VBox>
       </StackPane>
       <StackPane fx:id="popupEditarPerfil" pickOnBounds="false" visible="false" StackPane.alignment="TOP_LEFT">
-         <VBox maxHeight="-Infinity" prefHeight="450.0" spacing="10" styleClass="popup-form" alignment="TOP_CENTER">
+         <VBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="450.0" spacing="10" styleClass="popup-form">
             <Label styleClass="popup-title" text="Edit Profile" />
             <TextField fx:id="campoNovoNome" promptText="New Username" />
             <PasswordField fx:id="campoSenhaAtual" promptText="Password" />
