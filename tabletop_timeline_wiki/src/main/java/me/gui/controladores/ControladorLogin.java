@@ -43,7 +43,6 @@ public class ControladorLogin {
     @FXML private Button botaoTrocarCadastro;
     @FXML private PasswordField campoSenhaConfirm;
 
-    private ControladorTelaPrincipal controlador;
     private Usuario usuarioLogado = null;
 
     private final GerenciadorUsuario gerenciadorUsuario = new GerenciadorUsuario();

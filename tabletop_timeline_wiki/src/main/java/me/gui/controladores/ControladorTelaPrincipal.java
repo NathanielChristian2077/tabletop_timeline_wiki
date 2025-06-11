@@ -1,19 +1,31 @@
 package me.gui.controladores;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.*;
-import javafx.scene.effect.Blend;
-import javafx.scene.effect.BlendMode;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -27,6 +39,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import me.controle.GerenciadorCampanha;
 import me.controle.GerenciadorUsuario;
@@ -238,6 +251,7 @@ public class ControladorTelaPrincipal {
 
         cartao.setOnContextMenuRequested(e -> abrirMenuContextual(e, c));
         cartao.getChildren().addAll(capa, nome);
+        cartao.setOnMouseClicked(e -> irParaTelaCampanha(c));
         return cartao;
     }
 
@@ -472,7 +486,6 @@ public class ControladorTelaPrincipal {
         fecharPopupPerfil();
     }
 
-
     private void confirmarDeleteAccount() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Delete Account");
@@ -485,5 +498,28 @@ public class ControladorTelaPrincipal {
                 System.exit(0);
             }
         });
+    }
+
+    private void irParaTelaCampanha(Campanha c) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/Timeline.fxml"));
+            Parent rootCamapanha = loader.load();
+            ControladorTimeline controlador = loader.getController();
+            controlador.setCampanha(c);
+            Scene scene = new Scene(rootCamapanha, rootCamapanha.getScene().getWidth(), rootCamapanha.getScene().getHeight());
+            Stage stage = (Stage) rootCamapanha.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Codex Core - " + c.getNome());
+            stage.setResizable(true);
+            stage.setMinWidth(640);
+            stage.setMinHeight(480);
+            stage.show();
+        } catch (IOException e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Campaign not found");
+            alert.setHeaderText("Campaign is not in the correct location or have not been imported correctly.");
+            alert.setContentText("Verify the campaign file location or recreate the campaign.");
+            e.printStackTrace();
+        }
     }
 }

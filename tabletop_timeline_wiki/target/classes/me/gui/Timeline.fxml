@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="1080.0" maxWidth="1920.0" minHeight="480.0" minWidth="640.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorTimeline">
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+         <top>
+            <ToolBar maxHeight="48.0" maxWidth="1080.0" minHeight="48.0" minWidth="640.0" BorderPane.alignment="CENTER">
+              <items>
+                  <Button mnemonicParsing="false" text="Button" />
+                <Button mnemonicParsing="false" text="Button" />
+                  <Button mnemonicParsing="false" text="Button" />
+                  <Button mnemonicParsing="false" text="Button" />
+              </items>
+            </ToolBar>
+         </top>
+         <left>
+            <VBox maxHeight="1030.0" maxWidth="300.0" minHeight="430.0" BorderPane.alignment="CENTER">
+               <children>
+                  <TreeView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                  <TextField VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+         </left>
+         <center>
+            <StackPane maxHeight="1030.0" maxWidth="1617.0" minHeight="430.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" text="Button" StackPane.alignment="BOTTOM_LEFT">
+                     <StackPane.margin>
+                        <Insets bottom="5.0" left="5.0" />
+                     </StackPane.margin></Button>
+               </children></StackPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>
