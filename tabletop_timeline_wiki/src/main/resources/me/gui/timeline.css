@@ -1,3 +1,337 @@
-.graph {
+/* Estilo geral da aplicação */
+.root {
+    -fx-font-family: "Segoe UI", "Liberation Sans", sans-serif;
+    -fx-font-size: 12px;
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #ffffff;
+}
 
+/* Toolbar */
+.tool-bar {
+    -fx-background-color: linear-gradient(to bottom, #3c3c3c, #2b2b2b);
+    -fx-border-color: #555555;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tool-bar .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.tool-bar .combo-box {
+    -fx-background-color: #404040;
+    -fx-border-color: #666666;
+    -fx-text-fill: #ffffff;
+}
+
+.tool-bar .combo-box .list-cell {
+    -fx-background-color: #404040;
+    -fx-text-fill: #ffffff;
+}
+
+.tool-bar .combo-box:focused {
+    -fx-border-color: #4CAF50;
+}
+
+.tool-bar .button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-cursor: hand;
+}
+
+.tool-bar .button:hover {
+    -fx-background-color: #45a049;
+}
+
+.tool-bar .button:pressed {
+    -fx-background-color: #3d8b40;
+}
+
+.tool-bar .text-field {
+    -fx-background-color: #404040;
+    -fx-border-color: #666666;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #cccccc;
+}
+
+.tool-bar .text-field:focused {
+    -fx-border-color: #2196F3;
+}
+
+/* Painel lateral esquerdo */
+.left-panel {
+    -fx-background-color: #333333;
+    -fx-border-color: #555555;
+    -fx-border-width: 0 1 0 0;
+}
+
+/* Cabeçalhos de seção */
+.section-header {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4CAF50;
+    -fx-padding: 5 0 5 0;
+}
+
+/* TreeView */
+.tree-view {
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: #555555;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+}
+
+.tree-view .tree-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 2 5 2 5;
+}
+
+.tree-view .tree-cell:selected {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.tree-view .tree-cell:hover {
+    -fx-background-color: #404040;
+}
+
+.tree-view .tree-cell .tree-disclosure-node {
+    -fx-background-color: transparent;
+}
+
+.tree-view .tree-cell .tree-disclosure-node .arrow {
+    -fx-background-color: #ffffff;
+}
+
+/* CheckBox */
+.check-box {
+    -fx-text-fill: #ffffff;
+}
+
+.check-box .box {
+    -fx-background-color: #404040;
+    -fx-border-color: #666666;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #4CAF50;
+    -fx-border-color: #4CAF50;
+}
+
+.check-box .mark {
+    -fx-background-color: white;
+}
+
+.check-box:hover .box {
+    -fx-border-color: #4CAF50;
+}
+
+/* Separadores */
+.separator .line {
+    -fx-border-color: #555555;
+    -fx-border-width: 1 0 0 0;
+}
+
+/* Botões principais */
+.button {
+    -fx-background-color: #404040;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #666666;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-cursor: hand;
+    -fx-padding: 5 10 5 10;
+}
+
+.button:hover {
+    -fx-background-color: #4CAF50;
+    -fx-border-color: #4CAF50;
+}
+
+.button:pressed {
+    -fx-background-color: #45a049;
+}
+
+.button:focused {
+    -fx-border-color: #2196F3;
+    -fx-border-width: 2;
+}
+
+/* Botão de exportar especial */
+#exportButton {
+    -fx-background-color: #FF9800;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+#exportButton:hover {
+    -fx-background-color: #f57c00;
+}
+
+/* Container do grafo */
+#graphContainer {
+    -fx-background-color: #1a1a1a;
+    -fx-border-color: #555555;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+}
+
+/* Barra de status */
+.status-bar {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #333333;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 5 10 5 10;
+}
+
+.status-bar .label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 11px;
+}
+
+/* Labels de informação */
+#statusLabel {
+    -fx-text-fill: #cccccc;
+    -fx-font-style: italic;
+}
+
+#nodeCountLabel,
+#edgeCountLabel,
+#selectedCountLabel,
+#zoomLabel {
+    -fx-font-weight: bold;
+}
+
+/* Tooltips */
+.tooltip {
+    -fx-background-color: #333333;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #666666;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-font-size: 11px;
+    -fx-padding: 5;
+}
+
+/* ComboBox customizado */
+.combo-box-popup .list-view {
+    -fx-background-color: #404040;
+    -fx-border-color: #666666;
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: #404040;
+    -fx-text-fill: #ffffff;
+}
+
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #4CAF50;
+}
+
+.combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+/* Scrollbars */
+.scroll-bar {
+    -fx-background-color: #2b2b2b;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #404040;
+    -fx-border-color: #666666;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #666666;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #777777;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: #404040;
+    -fx-border-color: #666666;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: #ffffff;
+}
+
+/* Contexto específico para elementos do RPG */
+.evento-item {
+    -fx-text-fill: #4CAF50;
+}
+
+.personagem-item {
+    -fx-text-fill: #FF9800;
+}
+
+.local-item {
+    -fx-text-fill: #9C27B0;
+}
+
+.objeto-item {
+    -fx-text-fill: #F44336;
+}
+
+/* Animações suaves */
+.button,
+.check-box,
+.combo-box,
+.text-field {
+    -fx-cursor: hand;
+    -fx-effect: null;
+}
+
+.button:hover,
+.check-box:hover,
+.combo-box:hover {
+    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.3), 5, 0.7, 0, 0);
+}
+
+/* Estados de loading */
+.loading {
+    -fx-opacity: 0.7;
+    -fx-cursor: wait;
+}
+
+/* Highlights para busca */
+.search-highlight {
+    -fx-background-color: #FFEB3B;
+    -fx-text-fill: #000000;
+    -fx-font-weight: bold;
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+    .left-panel {
+        -fx-pref-width: 200;
+    }
+}
+
+@media (max-width: 800px) {
+    .left-panel {
+        -fx-pref-width: 150;
+    }
+
+    .tool-bar .label {
+        -fx-font-size: 10px;
+    }
 }

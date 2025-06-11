@@ -1,39 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="1080.0" maxWidth="1920.0" minHeight="480.0" minWidth="640.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorTimeline">
-   <children>
-      <BorderPane prefHeight="200.0" prefWidth="200.0">
-         <top>
-            <ToolBar maxHeight="48.0" maxWidth="1080.0" minHeight="48.0" minWidth="640.0" BorderPane.alignment="CENTER">
-              <items>
-                  <Button mnemonicParsing="false" text="Button" />
-                <Button mnemonicParsing="false" text="Button" />
-                  <Button mnemonicParsing="false" text="Button" />
-                  <Button mnemonicParsing="false" text="Button" />
-              </items>
-            </ToolBar>
-         </top>
-         <left>
-            <VBox maxHeight="1030.0" maxWidth="300.0" minHeight="430.0" BorderPane.alignment="CENTER">
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.gui.controladores.ControladorTimeline" stylesheets="timeline.css">
+   <top>
+      <ToolBar prefHeight="40.0">
+         <Label text="Modo de Visualização:"/>
+         <ComboBox fx:id="visualizationMode" prefWidth="200.0">
+            <tooltip>
+               <Tooltip text="Selecione o tipo de visualização do grafo"/>
+            </tooltip>
+         </ComboBox>
+         <Separator orientation="VERTICAL"/>
+         <Button fx:id="refreshButton" mnemonicParsing="false" text="Atualizar">
+            <tooltip>
+               <Tooltip text="Atualizar a visualização do grafo"/>
+            </tooltip>
+         </Button>
+         <Separator orientation="VERTICAL"/>
+         <Label text="Buscar:"/>
+         <TextField fx:id="campoBusca" prefWidth="150.0" promptText="Digite para buscar...">
+            <tooltip>
+               <Tooltip text="Buscar elementos no grafo"/>
+            </tooltip>
+         </TextField>
+         <Region HBox.hgrow="ALWAYS"/>
+         <Label fx:id="statusLabel" text="Pronto"/>
+      </ToolBar>
+   </top>
+   <left>
+      <VBox prefWidth="250.0" spacing="5.0">
+         <children>
+            <Label styleClass="section-header" text="Navegação" />
+            <TreeView fx:id="treeElementos" prefHeight="400.0" VBox.vgrow="ALWAYS">
+               <tooltip>
+                  <Tooltip text="Navegue pelos elementos da campanha" />
+               </tooltip>
+            </TreeView>
+            <Separator />
+            <Label styleClass="section-header" text="Controles" />
+            <VBox spacing="5.0">
                <children>
-                  <TreeView prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                  <TextField VBox.vgrow="ALWAYS" />
+                  <CheckBox fx:id="autoLayoutCheckBox" selected="true" text="Layout Automático">
+                     <tooltip>
+                        <Tooltip text="Ativar/desativar layout automático do grafo" />
+                     </tooltip>
+                  </CheckBox>
+                  <CheckBox fx:id="showLabelsCheckBox" selected="true" text="Mostrar Rótulos">
+                     <tooltip>
+                        <Tooltip text="Mostrar/ocultar rótulos dos elementos" />
+                     </tooltip>
+                  </CheckBox>
+                  <CheckBox fx:id="showEdgesCheckBox" selected="true" text="Mostrar Conexões">
+                     <tooltip>
+                        <Tooltip text="Mostrar/ocultar conexões entre elementos" />
+                     </tooltip>
+                  </CheckBox>
                </children>
             </VBox>
-         </left>
-         <center>
-            <StackPane maxHeight="1030.0" maxWidth="1617.0" minHeight="430.0" BorderPane.alignment="CENTER">
+            <Separator />
+            <Label styleClass="section-header" text="Filtros" />
+            <VBox spacing="5.0">
                <children>
-                  <Button mnemonicParsing="false" text="Button" StackPane.alignment="BOTTOM_LEFT">
-                     <StackPane.margin>
-                        <Insets bottom="5.0" left="5.0" />
-                     </StackPane.margin></Button>
-               </children></StackPane>
-         </center>
-      </BorderPane>
-   </children>
-</AnchorPane>
+                  <CheckBox fx:id="showEventsCheckBox" selected="true" text="Eventos" />
+                  <CheckBox fx:id="showCharactersCheckBox" selected="true" text="Personagens" />
+                  <CheckBox fx:id="showLocationsCheckBox" selected="true" text="Locais" />
+                  <CheckBox fx:id="showObjectsCheckBox" selected="true" text="Objetos" />
+               </children>
+            </VBox>
+            <Region VBox.vgrow="ALWAYS" />
+            <Button fx:id="exportButton" maxWidth="1.7976931348623157E308" text="Exportar Grafo">
+               <tooltip>
+                  <Tooltip text="Exportar o grafo atual como imagem" />
+               </tooltip>
+            </Button>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </left>
+   <center>
+      <VBox>
+         <children>
+            <Label styleClass="section-header" text="Visualização do Grafo">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+               </VBox.margin>
+            </Label>
+            <StackPane fx:id="timelineContainer" style="-fx-border-color: #333; -fx-border-width: 1px;" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+               </VBox.margin>
+            </StackPane>
+         </children>
+      </VBox>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER_LEFT" prefHeight="30.0" spacing="10.0" style="-fx-background-color: #f0f0f0;">
+         <children>
+            <Label text="Elementos:" />
+            <Label fx:id="nodeCountLabel" text="0 nós" />
+            <Separator orientation="VERTICAL" />
+            <Label text="Conexões:" />
+            <Label fx:id="edgeCountLabel" text="0 arestas" />
+            <Separator orientation="VERTICAL" />
+            <Label text="Selecionados:" />
+            <Label fx:id="selectedCountLabel" text="0" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="zoomLabel" text="Zoom: 100%" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane>
