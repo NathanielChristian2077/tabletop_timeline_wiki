@@ -31,10 +31,18 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
         }
     }
 
+    public Evento getAnterior() {
+        return eventosAnteriores.getLast();
+    }
+
     public void adicionarEventoPosterior(Evento e) {
         if (!eventosPosteriores.contains(e)) {
             eventosPosteriores.add(e);
         }
+    }
+
+    public Evento getPosterior() {
+        return eventosPosteriores.getFirst();
     }
 
     @Override
