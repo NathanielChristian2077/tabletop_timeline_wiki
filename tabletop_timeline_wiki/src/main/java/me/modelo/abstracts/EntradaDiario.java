@@ -1,19 +1,16 @@
 package me.modelo.abstracts;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 public abstract class EntradaDiario {
     protected String id;
     protected String titulo;
     protected String descricao;
-    protected LocalDate date;
     
-    public EntradaDiario(String titulo, String descricao, LocalDate date) {
+    public EntradaDiario(String titulo, String descricao) {
         this.id = UUID.randomUUID().toString();
         this.titulo = titulo;
         this.descricao = descricao;
-        this.date = date;
     }
 
     public String getId() {
@@ -38,14 +35,6 @@ public abstract class EntradaDiario {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
     }
 
     public abstract String resumo();

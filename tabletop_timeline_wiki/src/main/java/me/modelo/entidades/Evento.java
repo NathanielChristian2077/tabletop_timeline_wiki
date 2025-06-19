@@ -1,6 +1,5 @@
 package me.modelo.entidades;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +19,8 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
     private List<Evento> eventosAnteriores = new ArrayList<>();
     private List<Evento> eventosPosteriores = new ArrayList<>();
 
-    public Evento(String titulo, String descricao, LocalDate date) {
-        super(titulo, descricao, date);
+    public Evento(String titulo, String descricao) {
+        super(titulo, descricao);
     }
 
     public void adicionarEventoAnterior(Evento e) {
@@ -32,7 +31,14 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
     }
 
     public Evento getAnterior() {
-        return eventosAnteriores.getLast();
+        return eventosAnteriores.get(eventosAnteriores.size() - 1);
+    }
+
+    public void setAnterior(Evento e) {
+        if (e != null && !eventosAnteriores.contains(e)) {
+            eventosAnteriores.add(e);
+            e.setPosterior(this);
+        }
     }
 
     public void adicionarEventoPosterior(Evento e) {
@@ -42,7 +48,14 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
     }
 
     public Evento getPosterior() {
-        return eventosPosteriores.getFirst();
+        return eventosPosteriores.get(0);
+    }
+
+    public void setPosterior(Evento e) {
+        if (e != null && !eventosPosteriores.contains(e)) {
+            eventosPosteriores.add(e);
+            e.setAnterior(this);
+        }
     }
 
     @Override
@@ -119,11 +132,11 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
 
     @Override
     public String exportar() {
-        return String.format("Evento: %s (%s)\n%s", titulo, date.toString(), descricao);
+        return String.format("Evento: %s (%s)\n%s", titulo, descricao);
     }
 
     @Override
     public String resumo() {
-        return titulo + " - " + date;
+        return titulo;
     }
 }

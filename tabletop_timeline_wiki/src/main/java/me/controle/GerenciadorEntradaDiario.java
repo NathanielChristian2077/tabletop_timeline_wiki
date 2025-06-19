@@ -4,9 +4,7 @@ import me.modelo.abstracts.EntradaDiario;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 /**
@@ -28,18 +26,6 @@ public class GerenciadorEntradaDiario<T extends EntradaDiario> {
 
     public List<T> listarTodas() {
         return new ArrayList<>(entradas);
-    }
-
-    public List<T> listarOrdenadoPorData() {
-        return entradas.stream()
-            .sorted(Comparator.comparing(EntradaDiario::getDate))
-            .collect(Collectors.toList());
-    }
-
-    public List<T> listarEntreDatas(LocalDate inicio, LocalDate fim) {
-        return entradas.stream()
-            .filter(e -> !e.getDate().isBefore(inicio) && !e.getDate().isAfter(fim))
-            .collect(Collectors.toList());
     }
 
     public T buscarPorId(String id) throws ElementoNaoEncontradoException {

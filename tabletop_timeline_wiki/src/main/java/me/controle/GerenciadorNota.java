@@ -6,7 +6,6 @@ import me.modelo.enums.TipoNota;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
 import me.modelo.exceptions.AssociacaoInvalidaException;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,8 +16,8 @@ import java.util.stream.Collectors;
  */
 public class GerenciadorNota extends GerenciadorEntradaDiario<Nota> {
 
-    public Nota criarNota(String titulo, String texto, LocalDate data, TipoNota tipo, Usuario autor) {
-        Nota nota = new Nota(titulo, texto, data, tipo, autor);
+    public Nota criarNota(String titulo, String texto, TipoNota tipo, Usuario autor) {
+        Nota nota = new Nota(titulo, texto, tipo, autor);
         adicionar(nota);
         return nota;
     }

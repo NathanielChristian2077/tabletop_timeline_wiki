@@ -3,7 +3,6 @@ package me.controle;
 import me.modelo.entidades.Evento;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
 
-import java.time.LocalDate;
 /**
  * Controla a criação e associação entre eventos dentro da linha do tempo da campanha.
  * Permite definir sequências temporais e relacionar eventos posteriores e anteriores.
@@ -11,8 +10,8 @@ import java.time.LocalDate;
  */
 public class GerenciadorEvento extends GerenciadorEntradaDiario<Evento> {
 
-    public Evento criarEvento(String titulo, String descricao, LocalDate data) {
-        Evento e = new Evento(titulo, descricao, data);
+    public Evento criarEvento(String titulo, String descricao) {
+        Evento e = new Evento(titulo, descricao);
         adicionar(e);
         return e;
     }

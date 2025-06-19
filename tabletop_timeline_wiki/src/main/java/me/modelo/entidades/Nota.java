@@ -1,6 +1,5 @@
 package me.modelo.entidades;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,8 +15,8 @@ public class Nota extends EntradaDiario {
     private TipoNota tipo;
     private Set<String> destinatarios;
 
-    public Nota(String titulo, String descricao, LocalDate date, TipoNota tipo, Usuario autor) {
-        super(titulo, descricao, date);
+    public Nota(String titulo, String descricao, TipoNota tipo, Usuario autor) {
+        super(titulo, descricao);
         this.tipo = tipo;
         this.autor = autor;
         this.destinatarios = new HashSet<>();

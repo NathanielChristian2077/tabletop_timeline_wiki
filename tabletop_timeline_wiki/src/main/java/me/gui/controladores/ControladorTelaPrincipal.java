@@ -503,11 +503,11 @@ public class ControladorTelaPrincipal {
     private void irParaTelaCampanha(Campanha c) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/Timeline.fxml"));
-            Parent rootCamapanha = loader.load();
+            Parent rootCampanha = loader.load();
             ControladorTimeline controlador = loader.getController();
             controlador.setCampanha(c);
-            Scene scene = new Scene(rootCamapanha, rootCamapanha.getScene().getWidth(), rootCamapanha.getScene().getHeight());
-            Stage stage = (Stage) rootCamapanha.getScene().getWindow();
+            Scene scene = new Scene(rootCampanha, labelTitle.getScene().getWidth(), labelTitle.getScene().getHeight());
+            Stage stage = (Stage) labelTitle.getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle("Codex Core - " + c.getNome());
             stage.setResizable(true);

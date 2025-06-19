@@ -85,6 +85,10 @@ public abstract class ElementoNarrativo implements Associavel, Exportavel {
         return nome;
     }
 
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
     @Override
     public List<Objeto> getObjetosRelacionados() {
         return objetosRelacionados;
