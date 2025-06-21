@@ -2,8 +2,9 @@ module me {
     requires javafx.controls;
     requires javafx.fxml;
     requires transitive javafx.graphics;
-    // requires org.graphstream.core;
-    //    requires gs.ui.javafx;
+    //requires org.graphstream.core;
+    //requires gs.ui.javafx;
+    requires java.sql;
 
     opens me.gui to javafx.fxml;
     opens me.gui.controladores to javafx.fxml;

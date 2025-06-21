@@ -1,27 +1,30 @@
 package me.gui.controladores;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import me.controle.*;
 import me.modelo.abstracts.ElementoNarrativo;
 import me.modelo.entidades.*;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 
 public class ControladorTimeline {
-    @FXML
-    private TreeView<Object> treeView;
-    @FXML
-    private HBox navButtonsBox;
-    @FXML
-    private AnchorPane graphPane;
+    @FXML private TreeView<Object> treeView;
+    @FXML private TextField searchField;
+    @FXML private HBox navButtonsBox;
+    @FXML private AnchorPane graphPane;
     private TreeItem<Object> rootCampanha;
     private final Deque<Object> historicoRoots = new ArrayDeque<>();
 
@@ -34,7 +37,6 @@ public class ControladorTimeline {
     private GerenciadorObjeto gerenciadorObjeto = new GerenciadorObjeto();
     private List<Objeto> objetos = gerenciadorObjeto.listarTodos();
 
-    @SuppressWarnings("unused")
     private Campanha c;
 
     public void setCampanha(Campanha c) {
@@ -406,7 +408,7 @@ public class ControladorTimeline {
         dialog.showAndWait();
         treeView.setRoot(rootCampanha);
     }
-
+    // TODO: criar alerta para caso a opção de deleção seja a própria campanha
     private void removerElemento(Object elemento, TreeView<Object> treeView) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Deletion");
@@ -458,6 +460,111 @@ public class ControladorTimeline {
 
             treeView.setRoot(rootCampanha);
         });
+    }
+
+    @FXML
+    private void onSearch() {
+        String termo = searchField.getText().trim().toLowerCase();
+        if (termo.isEmpty()) return;
+
+        List<Object> resultados = new ArrayList<>();
+
+        for (Evento e : eventos)
+            if (e.getNome().toLowerCase().contains(termo)) resultados.add(e);
+        for (Personagem p : personagens)
+            if (p.getNome().toLowerCase().contains(termo)) resultados.add(p);
+        for (Local l : locais)
+            if (l.getNome().toLowerCase().contains(termo)) resultados.add(l);
+        for (Objeto o : objetos)
+            if (o.getNome().toLowerCase().contains(termo)) resultados.add(o);
+
+        if (resultados.isEmpty()) {
+            Alert alerta = new Alert(Alert.AlertType.INFORMATION, "No results found.");
+            alerta.setHeaderText(null);
+            alerta.show();
+            return;
+        }
+
+        ChoiceDialog<Object> dialog = new ChoiceDialog<>(resultados.get(0), resultados);
+        dialog.setTitle("Search Results");
+        dialog.setHeaderText("Select an element to explore:");
+        dialog.setContentText("Matches:");
+
+        dialog.showAndWait().ifPresent(item -> mostrarRelacoes(treeView, item));
+    }
+
+    private void criarElemento(String tipo, TreeView<Object> treeView) {
+        switch (tipo) {
+            case "Event" -> {
+                Evento novoEvento = new Evento("New Event", "Event description");
+                editarEvento(novoEvento); // Abre diálogo de edição
+                eventos.add(novoEvento);
+                gerenciadorEvento.adicionar(novoEvento);
+            }
+            case "Character" -> {
+                Personagem novoPersonagem = new Personagem("New Character");
+                editarElementoNarrativo(novoPersonagem);
+                personagens.add(novoPersonagem);
+                gerenciadorPersonagem.adicionar(novoPersonagem);
+            }
+            case "Location" -> {
+                Local novoLocal = new Local("New Location");
+                editarElementoNarrativo(novoLocal);
+                locais.add(novoLocal);
+                gerenciadorLocal.adicionar(novoLocal);
+            }
+            case "Object" -> {
+                Objeto novoObjeto = new Objeto("New Object");
+                editarElementoNarrativo(novoObjeto);
+                objetos.add(novoObjeto);
+                gerenciadorObjeto.adicionar(novoObjeto);
+            }
+            default -> {
+                System.err.println("Unknown type: " + tipo);
+                return;
+            }
+        }
+
+        // Atualiza a TreeView após criação
+        setTreeView(treeView, c, gerenciadorEvento, gerenciadorPersonagem, gerenciadorLocal, gerenciadorObjeto);
+    }
+
+    @FXML
+    private void onCriarEvento() {
+        criarElemento("Event", treeView);
+    }
+
+    @FXML
+    private void onCriarPersonagem() {
+        criarElemento("Character", treeView);
+    }
+
+    @FXML
+    private void onCriarLocal() {
+        criarElemento("Location", treeView);
+    }
+
+    @FXML
+    private void onCriarObjeto() {
+        criarElemento("Object", treeView);
+    }
+
+    @FXML
+    private void onReturnToCampaigns() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
+            Parent root = loader.load();
+            Scene novaCena = new Scene(root, (int)treeView.getScene().getWidth(), (int)treeView.getScene().getHeight());
+            Stage stage = (Stage) treeView.getScene().getWindow();
+            stage.setScene(novaCena);
+            stage.setTitle("Codex Core");
+            stage.setResizable(true);
+            stage.setMinWidth(640);
+            stage.setMinHeight(480);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

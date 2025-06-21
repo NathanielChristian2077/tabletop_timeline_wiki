@@ -141,7 +141,6 @@ public class ControladorLogin {
         parallaxAnim.play();
     }
 
-
     private void mostrarLoginAnimado() {
         if (showingLogin) return;
         showingLogin = true;
@@ -297,7 +296,7 @@ public class ControladorLogin {
         mostrarLoginAnimado();
     }
 
-    private void irParaTelaPrincipal() {
+    public void irParaTelaPrincipal() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
             Parent root = loader.load();

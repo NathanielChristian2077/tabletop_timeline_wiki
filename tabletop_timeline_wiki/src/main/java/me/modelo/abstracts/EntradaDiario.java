@@ -4,6 +4,7 @@ import java.util.UUID;
 
 public abstract class EntradaDiario {
     protected String id;
+    protected String campanhaid;
     protected String titulo;
     protected String descricao;
     
@@ -27,6 +28,14 @@ public abstract class EntradaDiario {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    public String getCampanhaid() {
+        return campanhaid;
+    }
+
+    public void setCampanhaid(String campanhaid) {
+        this.campanhaid = campanhaid;
     }
 
     public String getDescricao() {

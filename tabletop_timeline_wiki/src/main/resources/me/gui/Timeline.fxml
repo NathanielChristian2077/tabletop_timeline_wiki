@@ -2,11 +2,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="me.gui.controladores.ControladorTimeline">
-    <!-- Top navigation bar for floating buttons -->
+    
+    <!-- floating buttons -->
     <top>
         <HBox fx:id="navButtonsBox" spacing="10" alignment="CENTER_LEFT">
             <Button fx:id="btnBack" text="Back" />
@@ -14,18 +17,32 @@
         </HBox>
     </top>
 
-    <!-- Sidebar with treeview -->
+    <!-- treeview -->
     <left>
         <VBox spacing="10">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
             <TreeView fx:id="treeView" VBox.vgrow="ALWAYS" />
+            <HBox spacing="5" alignment="CENTER_LEFT">
+               <TextField fx:id="searchField" promptText="Search" HBox.hgrow="ALWAYS"/>
+               <Button text="🔍" onAction="#onSearch"/>
+            </HBox>
         </VBox>
     </left>
 
-    <!-- Central area for graph visualization -->
+    <!-- graphPane com botões flutuantes -->
     <center>
-        <AnchorPane fx:id="graphPane" prefHeight="400" prefWidth="600" />
+        <AnchorPane fx:id="graphPane" prefHeight="400" prefWidth="600">
+            <children>
+                <VBox spacing="10" AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+                    <Button fx:id="btnHome" text="🏠" onAction="#onReturnToCampaigns"/>
+                    <Button fx:id="btnCreateObject" text="🟢" onAction="#onCriarObjeto"/>
+                    <Button fx:id="btnCreateLocation" text="🔴" onAction="#onCriarLocal"/>
+                    <Button fx:id="btnCreateCharacter" text="🟣" onAction="#onCriarPersonagem"/>
+                    <Button fx:id="btnCreateEvent" text="🔵" onAction="#onCriarEvento"/>
+                </VBox>
+            </children>
+        </AnchorPane>
     </center>
 </BorderPane>

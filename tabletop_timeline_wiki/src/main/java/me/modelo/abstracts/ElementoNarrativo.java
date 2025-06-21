@@ -18,6 +18,7 @@ import me.modelo.interfaces.Exportavel;
  */
 public abstract class ElementoNarrativo implements Associavel, Exportavel {
     protected String id;
+    protected String campanhaid;
     protected String nome;
     protected String descricao;
 
@@ -30,6 +31,7 @@ public abstract class ElementoNarrativo implements Associavel, Exportavel {
         this.id = UUID.randomUUID().toString();
         this.nome = nome;
         this.descricao = null;
+        setCampanhaid(campanhaid);
     }
 
     @Override
@@ -87,6 +89,14 @@ public abstract class ElementoNarrativo implements Associavel, Exportavel {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCampanhaid() {
+        return campanhaid;
+    }
+
+    public void setCampanhaid(String campanhaid) {
+        this.campanhaid = campanhaid;
     }
 
     @Override

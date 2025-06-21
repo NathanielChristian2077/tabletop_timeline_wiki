@@ -21,6 +21,7 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
 
     public Evento(String titulo, String descricao) {
         super(titulo, descricao);
+        setCampanhaid(campanhaid);
     }
 
     public void adicionarEventoAnterior(Evento e) {
