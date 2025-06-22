@@ -1,3 +1,5 @@
+// TODO: Melhorar css, adicionar animações etc
+
 package me.gui.controladores;
 
 import javafx.fxml.FXML;
@@ -153,7 +155,8 @@ public class ControladorTimeline {
     }
 
     private void mostrarRelacoes(TreeView<Object> treeView, Object elemento) {
-        if (treeView.getRoot() != null) {
+        // Não empilha a root se já está na root da campanha
+        if (treeView.getRoot() != null && !Objects.equals(treeView.getRoot().getValue(), rootCampanha.getValue())) {
             historicoRoots.push(treeView.getRoot().getValue());
         }
 
@@ -165,8 +168,10 @@ public class ControladorTimeline {
         if (!historicoRoots.isEmpty()) {
             Button backBtn = new Button("← Back");
             backBtn.setOnAction(e -> {
-                Object previous = historicoRoots.pop();
-                mostrarRelacoes(treeView, previous);
+                if (!historicoRoots.isEmpty()) {
+                    Object previous = historicoRoots.pop();
+                    mostrarRelacoes(treeView, previous);
+                }
             });
             navButtonsBox.getChildren().add(backBtn);
         }
@@ -211,6 +216,9 @@ public class ControladorTimeline {
         if (elemento == null)
             return null;
 
+        // Proíbe excluir a campanha root
+        boolean isRootCampanha = rootCampanha != null && elemento.equals(rootCampanha.getValue());
+
         MenuItem descricao = new MenuItem("View description");
         descricao.setOnAction(e -> mostrarDescricao(elemento));
 
@@ -239,6 +247,10 @@ public class ControladorTimeline {
                 e1.printStackTrace();
             }
         });
+        if (isRootCampanha) {
+            remover.setDisable(true);
+            remover.setText("Cannot delete campaign root");
+        }
 
         return new ContextMenu(descricao, adicionarRelacao, editar, remover);
     }

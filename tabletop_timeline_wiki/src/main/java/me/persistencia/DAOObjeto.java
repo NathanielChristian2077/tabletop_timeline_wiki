@@ -29,7 +29,7 @@ public class DAOObjeto {
         String sql = "SELECT * FROM objeto WHERE campanha_id = ?";
         List<Objeto> objetos = new ArrayList<>();
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, campanhaId);
+            stmt.setObject(1, java.util.UUID.fromString(campanhaId)); // CORRIGIDO
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Objeto objeto = new Objeto(

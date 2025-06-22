@@ -69,7 +69,7 @@ public class DAOEvento {
         List<Evento> lista = new ArrayList<>();
         String sql = "SELECT * FROM evento WHERE campanha_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, campanhaId);
+            stmt.setObject(1, java.util.UUID.fromString(campanhaId)); // CORRIGIDO
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Evento e = new Evento(

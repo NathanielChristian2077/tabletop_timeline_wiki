@@ -484,9 +484,11 @@ public class ControladorTelaPrincipal {
         delete.setStyle("-fx-text-fill: red;");
         delete.setOnAction(e -> confirmarDeleteAccount());
 
-        Node anchorNode = event.getPickResult().getIntersectedNode();
         menuPerfil.getItems().addAll(edit, delete);
-        menuPerfil.show(anchorNode, event.getScreenX(), event.getScreenY());
+
+        // Use botaoPerfil como anchor para garantir que o menu aparece sempre
+        menuPerfil.show(botaoPerfil, event.getScreenX(), event.getScreenY());
+
         Platform.runLater(() -> {
             if (menuPerfil.getScene() != null) {
                 menuPerfil.getScene().getStylesheets()

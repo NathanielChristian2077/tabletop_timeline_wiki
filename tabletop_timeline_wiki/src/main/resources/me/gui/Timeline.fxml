@@ -7,7 +7,8 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="me.gui.controladores.ControladorTimeline">
+            fx:controller="me.gui.controladores.ControladorTimeline"
+            stylesheets="@timeline.css">
     
     <!-- floating buttons -->
     <top>
