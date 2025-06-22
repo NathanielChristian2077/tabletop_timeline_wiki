@@ -3,6 +3,7 @@ package me.controle;
 import me.modelo.abstracts.ElementoNarrativo;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -10,11 +11,12 @@ import java.util.List;
  * Aplica polimorfismo parametrizado com generics e contém métodos padrão de CRUD e busca.
  * Exemplo de reutilização de lógica entre diferentes entidades.
  */
-public class GerenciadorNarrativo<T extends ElementoNarrativo> {
+public abstract class GerenciadorNarrativo<T extends ElementoNarrativo> {
     protected List<T> elementos = new ArrayList<>();
 
-    public void adicionar(T elemento) {
+    public void adicionar(T elemento) throws SQLException {
         elementos.add(elemento);
+        salvarNoBanco(elemento);
     }
 
     public List<T> listarTodos() {
@@ -38,12 +40,18 @@ public class GerenciadorNarrativo<T extends ElementoNarrativo> {
         return encontrados;
     }
 
-    public void removerPorId(String id) throws ElementoNaoEncontradoException {
+    public void removerPorId(String id) throws ElementoNaoEncontradoException, SQLException {
         T elemento = buscarPorId(id);
         elementos.remove(elemento);
+        deletarDoBanco(id);
     }
 
-    public void remover(T t) {
+    public void remover(T t) throws SQLException {
         elementos.remove(t);
+        deletarDoBanco(t.getId());
     }
+
+    protected abstract void salvarNoBanco(T elemento) throws SQLException;
+
+    protected abstract void deletarDoBanco(String id) throws SQLException;
 }

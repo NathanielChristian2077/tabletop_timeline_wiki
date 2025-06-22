@@ -7,6 +7,10 @@ public class Objeto extends ElementoNarrativo {
         super(nome);
     }
 
+    public Objeto(String id, String campanhaid, String nome, String descricao) {
+        super(id, campanhaid, nome, descricao);
+    }
+
     @Override
     public String exportar() {
         return String.format("Objeto: %s\n%s", nome, descricao != null ? descricao : "Sem descrição");

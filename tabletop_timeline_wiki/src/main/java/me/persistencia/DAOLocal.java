@@ -17,7 +17,7 @@ public class DAOLocal {
     public void salvar(Local local, String campanhaId) throws SQLException {
         String sql = "INSERT INTO local (id, nome, descricao, campanha_id) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, local.getId());
+            stmt.setObject(1, java.util.UUID.fromString(local.getId())); // CORRIGIDO
             stmt.setString(2, local.getNome());
             stmt.setString(3, local.getDescricao());
             stmt.setString(4, campanhaId);
@@ -32,8 +32,12 @@ public class DAOLocal {
             stmt.setString(1, campanhaId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Local local = new Local(rs.getString("nome"));
-                local.setDescricao(rs.getString("descricao"));
+                Local local = new Local(
+                    rs.getString("id"),
+                    rs.getString("campanha_id"),
+                    rs.getString("nome"),
+                    rs.getString("descricao")
+                );
                 locais.add(local);
             }
         }
@@ -45,7 +49,7 @@ public class DAOLocal {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, local.getNome());
             stmt.setString(2, local.getDescricao());
-            stmt.setString(3, local.getId());
+            stmt.setObject(3, java.util.UUID.fromString(local.getId())); // CORRIGIDO
             stmt.executeUpdate();
         }
     }
@@ -53,7 +57,7 @@ public class DAOLocal {
     public void deletar(String id) throws SQLException {
         String sql = "DELETE FROM local WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, id);
+            stmt.setObject(1, java.util.UUID.fromString(id)); // CORRIGIDO
             stmt.executeUpdate();
         }
     }

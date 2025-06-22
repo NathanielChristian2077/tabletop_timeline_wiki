@@ -12,8 +12,16 @@
     <!-- floating buttons -->
     <top>
         <HBox fx:id="navButtonsBox" spacing="10" alignment="CENTER_LEFT">
-            <Button fx:id="btnBack" text="Back" />
-            <Button fx:id="btnReturnToRoot" text="Return to Campaign Root" />
+            <Button fx:id="btnBack" text="Back">
+                <tooltip>
+                    <Tooltip text="Go back to the previous view"/>
+                </tooltip>
+            </Button>
+            <Button fx:id="btnReturnToRoot" text="Return to Campaign Root">
+                <tooltip>
+                    <Tooltip text="Return to the campaign root view"/>
+                </tooltip>
+            </Button>
         </HBox>
     </top>
 
@@ -26,7 +34,11 @@
             <TreeView fx:id="treeView" VBox.vgrow="ALWAYS" />
             <HBox spacing="5" alignment="CENTER_LEFT">
                <TextField fx:id="searchField" promptText="Search" HBox.hgrow="ALWAYS"/>
-               <Button text="🔍" onAction="#onSearch"/>
+               <Button text="🔍" onAction="#onSearch">
+                   <tooltip>
+                       <Tooltip text="Search for elements by name"/>
+                   </tooltip>
+               </Button>
             </HBox>
         </VBox>
     </left>
@@ -36,11 +48,31 @@
         <AnchorPane fx:id="graphPane" prefHeight="400" prefWidth="600">
             <children>
                 <VBox spacing="10" AnchorPane.leftAnchor="10.0" AnchorPane.bottomAnchor="10.0">
-                    <Button fx:id="btnHome" text="🏠" onAction="#onReturnToCampaigns"/>
-                    <Button fx:id="btnCreateObject" text="🟢" onAction="#onCriarObjeto"/>
-                    <Button fx:id="btnCreateLocation" text="🔴" onAction="#onCriarLocal"/>
-                    <Button fx:id="btnCreateCharacter" text="🟣" onAction="#onCriarPersonagem"/>
-                    <Button fx:id="btnCreateEvent" text="🔵" onAction="#onCriarEvento"/>
+                    <Button fx:id="btnCreateEvent" text="🔵" onAction="#onCriarEvento">
+                        <tooltip>
+                            <Tooltip text="Create a new event"/>
+                        </tooltip>
+                    </Button>
+                    <Button fx:id="btnCreateCharacter" text="🟣" onAction="#onCriarPersonagem">
+                        <tooltip>
+                            <Tooltip text="Create a new character"/>
+                        </tooltip>
+                    </Button>
+                    <Button fx:id="btnCreateLocation" text="🔴" onAction="#onCriarLocal">
+                        <tooltip>
+                            <Tooltip text="Create a new location"/>
+                        </tooltip>
+                    </Button>
+                    <Button fx:id="btnCreateObject" text="🟢" onAction="#onCriarObjeto">
+                        <tooltip>
+                            <Tooltip text="Create a new object"/>
+                        </tooltip>
+                    </Button>
+                    <Button fx:id="btnHome" text="🏠" onAction="#onReturnToCampaigns">
+                        <tooltip>
+                            <Tooltip text="Return to campaign selection"/>
+                        </tooltip>
+                    </Button>
                 </VBox>
             </children>
         </AnchorPane>

@@ -1,35 +1,41 @@
 package me.controle;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 import me.modelo.entidades.Campanha;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
+import me.persistencia.DAOCampanha;
 
 public class GerenciadorCampanha {
-    private List<Campanha> campanhas;
+    private DAOCampanha daoCampanha;
 
-    public GerenciadorCampanha() {
-        this.campanhas = new ArrayList<>();
+    public GerenciadorCampanha() throws SQLException {
+        this.daoCampanha = new DAOCampanha();
     }
 
-    public void criarCampanha(String nome, String descricao) {
-        campanhas.add(new Campanha(nome, descricao));
+    public void criarCampanha(String nome, String descricao) throws SQLException {
+        Campanha nova = new Campanha(nome, descricao);
+        daoCampanha.salvar(nova);
     }
 
-    public List<Campanha> listarCampanhas() {
-        return campanhas;
+    public List<Campanha> listarCampanhas() throws SQLException {
+        return daoCampanha.listarTodas();
     }
 
-    public Campanha buscarCampanhaPorNome(String nome) throws ElementoNaoEncontradoException {
+    public Campanha buscarCampanhaPorNome(String nome) throws SQLException, ElementoNaoEncontradoException {
+        List<Campanha> campanhas = daoCampanha.listarTodas();
         return campanhas.stream()
-                        .filter(c -> c.getNome()
-                        .equalsIgnoreCase(nome))
-                        .findFirst()
-                        .orElseThrow(() -> new ElementoNaoEncontradoException("Campanha '"+ nome + "' nao encontrada."));
+                .filter(c -> c.getNome().equalsIgnoreCase(nome))
+                .findFirst()
+                .orElseThrow(() -> new ElementoNaoEncontradoException("Campanha '" + nome + "' nao encontrada."));
     }
 
-    public void removerCapanha(Campanha c) throws ElementoNaoEncontradoException {
-        campanhas.remove(c);
+    public void removerCampanha(Campanha c) throws SQLException {
+        daoCampanha.deletar(c.getId());
+    }
+
+    public void atualizarCampanha(Campanha c) throws SQLException {
+        daoCampanha.atualizar(c);
     }
 }

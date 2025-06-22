@@ -17,7 +17,7 @@ public class DAOObjeto {
     public void salvar(Objeto objeto, String campanhaId) throws SQLException {
         String sql = "INSERT INTO objeto (id, nome, descricao, campanha_id) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, objeto.getId());
+            stmt.setObject(1, java.util.UUID.fromString(objeto.getId())); // CORRIGIDO
             stmt.setString(2, objeto.getNome());
             stmt.setString(3, objeto.getDescricao());
             stmt.setString(4, campanhaId);
@@ -32,8 +32,12 @@ public class DAOObjeto {
             stmt.setString(1, campanhaId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Objeto objeto = new Objeto(rs.getString("nome"));
-                objeto.setDescricao(rs.getString("descricao"));
+                Objeto objeto = new Objeto(
+                    rs.getString("id"),
+                    rs.getString("campanha_id"),
+                    rs.getString("nome"),
+                    rs.getString("descricao")
+                );
                 objetos.add(objeto);
             }
         }
@@ -45,7 +49,7 @@ public class DAOObjeto {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, objeto.getNome());
             stmt.setString(2, objeto.getDescricao());
-            stmt.setString(3, objeto.getId());
+            stmt.setObject(3, java.util.UUID.fromString(objeto.getId())); // CORRIGIDO
             stmt.executeUpdate();
         }
     }
@@ -53,7 +57,7 @@ public class DAOObjeto {
     public void deletar(String id) throws SQLException {
         String sql = "DELETE FROM objeto WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, id);
+            stmt.setObject(1, java.util.UUID.fromString(id)); // CORRIGIDO
             stmt.executeUpdate();
         }
     }

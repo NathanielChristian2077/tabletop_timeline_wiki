@@ -2,6 +2,7 @@ package me.gui.controladores;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javafx.animation.Animation;
@@ -41,21 +42,28 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import me.controle.GerenciadorCampanha;
 import me.controle.GerenciadorUsuario;
 import me.modelo.entidades.Campanha;
 import me.modelo.entidades.Usuario;
-import me.modelo.exceptions.ElementoNaoEncontradoException;
+import me.persistencia.DAOCampanha;
 
 public class ControladorTelaPrincipal {
-    @FXML private AnchorPane root;
-    @FXML private ImageView backgroundImage;
-    @FXML private TextField campoNomeCampanha;
-    @FXML private TextArea campoDescricaoCampanha;
-    @FXML private Label labelMensagem;
-    @FXML private Label labelTitle;
-    @FXML private GridPane gridCampanhas;
-    @FXML private VBox sidebar;
+    @FXML
+    private AnchorPane root;
+    @FXML
+    private ImageView backgroundImage;
+    @FXML
+    private TextField campoNomeCampanha;
+    @FXML
+    private TextArea campoDescricaoCampanha;
+    @FXML
+    private Label labelMensagem;
+    @FXML
+    private Label labelTitle;
+    @FXML
+    private GridPane gridCampanhas;
+    @FXML
+    private VBox sidebar;
 
     private double larguraCard = 440;
     private double alturaCard = 270;
@@ -71,27 +79,51 @@ public class ControladorTelaPrincipal {
     private double targetOffsetX = 0;
     private double targetOffsetY = 0;
 
-    @FXML private StackPane popupContainer;
-    @FXML private VBox popupForm;
-    @FXML private Label popupTitle;
+    @FXML
+    private StackPane popupContainer;
+    @FXML
+    private VBox popupForm;
+    @FXML
+    private Label popupTitle;
 
-    @FXML private Label labelImagemSelecionada;
+    @FXML
+    private Label labelImagemSelecionada;
 
     private File imagemSelecionada = null;
 
     private ContextMenu menuAtual;
     private Campanha campanhaEditando = null;
-    @FXML private Button createButton;
+    @FXML
+    private Button createButton;
 
-    @FXML private ImageView botaoPerfil;
-    @FXML private StackPane popupEditarPerfil;
-    @FXML private TextField campoNovoNome;
-    @FXML private PasswordField campoSenhaAtual;
-    @FXML private PasswordField campoNovaSenha;
+    @FXML
+    private ImageView botaoPerfil;
+    @FXML
+    private StackPane popupEditarPerfil;
+    @FXML
+    private TextField campoNovoNome;
+    @FXML
+    private PasswordField campoSenhaAtual;
+    @FXML
+    private PasswordField campoNovaSenha;
 
-    private final GerenciadorCampanha gerenciadorCampanha = new GerenciadorCampanha();
-    private final GerenciadorUsuario gerenciadorUsuario = new GerenciadorUsuario();
+    private GerenciadorUsuario gerenciadorUsuario;
     private Usuario usuario;
+
+    private DAOCampanha daoCampanha;
+
+    public ControladorTelaPrincipal() {
+        try {
+            this.daoCampanha = new DAOCampanha();
+        } catch (SQLException e) {
+            showError("Erro ao conectar ao banco de dados de campanhas.", e.getMessage());
+        }
+        try {
+            this.gerenciadorUsuario = new GerenciadorUsuario();
+        } catch (SQLException e) {
+            showError("Erro ao conectar ao banco de dados de usuários.", e.getMessage());
+        }
+    }
 
     public void setBotaoPerfil(ImageView botaoPerfil) {
         this.botaoPerfil = botaoPerfil;
@@ -131,7 +163,7 @@ public class ControladorTelaPrincipal {
         });
         root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
             double escala = newWidth.doubleValue() / 1920.0;
-            labelTitle.setStyle("-fx-font-family:"+"Constantia"+"; -fx-font-size:" + (96 * escala) + "px;");
+            labelTitle.setStyle("-fx-font-family:" + "Constantia" + "; -fx-font-size:" + (96 * escala) + "px;");
             larguraCard = 440 * escala;
             alturaCard = 270 * escala;
             carregarCampanhas();
@@ -144,12 +176,11 @@ public class ControladorTelaPrincipal {
         setBotaoPerfil(botaoPerfil);
         botaoPerfil.setOnContextMenuRequested(this::abrirMenuPerfil);
 
-        gerenciadorCampanha.criarCampanha("Campanha de Teste", "Descrição de teste que nem sequer da pra ver na real.");
+        carregarCampanhas();
     }
 
     private void startParallax() {
         Timeline parallaxAnim = new Timeline(new KeyFrame(Duration.millis(16), e -> {
-            // Fundo
             double currentX = backgroundImage.getTranslateX();
             double currentY = backgroundImage.getTranslateY();
 
@@ -167,7 +198,6 @@ public class ControladorTelaPrincipal {
             backgroundImage.setTranslateX(nextX);
             backgroundImage.setTranslateY(nextY);
 
-            // Campanhas (fg)
             double gridX = gridCampanhas.getTranslateX();
             double gridY = gridCampanhas.getTranslateY();
 
@@ -176,9 +206,10 @@ public class ControladorTelaPrincipal {
             gridCampanhas.setTranslateX(nextGridX);
             gridCampanhas.setTranslateY(nextGridY);
 
-            // Título
-            labelTitle.setTranslateX(labelTitle.getTranslateX() + (targetOffsetX * -10 - labelTitle.getTranslateX()) * 0.08);
-            labelTitle.setTranslateY(labelTitle.getTranslateY() + (targetOffsetY * -5 - labelTitle.getTranslateY()) * 0.08);
+            labelTitle.setTranslateX(
+                    labelTitle.getTranslateX() + (targetOffsetX * -10 - labelTitle.getTranslateX()) * 0.08);
+            labelTitle.setTranslateY(
+                    labelTitle.getTranslateY() + (targetOffsetY * -5 - labelTitle.getTranslateY()) * 0.08);
         }));
         parallaxAnim.setCycleCount(Animation.INDEFINITE);
         parallaxAnim.play();
@@ -186,7 +217,13 @@ public class ControladorTelaPrincipal {
 
     private void carregarCampanhas() {
         gridCampanhas.getChildren().clear();
-        List<Campanha> campanhas = gerenciadorCampanha.listarCampanhas();
+        List<Campanha> campanhas;
+        try {
+            campanhas = daoCampanha.listarTodas();
+        } catch (SQLException e) {
+            showError("Erro ao listar campanhas.", e.getMessage());
+            return;
+        }
         int MAX_COLUNAS = 3;
         int col = 0;
         int row = 0;
@@ -219,10 +256,13 @@ public class ControladorTelaPrincipal {
         imageWrapper.setPrefSize(larguraCard, alturaCard);
 
         Image imagem;
-        if (c.imageExists()) {
-            imagem = new Image(new File(c.getImagePath()).toURI().toString());
+        String imagePath = c.getImagePath();
+        if (imagePath.startsWith("/")) {
+            imagem = new Image(getClass().getResource(imagePath).toExternalForm());
         } else {
-            imagem = new Image(getClass().getResource("/me/gui/images/nullPlaceholder.jpg").toExternalForm());
+            File file = new File(imagePath);
+            imagem = file.exists() ? new Image(file.toURI().toString())
+                    : new Image(getClass().getResource("/me/gui/images/nullPlaceholder.jpg").toExternalForm());
         }
         ImageView capa = new ImageView(imagem);
         capa.setSmooth(true);
@@ -245,20 +285,28 @@ public class ControladorTelaPrincipal {
         Label nome = new Label(c.getNome());
         nome.setText(c.getNome().length() > 29 ? c.getNome().substring(0, 29) : c.getNome());
         nome.getStyleClass().add("campanha-label");
-        nome.setStyle("-fx-font-family:"+"Constantia"+";-fx-font-size:" + (28 * larguraCard / 440) + "px;");
+        nome.setStyle("-fx-font-family:" + "Constantia" + ";-fx-font-size:" + (28 * larguraCard / 440) + "px;");
         StackPane.setAlignment(nome, Pos.BOTTOM_CENTER);
         StackPane.setMargin(nome, new Insets(0, 0, 10, 0));
 
         cartao.setOnContextMenuRequested(e -> abrirMenuContextual(e, c));
+        cartao.setOnMouseClicked(e -> {
+            System.out.println("Clique no cartão da campanha: " + (c != null ? c.getId() : "null") + " | Botão: " + e.getButton());
+            if (e.getButton() == javafx.scene.input.MouseButton.PRIMARY && e.getClickCount() == 1) {
+                irParaTelaCampanha(c);
+                e.consume();
+            }
+            // Não trate botão direito aqui, pois o ContextMenu já é tratado por setOnContextMenuRequested
+        });
         cartao.getChildren().addAll(capa, nome);
-        cartao.setOnMouseClicked(e -> irParaTelaCampanha(c));
         return cartao;
     }
 
     private Node criarCartaoNovaCampanha() {
         StackPane novo = new StackPane();
         novo.getStyleClass().add("campanha-card");
-        ImageView placeholder = new ImageView(new Image(getClass().getResource("/me/gui/images/createCampaignPlaceholder.jpg").toExternalForm()));
+        ImageView placeholder = new ImageView(
+                new Image(getClass().getResource("/me/gui/images/createCampaignPlaceholder.jpg").toExternalForm()));
         placeholder.setFitWidth(larguraCard);
         placeholder.setFitHeight(alturaCard);
         placeholder.setPreserveRatio(false);
@@ -300,9 +348,7 @@ public class ControladorTelaPrincipal {
 
         ContextMenu menu = new ContextMenu();
         menu.getStyleClass().add("menu-context");
-        menu.setStyle("-fx-font-family: "+"Constantia"+"; -fx-font-size:"+ (20 * larguraCard / 440) + "px;");
-
-
+        menu.setStyle("-fx-font-family: " + "Constantia" + "; -fx-font-size:" + (20 * larguraCard / 440) + "px;");
 
         MenuItem editar = new MenuItem("Edit " + campanha.getNome());
         editar.getStyleClass().add("menu-item");
@@ -311,7 +357,8 @@ public class ControladorTelaPrincipal {
             campanhaEditando = campanha;
             campoNomeCampanha.setText(campanha.getNome());
             campoDescricaoCampanha.setText(campanha.getDescricao());
-            labelImagemSelecionada.setText(campanha.imageExists() ? new File(campanha.getImagePath()).getName():"Empty");
+            labelImagemSelecionada
+                    .setText(campanha.imageExists() ? new File(campanha.getImagePath()).getName() : "Empty");
             imagemSelecionada = campanha.imageExists() ? new File(campanha.getImagePath()) : null;
             createButton.setText("Edit");
             popupContainer.setVisible(true);
@@ -322,11 +369,11 @@ public class ControladorTelaPrincipal {
         excluir.setStyle("-fx-text-fill: red;");
         excluir.setOnAction(e -> {
             try {
-                // TODO: Substituir ou implementar no DAO
-                gerenciadorCampanha.removerCapanha(campanha);
+                System.out.println("ID da campanha para deletar: " + campanha.getId());
+                daoCampanha.deletar(campanha.getId());
                 carregarCampanhas();
-            } catch (ElementoNaoEncontradoException ex) {
-                throw new RuntimeException(ex);
+            } catch (SQLException ex) {
+                showError("Erro ao deletar campanha.", ex.getMessage());
             }
         });
 
@@ -352,7 +399,6 @@ public class ControladorTelaPrincipal {
         popupContainer.setLayoutX(mouseX);
         popupContainer.setLayoutY(mouseY);
     }
-
 
     @FXML
     private void fecharPopup() {
@@ -391,36 +437,43 @@ public class ControladorTelaPrincipal {
             return;
         }
 
-        if (campanhaEditando != null) {
-            campanhaEditando.setNome(nome);
-            campanhaEditando.setDescricao(descricao);
-            if (imagemSelecionada != null) {
-                campanhaEditando.setCaminhoImagem(imagemSelecionada.getAbsolutePath());
+        try {
+            if (campanhaEditando != null) {
+                campanhaEditando.setNome(nome);
+                campanhaEditando.setDescricao(descricao);
+                if (imagemSelecionada != null) {
+                    campanhaEditando.setCaminhoImagem(imagemSelecionada.getAbsolutePath());
+                } else {
+                    campanhaEditando.setCaminhoImagem(null); // Força o padrão
+                }
+                daoCampanha.atualizar(campanhaEditando);
+                campanhaEditando = null;
+            } else {
+                Campanha nova = new Campanha(nome, descricao);
+                if (imagemSelecionada != null) {
+                    nova.setCaminhoImagem(imagemSelecionada.getAbsolutePath());
+                } else {
+                    nova.setCaminhoImagem(null); // Força o padrão
+                }
+                daoCampanha.salvar(nova);
             }
-            campanhaEditando = null;
-        } else {
-            Campanha nova = new Campanha(nome, descricao);
-            if (imagemSelecionada != null) {
-                nova.setCaminhoImagem(imagemSelecionada.getAbsolutePath());
-            }
-            gerenciadorCampanha.criarCampanha(nova.getNome(), nova.getDescricao());
-            gridCampanhas.getChildren().add(criarCartaoCampanha(nova));
+            fecharPopup();
+            carregarCampanhas();
+        } catch (SQLException e) {
+            showError("Erro ao salvar campanha.", e.getMessage());
         }
-
-
-        fecharPopup();
-        carregarCampanhas();
     }
 
     private void abrirMenuPerfil(ContextMenuEvent event) {
-        if (usuario == null) return;
+        if (usuario == null)
+            return;
         if (menuAtual != null && menuAtual.isShowing()) {
             menuAtual.hide();
         }
 
         ContextMenu menuPerfil = new ContextMenu();
         menuPerfil.getStyleClass().add("menu-context");
-        menuPerfil.setStyle("-fx-font-family: "+"Constantia"+"; -fx-font-size:"+ (20 * larguraCard / 440) + "px;");
+        menuPerfil.setStyle("-fx-font-family: " + "Constantia" + "; -fx-font-size:" + (20 * larguraCard / 440) + "px;");
 
         MenuItem edit = new MenuItem("Edit Profile");
         edit.getStyleClass().add("menu-item");
@@ -436,14 +489,15 @@ public class ControladorTelaPrincipal {
         menuPerfil.show(anchorNode, event.getScreenX(), event.getScreenY());
         Platform.runLater(() -> {
             if (menuPerfil.getScene() != null) {
-                menuPerfil.getScene().getStylesheets().add(getClass().getResource("/me/gui/principal.css").toExternalForm());
+                menuPerfil.getScene().getStylesheets()
+                        .add(getClass().getResource("/me/gui/principal.css").toExternalForm());
             }
         });
         menuAtual = menuPerfil;
     }
 
     @FXML
-    private void mostrarPopupEditarPerfil(ContextMenuEvent event){
+    private void mostrarPopupEditarPerfil(ContextMenuEvent event) {
         popupEditarPerfil.setVisible(true);
         labelMensagem.setText("");
         campoNovoNome.clear();
@@ -479,7 +533,12 @@ public class ControladorTelaPrincipal {
             usuario.setSenha(novaSenha);
         }
 
-        //  TODO: atualizar no DAO
+        try {
+            gerenciadorUsuario.atualizarUsuario(usuario);
+        } catch (Exception e) {
+            showError("Erro ao atualizar perfil.", e.getMessage());
+            return;
+        }
 
         labelMensagem.setText("Profile updated.");
         labelMensagem.setTextFill(Color.GREEN);
@@ -494,17 +553,33 @@ public class ControladorTelaPrincipal {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                gerenciadorUsuario.getUsuarios().remove(usuario);
+                try {
+                    gerenciadorUsuario.remover(usuario);
+                } catch (Exception e) {
+                    showError("Erro ao remover usuário.", e.getMessage());
+                }
                 System.exit(0);
             }
         });
     }
 
     private void irParaTelaCampanha(Campanha c) {
+        System.out.println("Entrando na campanha: " + (c != null ? c.getId() : "null"));
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/Timeline.fxml"));
+            java.net.URL fxmlUrl = getClass().getResource("/me/gui/Timeline.fxml");
+            System.out.println("URL do FXML: " + fxmlUrl);
+            if (fxmlUrl == null) {
+                showError("FXML não encontrado", "O arquivo /me/gui/Timeline.fxml não foi localizado no classpath.");
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent rootCampanha = loader.load();
             ControladorTimeline controlador = loader.getController();
+            System.out.println("ControladorTimeline carregado: " + (controlador != null));
+            if (controlador == null) {
+                showError("Erro ao carregar controlador", "O controlador do Timeline.fxml está nulo.");
+                return;
+            }
             controlador.setCampanha(c);
             Scene scene = new Scene(rootCampanha, labelTitle.getScene().getWidth(), labelTitle.getScene().getHeight());
             Stage stage = (Stage) labelTitle.getScene().getWindow();
@@ -515,11 +590,20 @@ public class ControladorTelaPrincipal {
             stage.setMinHeight(480);
             stage.show();
         } catch (IOException e) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Campaign not found");
-            alert.setHeaderText("Campaign is not in the correct location or have not been imported correctly.");
-            alert.setContentText("Verify the campaign file location or recreate the campaign.");
+            showError("Campaign not found",
+                    "Campaign is not in the correct location or have not been imported correctly.\n" + e.getMessage());
             e.printStackTrace();
+        } catch (Exception ex) {
+            showError("Erro ao abrir campanha", ex.getMessage());
+            ex.printStackTrace();
         }
+    }
+
+    private void showError(String header, String content) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Erro");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

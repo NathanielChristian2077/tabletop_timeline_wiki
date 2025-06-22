@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javafx.animation.*;
 import me.controle.GerenciadorUsuario;
@@ -45,12 +46,11 @@ public class ControladorLogin {
 
     private Usuario usuarioLogado = null;
 
-    private final GerenciadorUsuario gerenciadorUsuario = new GerenciadorUsuario();
+    private final GerenciadorUsuario gerenciadorUsuario;
     private boolean showingLogin = true;
     private double targetOffsetX = 0;
     private double targetOffsetY = 0;
 
-    // Fatores de movimento (ajustáveis)
     private double bgFactorX = 1.25;
     private double bgFactorY = .75;
     private double fgFactorX = -10;
@@ -58,6 +58,14 @@ public class ControladorLogin {
 
     private double maxImageOffsetX;
     private double maxImageOffsetY;
+
+    public ControladorLogin() {
+        try {
+            this.gerenciadorUsuario = new GerenciadorUsuario();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error initializing user manager", e);
+        }
+    }
 
     @FXML
     public void initialize() {
@@ -83,8 +91,6 @@ public class ControladorLogin {
                 });
 
                 startParallax();
-                // Tester
-                gerenciadorUsuario.adicionarUsuario(new Usuario("1", "1",TipoUsuario.MESTRE));
             }
         });
 
@@ -102,7 +108,6 @@ public class ControladorLogin {
 
     private void startParallax() {
         Timeline parallaxAnim = new Timeline(new KeyFrame(Duration.millis(16), e -> {
-            // Suavização
             double currentX = backgroundImage.getTranslateX();
             double currentY = backgroundImage.getTranslateY();
 
@@ -139,6 +144,106 @@ public class ControladorLogin {
         }));
         parallaxAnim.setCycleCount(Animation.INDEFINITE);
         parallaxAnim.play();
+    }
+
+    public void realizarLogin() {
+        String nome = campoNomeLogin.getText().trim();
+        String senha = campoSenhaLogin.getText();
+
+        if (nome.isEmpty()) {
+            mostrarErro(campoNomeLogin, "* required");
+            return;
+        } else if (senha.isEmpty()) {
+            mostrarErro(campoSenhaLogin, "* required");
+            return;
+        }
+
+        try {
+            Usuario u = gerenciadorUsuario.buscarPorNome(nome);
+            if (u.autenticar(senha)) {
+                labelMensagem.setStyle("-fx-text-fill : green;");
+                labelMensagem.setText("Welcome " + u.getNome() + "!");
+                usuarioLogado = u;
+                irParaTelaPrincipal();
+            } else {
+                labelMensagem.setStyle("-fx-text-fill: red;");
+                labelMensagem.setText("Invalid username or password.");
+            }
+        } catch (ElementoNaoEncontradoException e) {
+            labelMensagem.setStyle("-fx-text-fill: red;");
+            labelMensagem.setText("Invalid username or password.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            labelMensagem.setText("Database error.");
+        }
+    }
+
+    @FXML
+    public void realizarCadastro() {
+        String nome = campoNomeCadastro.getText();
+        String senha = campoSenhaCadastro.getText();
+        String senhaConfirm = campoSenhaConfirm.getText();
+        TipoUsuario tipo = choiceTipo.getValue();
+
+        if (nome.isEmpty()) {
+            mostrarErro(campoNomeCadastro, "* required");
+            return;
+        } else if (senha.isEmpty()) {
+            mostrarErro(campoSenhaCadastro, "* required");
+            return;
+        } else if (senhaConfirm.isEmpty()) {
+            mostrarErro(campoSenhaConfirm, "* required");
+            return;
+        }
+
+        if (!senha.equals(senhaConfirm)) {
+            mostrarErro(campoSenhaConfirm, "Passwords do not match.");
+            return;
+        }
+
+        try {
+            gerenciadorUsuario.buscarPorNome(nome);
+            mostrarErro(campoNomeCadastro, "User already exists.");
+        } catch (ElementoNaoEncontradoException ex) {
+            Usuario novo = new Usuario(nome, senha, tipo);
+            try {
+                gerenciadorUsuario.adicionarUsuario(novo);
+                labelMensagem.setStyle("-fx-text-fill: green;");
+                labelMensagem.setText("Registration successful.");
+                mostrarLoginAnimado();
+            } catch (SQLException e) {
+                labelMensagem.setStyle("-fx-text-fill: red;");
+                labelMensagem.setText("Error registering user.");
+            }
+        } catch (SQLException e) {
+            labelMensagem.setStyle("-fx-text-fill: red;");
+            labelMensagem.setText("Error checking user.");
+        }
+    }
+
+    public void irParaTelaPrincipal() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
+            Parent root = loader.load();
+            ControladorTelaPrincipal controlador = loader.getController();
+            controlador.setUsuario(usuarioLogado);
+            Scene novaCena = new Scene(root, (int)campoNomeLogin.getScene().getWidth(), (int)campoNomeLogin.getScene().getHeight());
+            Stage stage = (Stage) campoNomeLogin.getScene().getWindow();
+            stage.setScene(novaCena);
+            stage.setTitle("Codex Core");
+            stage.setResizable(true);
+            stage.setMinWidth(640);
+            stage.setMinHeight(480);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void mostrarErro(TextField campo, String msg) {
+        campo.setStyle("-fx-border-color: red; -fx-border-radius: 10px;");
+        labelMensagem.setStyle("-fx-text-fill: red;");
+        labelMensagem.setText(msg);
     }
 
     private void mostrarLoginAnimado() {
@@ -239,85 +344,5 @@ public class ControladorLogin {
         });
 
         fadeOut.play();
-    }
-
-    public void realizarLogin() {
-        String nome = campoNomeLogin.getText().trim();
-        String senha = campoSenhaLogin.getText();
-
-        if (nome.isEmpty()) {
-            mostrarErro(campoNomeLogin, "* obrigatório");
-            return;
-        } else if (senha.isEmpty()) {
-            mostrarErro(campoSenhaLogin, "* obrigatório");
-        }
-
-        try {
-            Usuario u = gerenciadorUsuario.buscarPorNome(nome);
-            if (u.autenticar(senha)) {
-                labelMensagem.setStyle("-fx-text-fill : green;");
-                labelMensagem.setText("Bem-vindo " + u.getNome() + "!");
-                usuarioLogado = u;
-                irParaTelaPrincipal();
-            }
-        } catch (ElementoNaoEncontradoException e) {
-            labelMensagem.setStyle("-fx-text-fill: red;");
-            labelMensagem.setText("Usuário ou senha inválido(s).");
-        }
-    }
-
-    @FXML
-    public void realizarCadastro() {
-        String nome = campoNomeCadastro.getText();
-        String senha = campoSenhaCadastro.getText();
-        String senhaConfirm = campoSenhaConfirm.getText();
-        TipoUsuario tipo = choiceTipo.getValue();
-
-        if (nome.isEmpty()) {
-            mostrarErro(campoNomeCadastro, "* obrigatório");
-            return;
-        } else if (senha.isEmpty()) {
-            mostrarErro(campoSenhaCadastro, "* obrigatório");
-            return;
-        } else if (senhaConfirm.isEmpty()) {
-            mostrarErro(campoSenhaConfirm, "* obrigatório");
-            return;
-        }
-
-        if (!senha.equals(senhaConfirm)) {
-            mostrarErro(campoSenhaConfirm, "As senhas não coincidem.");
-            return;
-        }
-
-        Usuario novo = new Usuario(nome, senha, tipo);
-        gerenciadorUsuario.adicionarUsuario(novo);
-        labelMensagem.setStyle("-fx-text-fill: green;");
-        labelMensagem.setText("Cadastro realizado com sucesso.");
-        mostrarLoginAnimado();
-    }
-
-    public void irParaTelaPrincipal() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
-            Parent root = loader.load();
-            ControladorTelaPrincipal controlador = loader.getController();
-            controlador.setUsuario(usuarioLogado);
-            Scene novaCena = new Scene(root, (int)campoNomeLogin.getScene().getWidth(), (int)campoNomeLogin.getScene().getHeight());
-            Stage stage = (Stage) campoNomeLogin.getScene().getWindow();
-            stage.setScene(novaCena);
-            stage.setTitle("Codex Core");
-            stage.setResizable(true);
-            stage.setMinWidth(640);
-            stage.setMinHeight(480);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void mostrarErro(TextField campo, String msg) {
-        campo.setStyle("-fx-border-color: red; -fx-border-radius: 10px;");
-        labelMensagem.setStyle("-fx-text-fill: red;");
-        labelMensagem.setText(msg);
     }
 }

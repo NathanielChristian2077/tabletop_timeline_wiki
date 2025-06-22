@@ -17,7 +17,7 @@ public class DAOPersonagem {
     public void salvar(Personagem personagem, String campanhaId) throws SQLException {
         String sql = "INSERT INTO personagem (id, nome, descricao, campanha_id) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, personagem.getId());
+            stmt.setObject(1, java.util.UUID.fromString(personagem.getId())); // CORRIGIDO
             stmt.setString(2, personagem.getNome());
             stmt.setString(3, personagem.getDescricao());
             stmt.setString(4, campanhaId);
@@ -32,8 +32,12 @@ public class DAOPersonagem {
             stmt.setString(1, campanhaId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Personagem personagem = new Personagem(rs.getString("nome"));
-                personagem.setDescricao(rs.getString("descricao"));
+                Personagem personagem = new Personagem(
+                    rs.getString("id"),
+                    rs.getString("campanha_id"),
+                    rs.getString("nome"),
+                    rs.getString("descricao")
+                );
                 personagens.add(personagem);
             }
         }
@@ -45,7 +49,7 @@ public class DAOPersonagem {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, personagem.getNome());
             stmt.setString(2, personagem.getDescricao());
-            stmt.setString(3, personagem.getId());
+            stmt.setObject(3, java.util.UUID.fromString(personagem.getId()));
             stmt.executeUpdate();
         }
     }
@@ -53,7 +57,7 @@ public class DAOPersonagem {
     public void deletar(String id) throws SQLException {
         String sql = "DELETE FROM personagem WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, id);
+            stmt.setObject(1, java.util.UUID.fromString(id));
             stmt.executeUpdate();
         }
     }

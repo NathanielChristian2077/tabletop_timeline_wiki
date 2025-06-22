@@ -14,9 +14,9 @@ import javafx.stage.Stage;
 import me.controle.*;
 import me.modelo.abstracts.ElementoNarrativo;
 import me.modelo.entidades.*;
-import me.modelo.exceptions.ElementoNaoEncontradoException;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -28,26 +28,52 @@ public class ControladorTimeline {
     private TreeItem<Object> rootCampanha;
     private final Deque<Object> historicoRoots = new ArrayDeque<>();
 
-    private GerenciadorEvento gerenciadorEvento = new GerenciadorEvento();
-    private List<Evento> eventos = gerenciadorEvento.listarTodas();
-    private GerenciadorPersonagem gerenciadorPersonagem = new GerenciadorPersonagem();
-    private List<Personagem> personagens = gerenciadorPersonagem.listarTodos();
-    private GerenciadorLocal gerenciadorLocal = new GerenciadorLocal();
-    private List<Local> locais = gerenciadorLocal.listarTodos();
-    private GerenciadorObjeto gerenciadorObjeto = new GerenciadorObjeto();
-    private List<Objeto> objetos = gerenciadorObjeto.listarTodos();
+    private GerenciadorEvento gerenciadorEvento;
+    private GerenciadorPersonagem gerenciadorPersonagem;
+    private GerenciadorLocal gerenciadorLocal;
+    private GerenciadorObjeto gerenciadorObjeto;
+
+    private List<Evento> eventos;
+    private List<Personagem> personagens;
+    private List<Local> locais;
+    private List<Objeto> objetos;
 
     private Campanha c;
 
+    public ControladorTimeline() {
+        try {
+            gerenciadorEvento = new GerenciadorEvento();
+            gerenciadorPersonagem = new GerenciadorPersonagem();
+            gerenciadorLocal = new GerenciadorLocal();
+            gerenciadorObjeto = new GerenciadorObjeto();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setCampanha(Campanha c) {
         this.c = c;
+        recarregarDados();
         setTreeView(treeView, c, gerenciadorEvento, gerenciadorPersonagem, gerenciadorLocal, gerenciadorObjeto);
     }
 
-    @FXML
-    public void initialize() {
-        
+    private void recarregarDados() {
+        try {
+            eventos = gerenciadorEvento.listarPorCampanha(c.getId());
+            personagens = gerenciadorPersonagem.listarPorCampanha(c.getId());
+            locais = gerenciadorLocal.listarPorCampanha(c.getId());
+            objetos = gerenciadorObjeto.listarPorCampanha(c.getId());
+        } catch (SQLException e) {
+            eventos = new ArrayList<>();
+            personagens = new ArrayList<>();
+            locais = new ArrayList<>();
+            objetos = new ArrayList<>();
+            e.printStackTrace();
+        }
     }
+
+    @FXML
+    public void initialize() {}
 
     private void setTreeView(TreeView<Object> treeView, Campanha c, GerenciadorEvento gerenciadorEvento,
             GerenciadorPersonagem gerenciadorPersonagem, GerenciadorLocal gerenciadorLocal,
@@ -110,6 +136,7 @@ public class ControladorTimeline {
     private void configSelec(TreeView<Object> treeView) {
         treeView.setOnMouseClicked(event -> {
             TreeItem<Object> selecionado = treeView.getSelectionModel().getSelectedItem();
+            if (selecionado == null) return;
             Object valor = selecionado.getValue();
 
             if (event.getButton() == MouseButton.PRIMARY) {
@@ -133,10 +160,8 @@ public class ControladorTimeline {
         TreeItem<Object> newRoot = new TreeItem<>(elemento);
         newRoot.setExpanded(true);
 
-        // Limpa e recria botões externos
         navButtonsBox.getChildren().clear();
 
-        // Botão voltar
         if (!historicoRoots.isEmpty()) {
             Button backBtn = new Button("← Back");
             backBtn.setOnAction(e -> {
@@ -146,7 +171,6 @@ public class ControladorTimeline {
             navButtonsBox.getChildren().add(backBtn);
         }
 
-        // Botão voltar para campanha
         if (rootCampanha != null && !elemento.equals(rootCampanha.getValue())) {
             Button rootBtn = new Button("⤒ Campaign Root");
             rootBtn.setOnAction(e -> {
@@ -208,7 +232,13 @@ public class ControladorTimeline {
         editar.setOnAction(e -> editarElemento(elemento));
 
         MenuItem remover = new MenuItem("Delete");
-        remover.setOnAction(e -> removerElemento(elemento, treeView));
+        remover.setOnAction(e -> {
+            try {
+                removerElemento(elemento, treeView);
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        });
 
         return new ContextMenu(descricao, adicionarRelacao, editar, remover);
     }
@@ -251,6 +281,11 @@ public class ControladorTimeline {
                     case "Location" -> e.adicionarLocal((Local) selecionado);
                     case "Object" -> e.adicionarObjeto((Objeto) selecionado);
                 }
+                try {
+                    gerenciadorEvento.atualizar(e);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             } else if (elemento instanceof ElementoNarrativo en) {
                 switch (tipo) {
                     case "Event" -> en.adicionarEvento((Evento) selecionado);
@@ -259,6 +294,8 @@ public class ControladorTimeline {
                     case "Object" -> en.adicionarObjeto((Objeto) selecionado);
                 }
             }
+            recarregarDados();
+            setTreeView(treeView, c, gerenciadorEvento, gerenciadorPersonagem, gerenciadorLocal, gerenciadorObjeto);
         });
     }
 
@@ -268,7 +305,6 @@ public class ControladorTimeline {
         } else if (elemento instanceof ElementoNarrativo en) {
             editarElementoNarrativo(en);
         }
-        
         treeView.setRoot(rootCampanha);
     }
 
@@ -312,12 +348,18 @@ public class ControladorTimeline {
             if (button.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                 evento.setTitulo(nameField.getText());
                 evento.setDescricao(descriptionArea.getText());
+                try {
+                    gerenciadorEvento.atualizar(evento);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
             return null;
         });
 
         dialog.showAndWait();
-        treeView.setRoot(rootCampanha);
+        recarregarDados();
+        setTreeView(treeView, c, gerenciadorEvento, gerenciadorPersonagem, gerenciadorLocal, gerenciadorObjeto);
     }
 
     private <T> VBox criarSeletorDeRelacoes(String titulo, List<T> relacionados, List<T> todosDisponiveis,
@@ -401,15 +443,27 @@ public class ControladorTimeline {
             if (button.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                 en.setNome(nameField.getText());
                 en.setDescricao(descriptionArea.getText());
+                try {
+                    if (en instanceof Personagem personagem) {
+                        gerenciadorPersonagem.atualizar(personagem);
+                    } else if (en instanceof Local local) {
+                        gerenciadorLocal.atualizar(local);
+                    } else if (en instanceof Objeto objeto) {
+                        gerenciadorObjeto.atualizar(objeto);
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
             return null;
         });
 
         dialog.showAndWait();
-        treeView.setRoot(rootCampanha);
+        recarregarDados();
+        setTreeView(treeView, c, gerenciadorEvento, gerenciadorPersonagem, gerenciadorLocal, gerenciadorObjeto);
     }
-    // TODO: criar alerta para caso a opção de deleção seja a própria campanha
-    private void removerElemento(Object elemento, TreeView<Object> treeView) {
+
+    private void removerElemento(Object elemento, TreeView<Object> treeView) throws SQLException {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Deletion");
         confirm.setHeaderText("Are you sure you want to delete this element?");
@@ -419,29 +473,22 @@ public class ControladorTimeline {
             if (resposta != ButtonType.OK)
                 return;
 
-            if (elemento instanceof Evento e) {
-                eventos.remove(e);
-                try {
+            try {
+                if (elemento instanceof Evento e) {
+                    eventos.remove(e);
                     gerenciadorEvento.remover(e.getId());
-                } catch (ElementoNaoEncontradoException ex) {
-                    ex.printStackTrace();
+                } else if (elemento instanceof Personagem p) {
+                    personagens.remove(p);
+                    gerenciadorPersonagem.remover(p);
+                } else if (elemento instanceof Local l) {
+                    locais.remove(l);
+                    gerenciadorLocal.remover(l);
+                } else if (elemento instanceof Objeto o) {
+                    objetos.remove(o);
+                    gerenciadorObjeto.remover(o);
                 }
-
-                Evento anterior = e.getAnterior();
-                Evento posterior = e.getPosterior();
-                if (anterior != null)
-                    anterior.setPosterior(posterior);
-                if (posterior != null)
-                    posterior.setAnterior(anterior);
-            } else if (elemento instanceof Personagem p) {
-                personagens.remove(p);
-                gerenciadorPersonagem.remover(p);
-            } else if (elemento instanceof Local l) {
-                locais.remove(l);
-                gerenciadorLocal.remover(l);
-            } else if (elemento instanceof Objeto o) {
-                objetos.remove(o);
-                gerenciadorObjeto.remover(o);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
 
             // Remover referências reversas
@@ -458,7 +505,8 @@ public class ControladorTimeline {
             for (Objeto o : objetos)
                 o.getEventosRelacionados().remove(elemento);
 
-            treeView.setRoot(rootCampanha);
+            recarregarDados();
+            setTreeView(treeView, c, gerenciadorEvento, gerenciadorPersonagem, gerenciadorLocal, gerenciadorObjeto);
         });
     }
 
@@ -493,30 +541,30 @@ public class ControladorTimeline {
         dialog.showAndWait().ifPresent(item -> mostrarRelacoes(treeView, item));
     }
 
-    private void criarElemento(String tipo, TreeView<Object> treeView) {
+    private void criarElemento(String tipo, TreeView<Object> treeView) throws SQLException {
         switch (tipo) {
             case "Event" -> {
                 Evento novoEvento = new Evento("New Event", "Event description");
-                editarEvento(novoEvento); // Abre diálogo de edição
-                eventos.add(novoEvento);
+                novoEvento.setCampanhaid(c.getId());
+                editarEvento(novoEvento);
                 gerenciadorEvento.adicionar(novoEvento);
             }
             case "Character" -> {
                 Personagem novoPersonagem = new Personagem("New Character");
+                novoPersonagem.setCampanhaId(c.getId());
                 editarElementoNarrativo(novoPersonagem);
-                personagens.add(novoPersonagem);
                 gerenciadorPersonagem.adicionar(novoPersonagem);
             }
             case "Location" -> {
                 Local novoLocal = new Local("New Location");
+                novoLocal.setCampanhaId(c.getId());
                 editarElementoNarrativo(novoLocal);
-                locais.add(novoLocal);
                 gerenciadorLocal.adicionar(novoLocal);
             }
             case "Object" -> {
                 Objeto novoObjeto = new Objeto("New Object");
+                novoObjeto.setCampanhaId(c.getId());
                 editarElementoNarrativo(novoObjeto);
-                objetos.add(novoObjeto);
                 gerenciadorObjeto.adicionar(novoObjeto);
             }
             default -> {
@@ -524,28 +572,27 @@ public class ControladorTimeline {
                 return;
             }
         }
-
-        // Atualiza a TreeView após criação
+        recarregarDados();
         setTreeView(treeView, c, gerenciadorEvento, gerenciadorPersonagem, gerenciadorLocal, gerenciadorObjeto);
     }
 
     @FXML
-    private void onCriarEvento() {
+    private void onCriarEvento() throws SQLException {
         criarElemento("Event", treeView);
     }
 
     @FXML
-    private void onCriarPersonagem() {
+    private void onCriarPersonagem() throws SQLException {
         criarElemento("Character", treeView);
     }
 
     @FXML
-    private void onCriarLocal() {
+    private void onCriarLocal() throws SQLException {
         criarElemento("Location", treeView);
     }
 
     @FXML
-    private void onCriarObjeto() {
+    private void onCriarObjeto() throws SQLException {
         criarElemento("Object", treeView);
     }
 
@@ -566,5 +613,4 @@ public class ControladorTimeline {
             e.printStackTrace();
         }
     }
-
 }

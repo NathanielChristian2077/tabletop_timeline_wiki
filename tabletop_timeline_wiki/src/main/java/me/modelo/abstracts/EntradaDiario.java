@@ -7,9 +7,16 @@ public abstract class EntradaDiario {
     protected String campanhaid;
     protected String titulo;
     protected String descricao;
-    
+
     public EntradaDiario(String titulo, String descricao) {
         this.id = UUID.randomUUID().toString();
+        this.titulo = titulo;
+        this.descricao = descricao;
+    }
+
+    public EntradaDiario(String id, String campanhaid, String titulo, String descricao) {
+        this.id = id;
+        this.campanhaid = campanhaid;
         this.titulo = titulo;
         this.descricao = descricao;
     }

@@ -9,13 +9,22 @@ public class Usuario {
     private String nome;
     private String senha;
     private TipoUsuario tipo;
+
     /**
- * Representa um usuário do sistema, podendo ser mestre ou jogador.
- * Controla permissões e autoria, sendo base para validação de interações e filtros de acesso.
- * Demonstra encapsulamento e uso de enum para modelar papéis.
- */
+     * Representa um usuário do sistema, podendo ser mestre ou jogador.
+     * Controla permissões e autoria, sendo base para validação de interações e
+     * filtros de acesso.
+     * Demonstra encapsulamento e uso de enum para modelar papéis.
+     */
     public Usuario(String nome, String senha, TipoUsuario tipo) {
         this.id = UUID.randomUUID().toString();
+        this.nome = nome;
+        this.senha = senha;
+        this.tipo = tipo;
+    }
+
+    public Usuario(String id, String nome, String senha, TipoUsuario tipo) {
+        this.id = id;
         this.nome = nome;
         this.senha = senha;
         this.tipo = tipo;
@@ -29,19 +38,25 @@ public class Usuario {
         return nome;
     }
 
-    public void setNome(String nome) { this.nome = nome; }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
     public String getSenha() {
         return senha;
     }
 
-    public void setSenha(String senha) { this.senha = senha; }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 
     public TipoUsuario getTipo() {
         return tipo;
     }
 
-    public void setTipo(TipoUsuario tipo) { this.tipo = tipo; }
+    public void setTipo(TipoUsuario tipo) {
+        this.tipo = tipo;
+    }
 
     public boolean isMestre() {
         return tipo == TipoUsuario.MESTRE;

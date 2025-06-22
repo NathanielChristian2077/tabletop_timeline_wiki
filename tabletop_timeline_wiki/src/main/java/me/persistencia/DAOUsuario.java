@@ -6,91 +6,108 @@ import me.modelo.enums.TipoUsuario;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class DAOUsuario {
 
-    private final Connection conn;
-
-    public DAOUsuario() throws SQLException {
-        this.conn = ConexaoBD.getConnection();
-    }
-
-    public void salvar(Usuario u) throws SQLException {
+    public void salvar(Usuario usuario) throws SQLException {
         String sql = "INSERT INTO usuario (id, nome, senha, tipo) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, u.getId());
-            stmt.setString(2, u.getNome());
-            stmt.setString(3, u.getSenha());
-            stmt.setString(4, u.getTipo().name());
+        try (Connection con = ConexaoBD.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setObject(1, UUID.fromString(usuario.getId()));
+            stmt.setString(2, usuario.getNome());
+            stmt.setString(3, usuario.getSenha());
+            stmt.setString(4, usuario.getTipo().name());
             stmt.executeUpdate();
         }
     }
 
-    public Usuario buscarPorId(String id) throws SQLException {
+    public Optional<Usuario> buscarPorId(String id) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, id);
+        try (Connection con = ConexaoBD.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setObject(1, UUID.fromString(id));
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Usuario(
-                    rs.getString("nome"),
-                    rs.getString("senha"),
-                    TipoUsuario.valueOf(rs.getString("tipo"))
-                );
+                return Optional.of(mapearUsuario(rs));
             }
+            return Optional.empty();
         }
-        return null;
     }
 
-    public Usuario buscarPorNome(String nome) throws SQLException {
+    public Optional<Usuario> buscarPorNome(String nome) throws SQLException {
         String sql = "SELECT * FROM usuario WHERE nome = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection con = ConexaoBD.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
             stmt.setString(1, nome);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Usuario(
-                    rs.getString("nome"),
-                    rs.getString("senha"),
-                    TipoUsuario.valueOf(rs.getString("tipo"))
-                );
+                return Optional.of(mapearUsuario(rs));
             }
+            return Optional.empty();
         }
-        return null;
     }
 
-    public List<Usuario> listarTodos() throws SQLException {
-        String sql = "SELECT * FROM usuario";
-        List<Usuario> lista = new ArrayList<>();
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+    public List<Usuario> listarPorTipo(TipoUsuario tipo) throws SQLException {
+        String sql = "SELECT * FROM usuario WHERE tipo = ?";
+        List<Usuario> usuarios = new ArrayList<>();
+        try (Connection con = ConexaoBD.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, tipo.name());
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Usuario u = new Usuario(
-                    rs.getString("nome"),
-                    rs.getString("senha"),
-                    TipoUsuario.valueOf(rs.getString("tipo"))
-                );
-                lista.add(u);
+                usuarios.add(mapearUsuario(rs));
             }
         }
-        return lista;
+        return usuarios;
     }
 
-    public void atualizar(Usuario u) throws SQLException {
+    public boolean atualizar(Usuario usuario) throws SQLException {
         String sql = "UPDATE usuario SET nome = ?, senha = ?, tipo = ? WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, u.getNome());
-            stmt.setString(2, u.getSenha());
-            stmt.setString(3, u.getTipo().name());
-            stmt.setString(4, u.getId());
-            stmt.executeUpdate();
+        try (Connection con = ConexaoBD.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, usuario.getNome());
+            stmt.setString(2, usuario.getSenha());
+            stmt.setString(3, usuario.getTipo().name());
+            stmt.setObject(4, UUID.fromString(usuario.getId()));
+            int linhas = stmt.executeUpdate();
+            return linhas > 0;
         }
     }
 
+    public boolean removerPorId(String id) throws SQLException {
+        String sql = "DELETE FROM usuario WHERE id = ?";
+        try (Connection con = ConexaoBD.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setObject(1, java.util.UUID.fromString(id)); // CORREÇÃO
+            int linhas = stmt.executeUpdate();
+            return linhas > 0;
+        }
+    }
+
+    // Se quiser manter o método deletar:
     public void deletar(String id) throws SQLException {
         String sql = "DELETE FROM usuario WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, id);
+        try (Connection con = ConexaoBD.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setObject(1, java.util.UUID.fromString(id)); // CORREÇÃO
             stmt.executeUpdate();
         }
+    }
+
+    private Usuario mapearUsuario(ResultSet rs) throws SQLException {
+        String id = rs.getString("id");
+        String nome = rs.getString("nome");
+        String senha = rs.getString("senha");
+        TipoUsuario tipo = TipoUsuario.valueOf(rs.getString("tipo"));
+        return new Usuario(id, nome, senha, tipo); // Usa o id do banco!
     }
 }

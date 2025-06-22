@@ -9,9 +9,12 @@ import java.util.UUID;
 
 import me.modelo.abstracts.ElementoNarrativo;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
+
 /**
- * Representa uma campanha de RPG, contendo todos os eventos e gerenciada por um mestre.
- * Aplica agregação e controle de propriedade sobre os elementos narrativos associados.
+ * Representa uma campanha de RPG, contendo todos os eventos e gerenciada por um
+ * mestre.
+ * Aplica agregação e controle de propriedade sobre os elementos narrativos
+ * associados.
  * Permite centralizar a estrutura da narrativa.
  */
 public class Campanha {
@@ -20,6 +23,7 @@ public class Campanha {
     private String descricao;
 
     private String imagePath;
+    private static final String DEFAULT_IMAGE_PATH = "/me/gui/images/nullPlaceholder.jpg";
 
     private Map<String, ElementoNarrativo> elementos;
     private List<Evento> eventos;
@@ -30,7 +34,16 @@ public class Campanha {
         this.descricao = descricao;
         this.elementos = new HashMap<>();
         this.eventos = new ArrayList<>();
-        this.imagePath = null;
+        this.imagePath = DEFAULT_IMAGE_PATH;
+    }
+
+    public Campanha(String id, String nome, String descricao) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.elementos = new HashMap<>();
+        this.eventos = new ArrayList<>();
+        this.imagePath = DEFAULT_IMAGE_PATH;
     }
 
     public String getId() {
@@ -49,7 +62,9 @@ public class Campanha {
         return descricao;
     }
 
-    public String getImagePath() { return imagePath; }
+    public String getImagePath() {
+        return (imagePath == null || imagePath.isBlank()) ? DEFAULT_IMAGE_PATH : imagePath;
+    }
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
@@ -118,16 +133,24 @@ public class Campanha {
     public List<Personagem> buscarPersonagensPorNome(String nome) {
         List<Personagem> encontrados = new ArrayList<>();
         for (Personagem p : getPersonagens()) {
-            if (p.getNome().equalsIgnoreCase(nome)) encontrados.add(p);
+            if (p.getNome().equalsIgnoreCase(nome))
+                encontrados.add(p);
         }
         return encontrados;
     }
 
     public void setCaminhoImagem(String imagePath) {
-        this.imagePath = Campanha.this.imagePath;
+        if (imagePath == null || imagePath.isBlank()) {
+            this.imagePath = DEFAULT_IMAGE_PATH;
+        } else {
+            this.imagePath = imagePath;
+        }
     }
 
     public boolean imageExists() {
-        return imagePath != null && !imagePath.isBlank() && new File(imagePath).exists();
+        String path = getImagePath();
+        if (path.equals(DEFAULT_IMAGE_PATH))
+            return true;
+        return path != null && !path.isBlank() && new File(path).exists();
     }
 }

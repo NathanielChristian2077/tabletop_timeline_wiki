@@ -3,63 +3,49 @@ package me.controle;
 import me.modelo.entidades.Usuario;
 import me.modelo.enums.TipoUsuario;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
+import me.persistencia.DAOUsuario;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 public class GerenciadorUsuario {
-    private List<Usuario> usuarios = new ArrayList<>();
+    private final DAOUsuario daoUsuario;
 
-    public List<Usuario> getUsuarios() {
-        return usuarios;
+    public GerenciadorUsuario() throws SQLException {
+        this.daoUsuario = new DAOUsuario();
     }
 
-    public void adicionarUsuario(Usuario usuario) {
-        usuarios.add(usuario);
+    public void adicionarUsuario(Usuario usuario) throws SQLException {
+        daoUsuario.salvar(usuario);
     }
 
-    public Usuario buscarPorId(String id) throws ElementoNaoEncontradoException {
-        return usuarios.stream()
-            .filter(u -> u.getId().equals(id))
-            .findFirst()
-            .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado."));
+    public Usuario buscarPorId(String id) throws ElementoNaoEncontradoException, SQLException {
+        return daoUsuario.buscarPorId(id)
+                .orElseThrow(() -> new ElementoNaoEncontradoException("User not found."));
     }
 
-    public Usuario buscarPorNome(String nome) throws ElementoNaoEncontradoException {
-        return usuarios.stream()
-            .filter(u -> u.getNome().equalsIgnoreCase(nome))
-            .findFirst()
-            .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado."));
+    public Usuario buscarPorNome(String nome) throws ElementoNaoEncontradoException, SQLException {
+        return daoUsuario.buscarPorNome(nome)
+                .orElseThrow(() -> new ElementoNaoEncontradoException("User not found."));
     }
 
-    public List<Usuario> listarPorTipo(TipoUsuario tipo) {
-        List<Usuario> resultado = new ArrayList<>();
-        for (Usuario u : usuarios) {
-            if (u.getTipo() == tipo) {
-                resultado.add(u);
-            }
+    public List<Usuario> listarPorTipo(TipoUsuario tipo) throws SQLException {
+        return daoUsuario.listarPorTipo(tipo);
+    }
+
+    public void removerUsuarioPorId(String id) throws ElementoNaoEncontradoException, SQLException {
+        if (!daoUsuario.removerPorId(id)) {
+            throw new ElementoNaoEncontradoException("User not found.");
         }
-        return resultado;
     }
 
-    public void removerUsuarioPorId(String id) throws ElementoNaoEncontradoException {
-        Usuario u = buscarPorId(id);
-        usuarios.remove(u);
+    public void remover(Usuario u) throws SQLException {
+        daoUsuario.removerPorId(u.getId());
     }
 
-    public void remover(Usuario u) {
-        usuarios.remove(u);
-    }
-
-    public void atualizarUsuario(Usuario usuarioAtualizado) throws ElementoNaoEncontradoException {
-        for (Usuario u : usuarios) {
-            if (u.getId().equals(usuarioAtualizado.getId())) {
-                u.setNome(usuarioAtualizado.getNome());
-                u.setSenha(usuarioAtualizado.getSenha());
-                return;
-            }
+    public void atualizarUsuario(Usuario usuarioAtualizado) throws ElementoNaoEncontradoException, SQLException {
+        if (!daoUsuario.atualizar(usuarioAtualizado)) {
+            throw new ElementoNaoEncontradoException("User with ID " + usuarioAtualizado.getId() + " not found.");
         }
-        throw new ElementoNaoEncontradoException("Usuário com ID " + usuarioAtualizado.getId() + " não encontrado.");
     }
-
 }

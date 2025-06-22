@@ -9,7 +9,8 @@ import me.modelo.interfaces.Exportavel;
 
 /**
  * Representa um evento temporal dentro de uma campanha.
- * Estende EntradaDiario e implementa comportamento associativo entre locais, personagens, objetos e outros eventos.
+ * Estende EntradaDiario e implementa comportamento associativo entre locais,
+ * personagens, objetos e outros eventos.
  * Demonstra composição, encapsulamento e comportamento relacional.
  */
 public class Evento extends EntradaDiario implements Associavel, Exportavel {
@@ -22,6 +23,10 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
     public Evento(String titulo, String descricao) {
         super(titulo, descricao);
         setCampanhaid(campanhaid);
+    }
+
+    public Evento(String id, String campanhaid, String titulo, String descricao) {
+        super(id, campanhaid, titulo, descricao);
     }
 
     public void adicionarEventoAnterior(Evento e) {
@@ -66,19 +71,19 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
 
     @Override
     public void adicionarLocal(Local l) {
-        if (!locaisRelacionados.contains(l)) 
+        if (!locaisRelacionados.contains(l))
             locaisRelacionados.add(l);
     }
 
     @Override
     public void adicionarObjeto(Objeto o) {
-        if (!objetosRelacionados.contains(o)) 
+        if (!objetosRelacionados.contains(o))
             objetosRelacionados.add(o);
     }
 
     @Override
     public void adicionarPersonagem(Personagem p) {
-        if (!personagensRelacionados.contains(p)) 
+        if (!personagensRelacionados.contains(p))
             personagensRelacionados.add(p);
     }
 

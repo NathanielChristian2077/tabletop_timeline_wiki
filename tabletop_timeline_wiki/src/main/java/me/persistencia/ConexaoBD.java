@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class ConexaoBD {
     private static final String URL = "jdbc:postgresql://localhost:5432/campanha_db";
-    private static final String USUARIO = "campanha_user";
+    private static final String USUARIO = "postgres";
     private static final String SENHA = "1234";
 
     private static ConexaoBD instancia;

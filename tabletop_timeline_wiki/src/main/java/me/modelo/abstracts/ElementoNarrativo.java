@@ -12,8 +12,10 @@ import me.modelo.interfaces.Associavel;
 import me.modelo.interfaces.Exportavel;
 
 /**
- * Classe abstrata que representa um elemento narrativo do sistema (como personagem, objeto, local).
- * Implementa as interfaces Associavel e Exportavel para garantir integração com outros elementos da narrativa.
+ * Classe abstrata que representa um elemento narrativo do sistema (como
+ * personagem, objeto, local).
+ * Implementa as interfaces Associavel e Exportavel para garantir integração com
+ * outros elementos da narrativa.
  * Aplica herança, reutilização de código e polimorfismo.
  */
 public abstract class ElementoNarrativo implements Associavel, Exportavel {
@@ -31,12 +33,23 @@ public abstract class ElementoNarrativo implements Associavel, Exportavel {
         this.id = UUID.randomUUID().toString();
         this.nome = nome;
         this.descricao = null;
-        setCampanhaid(campanhaid);
+        setCampanhaId(campanhaid);
+    }
+
+    public ElementoNarrativo(String id, String campanhaid, String nome, String descricao) {
+        this.id = id;
+        this.campanhaid = campanhaid;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.eventosRelacionados = new ArrayList<>();
+        this.locaisRelacionados = new ArrayList<>();
+        this.objetosRelacionados = new ArrayList<>();
+        this.personagensRelacionados = new ArrayList<>();
     }
 
     @Override
     public void adicionarEvento(Evento e) {
-        if (!eventosRelacionados.contains(e)) 
+        if (!eventosRelacionados.contains(e))
             eventosRelacionados.add(e);
     }
 
@@ -55,7 +68,7 @@ public abstract class ElementoNarrativo implements Associavel, Exportavel {
     @Override
     public void adicionarPersonagem(Personagem p) {
         if (!personagensRelacionados.contains(p))
-            personagensRelacionados.add(p);        
+            personagensRelacionados.add(p);
     }
 
     @Override
@@ -91,11 +104,11 @@ public abstract class ElementoNarrativo implements Associavel, Exportavel {
         this.nome = nome;
     }
 
-    public String getCampanhaid() {
+    public String getCampanhaId() {
         return campanhaid;
     }
 
-    public void setCampanhaid(String campanhaid) {
+    public void setCampanhaId(String campanhaid) {
         this.campanhaid = campanhaid;
     }
 
@@ -111,22 +124,22 @@ public abstract class ElementoNarrativo implements Associavel, Exportavel {
 
     @Override
     public void removerEvento(Evento e) {
-        eventosRelacionados.remove(e);        
+        eventosRelacionados.remove(e);
     }
 
     @Override
     public void removerLocal(Local l) {
-        locaisRelacionados.remove(l);        
+        locaisRelacionados.remove(l);
     }
 
     @Override
     public void removerObjeto(Objeto o) {
-        objetosRelacionados.remove(o);        
+        objetosRelacionados.remove(o);
     }
 
     @Override
     public void removerPersonagem(Personagem p) {
-        personagensRelacionados.remove(p);     
+        personagensRelacionados.remove(p);
     }
 
     @Override

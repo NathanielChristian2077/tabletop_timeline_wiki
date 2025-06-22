@@ -17,10 +17,12 @@ public class DAOCampanha {
     public void salvar(Campanha c) throws SQLException {
         String sql = "INSERT INTO campanha (id, nome, descricao, image_path) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, c.getId());
+            stmt.setObject(1, java.util.UUID.fromString(c.getId())); // <-- ajuste aqui
             stmt.setString(2, c.getNome());
             stmt.setString(3, c.getDescricao());
-            stmt.setString(4, c.getImagePath());
+            String imagePath = c.getImagePath();
+            stmt.setString(4,
+                    (imagePath == null || imagePath.isBlank()) ? "/me/gui/images/nullPlaceholder.jpg" : imagePath);
             stmt.executeUpdate();
         }
     }
@@ -28,11 +30,17 @@ public class DAOCampanha {
     public Campanha buscarPorId(String id) throws SQLException {
         String sql = "SELECT * FROM campanha WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, id);
+            stmt.setObject(1, java.util.UUID.fromString(id));
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                Campanha c = new Campanha(rs.getString("nome"), rs.getString("descricao"));
-                c.setCaminhoImagem(rs.getString("image_path"));
+                Campanha c = new Campanha(
+                    rs.getString("id"),
+                    rs.getString("nome"),
+                    rs.getString("descricao")
+                );
+                String imagePath = rs.getString("image_path");
+                c.setCaminhoImagem(
+                    (imagePath == null || imagePath.isBlank()) ? "/me/gui/images/nullPlaceholder.jpg" : imagePath);
                 return c;
             }
         }
@@ -45,8 +53,14 @@ public class DAOCampanha {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Campanha c = new Campanha(rs.getString("nome"), rs.getString("descricao"));
-                c.setCaminhoImagem(rs.getString("image_path"));
+                Campanha c = new Campanha(
+                    rs.getString("id"),
+                    rs.getString("nome"),
+                    rs.getString("descricao")
+                );
+                String imagePath = rs.getString("image_path");
+                c.setCaminhoImagem(
+                    (imagePath == null || imagePath.isBlank()) ? "/me/gui/images/nullPlaceholder.jpg" : imagePath);
                 lista.add(c);
             }
         }
@@ -58,8 +72,9 @@ public class DAOCampanha {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, c.getNome());
             stmt.setString(2, c.getDescricao());
-            stmt.setString(3, c.getImagePath());
-            stmt.setString(4, c.getId());
+            String imagePath = c.getImagePath();
+            stmt.setString(3, (imagePath == null || imagePath.isBlank()) ? "/me/gui/images/nullPlaceholder.jpg" : imagePath);
+            stmt.setObject(4, java.util.UUID.fromString(c.getId())); // CORREÇÃO AQUI
             stmt.executeUpdate();
         }
     }
@@ -67,7 +82,7 @@ public class DAOCampanha {
     public void deletar(String id) throws SQLException {
         String sql = "DELETE FROM campanha WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, id);
+            stmt.setObject(1, java.util.UUID.fromString(id)); // CORREÇÃO
             stmt.executeUpdate();
         }
     }
