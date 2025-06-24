@@ -1,12 +1,16 @@
 package me.persistencia;
 
+import me.modelo.entidades.Evento;
+import me.modelo.entidades.Local;
+import me.modelo.entidades.Objeto;
 import me.modelo.entidades.Personagem;
+import me.modelo.interfaces.Associavel;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 public class DAOPersonagem {
@@ -31,8 +35,9 @@ public class DAOPersonagem {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setObject(1, java.util.UUID.fromString(campanhaId));
             try (ResultSet rs = stmt.executeQuery()) {
+                Map<String, Associavel> visitados = new HashMap<>();
                 while (rs.next()) {
-                    Personagem personagem = buscarPorId(rs.getString("id"), conn);
+                    Personagem personagem = buscarPorId(rs.getString("id"), conn, visitados);
                     if (personagem != null) {
                         personagens.add(personagem);
                     }
@@ -61,13 +66,11 @@ public class DAOPersonagem {
     }
 
     public Personagem buscarPorId(String id, Connection conn) throws SQLException {
-        return buscarPorId(id, conn, new HashSet<>());
+        return buscarPorId(id, conn, new HashMap<>());
     }
 
-    public Personagem buscarPorId(String id, Connection conn, Set<String> visitados) throws SQLException {
-        if (visitados.contains(id))
-            return null; // evita loop
-        visitados.add(id);
+    public Personagem buscarPorId(String id, Connection conn, Map<String, Associavel> visitados) throws SQLException {
+        if (visitados.containsKey(id)) return (Personagem) visitados.get(id);
 
         String sql = "SELECT * FROM personagem WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -78,7 +81,10 @@ public class DAOPersonagem {
                             rs.getString("id"),
                             rs.getString("campanha_id"),
                             rs.getString("nome"),
-                            rs.getString("descricao"));
+                            rs.getString("descricao")
+                    );
+
+                    visitados.put(id, p);
 
                     DAOObjeto daoObjeto = new DAOObjeto();
                     DAOEvento daoEvento = new DAOEvento();
@@ -86,21 +92,21 @@ public class DAOPersonagem {
 
                     // Relacionamentos com objetos
                     for (String oid : listarObjetosRelacionados(p.getId(), conn)) {
-                        var obj = daoObjeto.buscarPorId(oid, conn);
+                        Objeto obj = daoObjeto.buscarPorId(oid, conn, visitados);
                         if (obj != null)
                             p.adicionarObjeto(obj);
                     }
 
                     // Relacionamentos com eventos
                     for (String eid : listarEventosRelacionados(p.getId(), conn)) {
-                        var ev = daoEvento.buscarPorId(eid, conn);
+                        Evento ev = daoEvento.buscarPorId(eid, conn, visitados);
                         if (ev != null)
                             p.adicionarEvento(ev);
                     }
 
                     // Relacionamentos com locais
                     for (String lid : listarLocaisRelacionados(p.getId(), conn)) {
-                        var loc = daoLocal.buscarPorId(lid, conn);
+                        Local loc = daoLocal.buscarPorId(lid, conn, visitados);
                         if (loc != null)
                             p.adicionarLocal(loc);
                     }
@@ -108,7 +114,7 @@ public class DAOPersonagem {
                     // Relação com outros personagens
                     for (String pid : listarRelacionamentosPersonagem(p.getId(), conn)) {
                         if (!pid.equals(p.getId())) {
-                            var per = buscarPorId(pid, conn, visitados); // reutiliza o mesmo Set
+                            Personagem per = buscarPorId(pid, conn, visitados); // reutiliza o mesmo Set
                             if (per != null)
                                 p.adicionarPersonagem(per);
                         }

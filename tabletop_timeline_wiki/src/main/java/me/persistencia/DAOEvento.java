@@ -4,12 +4,13 @@ import me.modelo.entidades.Evento;
 import me.modelo.entidades.Local;
 import me.modelo.entidades.Objeto;
 import me.modelo.entidades.Personagem;
+import me.modelo.interfaces.Associavel;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 public class DAOEvento {
@@ -49,14 +50,13 @@ public class DAOEvento {
         return null;
     }
 
-    public Evento buscarPorId(String id, Connection conn, Set<String> visitados) throws SQLException {
-        if (visitados.contains(id))
-            return null;
-        visitados.add(id);
+    public Evento buscarPorId(String id, Connection conn, Map<String, Associavel> visitados) throws SQLException {
+        if (visitados.containsKey(id)) return (Evento) visitados.get(id);
 
         Evento e = buscarPorId(id, conn);
-        if (e == null)
-            return null;
+        if (e == null) return null;
+
+        visitados.put(id, e);
 
         DAOEvento daoEvento = new DAOEvento();
         DAOPersonagem daoPersonagem = new DAOPersonagem();
@@ -64,19 +64,19 @@ public class DAOEvento {
         DAOObjeto daoObjeto = new DAOObjeto();
 
         for (String pid : listarPersonagensRelacionados(e.getId(), conn)) {
-            var p = daoPersonagem.buscarPorId(pid, conn);
+            Personagem p = daoPersonagem.buscarPorId(pid, conn, visitados);
             if (p != null)
                 e.adicionarPersonagem(p);
         }
 
         for (String lid : listarLocaisRelacionados(e.getId(), conn)) {
-            var l = daoLocal.buscarPorId(lid, conn);
+            Local l = daoLocal.buscarPorId(lid, conn, visitados);
             if (l != null)
                 e.adicionarLocal(l);
         }
 
         for (String oid : listarObjetosRelacionados(e.getId(), conn)) {
-            var o = daoObjeto.buscarPorId(oid, conn);
+            Objeto o = daoObjeto.buscarPorId(oid, conn, visitados);
             if (o != null)
                 e.adicionarObjeto(o);
         }
@@ -93,7 +93,7 @@ public class DAOEvento {
     }
 
     public Evento buscarPorIdComRelacionados(String id, Connection conn) throws SQLException {
-        return buscarPorId(id, conn, new HashSet<>());
+        return buscarPorId(id, conn, new HashMap<>());
     }
 
     public List<Evento> listarTodos(Connection conn) throws SQLException {

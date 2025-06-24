@@ -4,6 +4,7 @@ import me.modelo.entidades.Objeto;
 import me.modelo.entidades.Evento;
 import me.modelo.entidades.Local;
 import me.modelo.entidades.Personagem;
+import me.modelo.interfaces.Associavel;
 
 import java.sql.*;
 import java.util.*;
@@ -29,7 +30,7 @@ public class DAOObjeto {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setObject(1, UUID.fromString(campanhaId));
             try (ResultSet rs = stmt.executeQuery()) {
-                Set<String> visitados = new HashSet<>();
+                Map<String, Associavel> visitados = new HashMap<>();
                 while (rs.next()) {
                     Objeto objeto = buscarPorId(rs.getString("id"), conn, visitados);
                     if (objeto != null) {
@@ -60,12 +61,11 @@ public class DAOObjeto {
     }
 
     public Objeto buscarPorId(String id, Connection conn) throws SQLException {
-        return buscarPorId(id, conn, new HashSet<>());
+        return buscarPorId(id, conn, new HashMap<>());
     }
 
-    public Objeto buscarPorId(String id, Connection conn, Set<String> visitados) throws SQLException {
-        if (visitados.contains(id)) return null;
-        visitados.add(id);
+    public Objeto buscarPorId(String id, Connection conn, Map<String, Associavel> visitados) throws SQLException {
+        if (visitados.containsKey(id)) return (Objeto) visitados.get(id);
 
         String sql = "SELECT * FROM objeto WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -79,22 +79,24 @@ public class DAOObjeto {
                         rs.getString("descricao")
                     );
 
+                    visitados.put(id, o);
+
                     DAOEvento daoEvento = new DAOEvento();
                     DAOLocal daoLocal = new DAOLocal();
                     DAOPersonagem daoPersonagem = new DAOPersonagem();
 
                     for (String eid : listarEventosRelacionados(o.getId(), conn)) {
-                        Evento e = daoEvento.buscarPorId(eid, conn);
+                        Evento e = daoEvento.buscarPorId(eid, conn, visitados);
                         if (e != null) o.adicionarEvento(e);
                     }
 
                     for (String lid : listarLocaisRelacionados(o.getId(), conn)) {
-                        Local l = daoLocal.buscarPorId(lid, conn);
+                        Local l = daoLocal.buscarPorId(lid, conn, visitados);
                         if (l != null) o.adicionarLocal(l);
                     }
 
                     for (String pid : listarPersonagensRelacionados(o.getId(), conn)) {
-                        Personagem p = daoPersonagem.buscarPorId(pid, conn);
+                        Personagem p = daoPersonagem.buscarPorId(pid, conn, visitados);
                         if (p != null) o.adicionarPersonagem(p);
                     }
 
