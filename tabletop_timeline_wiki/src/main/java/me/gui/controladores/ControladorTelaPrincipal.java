@@ -21,6 +21,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
@@ -112,12 +113,8 @@ public class ControladorTelaPrincipal {
 
     private DAOCampanha daoCampanha;
 
-    public ControladorTelaPrincipal() {
-        try {
-            this.daoCampanha = new DAOCampanha();
-        } catch (SQLException e) {
-            showError("Erro ao conectar ao banco de dados de campanhas.", e.getMessage());
-        }
+    public ControladorTelaPrincipal() throws SQLException {
+        this.daoCampanha = new DAOCampanha();
         try {
             this.gerenciadorUsuario = new GerenciadorUsuario();
         } catch (SQLException e) {
@@ -175,6 +172,19 @@ public class ControladorTelaPrincipal {
         sidebar.prefHeightProperty().bind(root.heightProperty());
         setBotaoPerfil(botaoPerfil);
         botaoPerfil.setOnContextMenuRequested(this::abrirMenuPerfil);
+
+        // Adicione este bloco para abrir o menu com o botão esquerdo também
+        botaoPerfil.setOnMouseClicked(event -> {
+            if (event.isPrimaryButtonDown()) {
+                abrirMenuPerfil(new ContextMenuEvent(
+                    ContextMenuEvent.CONTEXT_MENU_REQUESTED,
+                    event.getSceneX(), event.getSceneY(),
+                    event.getScreenX(), event.getScreenY(),
+                    false, null
+                ));
+                event.consume();
+            }
+        });
 
         carregarCampanhas();
     }
@@ -291,12 +301,14 @@ public class ControladorTelaPrincipal {
 
         cartao.setOnContextMenuRequested(e -> abrirMenuContextual(e, c));
         cartao.setOnMouseClicked(e -> {
-            System.out.println("Clique no cartão da campanha: " + (c != null ? c.getId() : "null") + " | Botão: " + e.getButton());
+            System.out.println(
+                    "Clique no cartão da campanha: " + (c != null ? c.getId() : "null") + " | Botão: " + e.getButton());
             if (e.getButton() == javafx.scene.input.MouseButton.PRIMARY && e.getClickCount() == 1) {
                 irParaTelaCampanha(c);
                 e.consume();
             }
-            // Não trate botão direito aqui, pois o ContextMenu já é tratado por setOnContextMenuRequested
+            // Não trate botão direito aqui, pois o ContextMenu já é tratado por
+            // setOnContextMenuRequested
         });
         cartao.getChildren().addAll(capa, nome);
         return cartao;
@@ -472,8 +484,9 @@ public class ControladorTelaPrincipal {
         }
 
         ContextMenu menuPerfil = new ContextMenu();
+
         menuPerfil.getStyleClass().add("menu-context");
-        menuPerfil.setStyle("-fx-font-family: " + "Constantia" + "; -fx-font-size:" + (20 * larguraCard / 440) + "px;");
+        menuPerfil.setStyle("-fx-font-family: Constantia; -fx-font-size:" + (20 * larguraCard / 440) + "px;");
 
         MenuItem edit = new MenuItem("Edit Profile");
         edit.getStyleClass().add("menu-item");
@@ -485,14 +498,17 @@ public class ControladorTelaPrincipal {
         delete.setOnAction(e -> confirmarDeleteAccount());
 
         menuPerfil.getItems().addAll(edit, delete);
+        menuPerfil.getScene().getStylesheets().add(getClass().getResource("/me/gui/principal.css").toExternalForm());
 
-        // Use botaoPerfil como anchor para garantir que o menu aparece sempre
         menuPerfil.show(botaoPerfil, event.getScreenX(), event.getScreenY());
 
         Platform.runLater(() -> {
             if (menuPerfil.getScene() != null) {
-                menuPerfil.getScene().getStylesheets()
-                        .add(getClass().getResource("/me/gui/principal.css").toExternalForm());
+                if (!menuPerfil.getScene().getStylesheets()
+                        .contains(getClass().getResource("/me/gui/principal.css").toExternalForm())) {
+                    menuPerfil.getScene().getStylesheets()
+                            .add(getClass().getResource("/me/gui/principal.css").toExternalForm());
+                }
             }
         });
         menuAtual = menuPerfil;
@@ -553,12 +569,16 @@ public class ControladorTelaPrincipal {
         alert.setHeaderText("Are you sure?");
         alert.setContentText("This action is irreversible.");
 
+        DialogPane pane = alert.getDialogPane();
+        pane.getStylesheets().add(getClass().getResource("/me/gui/principal.css").toExternalForm());
+        pane.getStyleClass().add("custom-alert");
+
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
                     gerenciadorUsuario.remover(usuario);
-                } catch (Exception e) {
-                    showError("Erro ao remover usuário.", e.getMessage());
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
                 System.exit(0);
             }
@@ -566,22 +586,10 @@ public class ControladorTelaPrincipal {
     }
 
     private void irParaTelaCampanha(Campanha c) {
-        System.out.println("Entrando na campanha: " + (c != null ? c.getId() : "null"));
         try {
-            java.net.URL fxmlUrl = getClass().getResource("/me/gui/Timeline.fxml");
-            System.out.println("URL do FXML: " + fxmlUrl);
-            if (fxmlUrl == null) {
-                showError("FXML não encontrado", "O arquivo /me/gui/Timeline.fxml não foi localizado no classpath.");
-                return;
-            }
-            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/Timeline.fxml"));
             Parent rootCampanha = loader.load();
             ControladorTimeline controlador = loader.getController();
-            System.out.println("ControladorTimeline carregado: " + (controlador != null));
-            if (controlador == null) {
-                showError("Erro ao carregar controlador", "O controlador do Timeline.fxml está nulo.");
-                return;
-            }
             controlador.setCampanha(c);
             Scene scene = new Scene(rootCampanha, labelTitle.getScene().getWidth(), labelTitle.getScene().getHeight());
             Stage stage = (Stage) labelTitle.getScene().getWindow();
@@ -592,13 +600,34 @@ public class ControladorTelaPrincipal {
             stage.setMinHeight(480);
             stage.show();
         } catch (IOException e) {
-            showError("Campaign not found",
-                    "Campaign is not in the correct location or have not been imported correctly.\n" + e.getMessage());
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Campaign not found");
+            alert.setHeaderText("Campaign is not in the correct location or have not been imported correctly.");
+            alert.setContentText("Verify the campaign file location or recreate the campaign.");
+
+            DialogPane pane = alert.getDialogPane();
+            pane.getStylesheets().add(getClass().getResource("/me/gui/principal.css").toExternalForm());
+            pane.getStyleClass().add("custom-alert");
+
+            alert.showAndWait();
             e.printStackTrace();
-        } catch (Exception ex) {
-            showError("Erro ao abrir campanha", ex.getMessage());
-            ex.printStackTrace();
         }
+    }
+
+    private void estilizarDialogPane(Alert alert) {
+        DialogPane pane = alert.getDialogPane();
+        if (!pane.getStylesheets().contains(getClass().getResource("/me/gui/principal.css").toExternalForm())) {
+            pane.getStylesheets().add(getClass().getResource("/me/gui/principal.css").toExternalForm());
+        }
+        if (!pane.getStyleClass().contains("custom-alert")) {
+            pane.getStyleClass().add("custom-alert");
+        }
+        pane.lookupButton(ButtonType.OK).getStyleClass().add("button");
+        if (pane.lookupButton(ButtonType.CANCEL) != null) {
+            pane.lookupButton(ButtonType.CANCEL).getStyleClass().add("button");
+        }
+
+        pane.setStyle("-fx-background-color: transparent;");
     }
 
     private void showError(String header, String content) {
@@ -606,6 +635,7 @@ public class ControladorTelaPrincipal {
         alert.setTitle("Erro");
         alert.setHeaderText(header);
         alert.setContentText(content);
+        estilizarDialogPane(alert);
         alert.showAndWait();
     }
 }

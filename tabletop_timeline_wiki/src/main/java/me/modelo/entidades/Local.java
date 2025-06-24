@@ -15,4 +15,9 @@ public class Local extends ElementoNarrativo {
     public String exportar() {
         return String.format("Local: %s\n%s", nome, descricao != null ? descricao : "Sem descrição");
     }
+
+    @Override
+    public String toString() {
+        return this.nome;
+    }
 }

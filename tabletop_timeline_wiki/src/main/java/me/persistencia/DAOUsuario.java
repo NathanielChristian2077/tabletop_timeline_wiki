@@ -15,7 +15,6 @@ public class DAOUsuario {
         String sql = "INSERT INTO usuario (id, nome, senha, tipo) VALUES (?, ?, ?, ?)";
         try (Connection con = ConexaoBD.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
-
             stmt.setObject(1, UUID.fromString(usuario.getId()));
             stmt.setString(2, usuario.getNome());
             stmt.setString(3, usuario.getSenha());
@@ -28,11 +27,11 @@ public class DAOUsuario {
         String sql = "SELECT * FROM usuario WHERE id = ?";
         try (Connection con = ConexaoBD.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
-
             stmt.setObject(1, UUID.fromString(id));
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return Optional.of(mapearUsuario(rs));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapearUsuario(rs));
+                }
             }
             return Optional.empty();
         }
@@ -42,11 +41,11 @@ public class DAOUsuario {
         String sql = "SELECT * FROM usuario WHERE nome = ?";
         try (Connection con = ConexaoBD.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
-
             stmt.setString(1, nome);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return Optional.of(mapearUsuario(rs));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapearUsuario(rs));
+                }
             }
             return Optional.empty();
         }
@@ -57,11 +56,11 @@ public class DAOUsuario {
         List<Usuario> usuarios = new ArrayList<>();
         try (Connection con = ConexaoBD.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
-
             stmt.setString(1, tipo.name());
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                usuarios.add(mapearUsuario(rs));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    usuarios.add(mapearUsuario(rs));
+                }
             }
         }
         return usuarios;
@@ -71,7 +70,6 @@ public class DAOUsuario {
         String sql = "UPDATE usuario SET nome = ?, senha = ?, tipo = ? WHERE id = ?";
         try (Connection con = ConexaoBD.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
-
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getSenha());
             stmt.setString(3, usuario.getTipo().name());
@@ -85,20 +83,17 @@ public class DAOUsuario {
         String sql = "DELETE FROM usuario WHERE id = ?";
         try (Connection con = ConexaoBD.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
-
-            stmt.setObject(1, java.util.UUID.fromString(id)); // CORREÇÃO
+            stmt.setObject(1, UUID.fromString(id));
             int linhas = stmt.executeUpdate();
             return linhas > 0;
         }
     }
 
-    // Se quiser manter o método deletar:
     public void deletar(String id) throws SQLException {
         String sql = "DELETE FROM usuario WHERE id = ?";
         try (Connection con = ConexaoBD.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
-
-            stmt.setObject(1, java.util.UUID.fromString(id)); // CORREÇÃO
+            stmt.setObject(1, UUID.fromString(id));
             stmt.executeUpdate();
         }
     }
@@ -108,6 +103,6 @@ public class DAOUsuario {
         String nome = rs.getString("nome");
         String senha = rs.getString("senha");
         TipoUsuario tipo = TipoUsuario.valueOf(rs.getString("tipo"));
-        return new Usuario(id, nome, senha, tipo); // Usa o id do banco!
+        return new Usuario(id, nome, senha, tipo);
     }
 }

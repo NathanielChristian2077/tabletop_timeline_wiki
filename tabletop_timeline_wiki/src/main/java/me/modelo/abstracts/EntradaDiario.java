@@ -1,5 +1,6 @@
 package me.modelo.abstracts;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class EntradaDiario {
@@ -47,6 +48,30 @@ public abstract class EntradaDiario {
 
     public String getDescricao() {
         return descricao;
+    }
+
+    
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        EntradaDiario other = (EntradaDiario) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 
     public void setDescricao(String descricao) {

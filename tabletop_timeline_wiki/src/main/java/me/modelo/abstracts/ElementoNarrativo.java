@@ -2,6 +2,7 @@ package me.modelo.abstracts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import me.modelo.entidades.Evento;
@@ -144,5 +145,31 @@ public abstract class ElementoNarrativo implements Associavel, Exportavel {
 
     @Override
     public abstract String exportar();
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ElementoNarrativo other = (ElementoNarrativo) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return getNome();
+    }
 }

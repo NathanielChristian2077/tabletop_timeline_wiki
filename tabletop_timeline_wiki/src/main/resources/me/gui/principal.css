@@ -130,6 +130,55 @@
     -fx-background-color: #c8a96a;
 }
 
-.profile-button {
+.custom-alert {
+    -fx-font-family: "Constantia", "Segoe UI", serif;
+    -fx-background-color: #181a1b;
+    -fx-border-color: #c8a96a;
+    -fx-border-width: 2px;
+    -fx-border-radius: 2px;
+    -fx-background-radius: 8px;
+    -fx-padding: 16px;
+    -fx-effect: dropshadow(gaussian, #c8a96a55, 10, 0.4, 0, 2);
+}
 
+.custom-alert .dialog-pane {
+    -fx-background-color: #181a1b;
+    -fx-border-color: #c8a96a;
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+}
+
+.custom-alert .header-panel {
+    -fx-background-color: transparent; /* Remove o branco */
+    -fx-padding: 10;
+}
+
+.custom-alert .header-panel .label {
+    -fx-text-fill: #f5ecd6;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.custom-alert .content.label {
+    -fx-text-fill: #c8a96a;
+    -fx-font-size: 14px;
+}
+
+/* Ícone do alerta */
+.custom-alert .graphic-container {
+    -fx-background-color: transparent;
+}
+
+/* Botões */
+.custom-alert .button-bar .button {
+    -fx-background-color: #c8a96a;
+    -fx-text-fill: #181a1b;
+    -fx-font-weight: bold;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-cursor: hand;
+}
+
+.custom-alert .button-bar .button:hover {
+    -fx-background-color: #f5ecd6;
 }

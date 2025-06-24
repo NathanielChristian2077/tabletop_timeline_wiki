@@ -37,6 +37,7 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
     }
 
     public Evento getAnterior() {
+        if (eventosAnteriores.isEmpty()) return null;
         return eventosAnteriores.get(eventosAnteriores.size() - 1);
     }
 
@@ -54,6 +55,7 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
     }
 
     public Evento getPosterior() {
+        if (eventosPosteriores.isEmpty()) return null;
         return eventosPosteriores.get(0);
     }
 
@@ -110,6 +112,7 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
 
     @Override
     public List<Evento> getEventosRelacionados() {
+        // Retorna uma lista plana de eventos relacionados (anteriores e posteriores)
         List<Evento> relacionados = new ArrayList<>();
         relacionados.addAll(eventosAnteriores);
         relacionados.addAll(eventosPosteriores);
@@ -118,17 +121,20 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
 
     @Override
     public List<Local> getLocaisRelacionados() {
-        return locaisRelacionados;
+        // Retorna uma lista plana de locais relacionados
+        return new ArrayList<>(locaisRelacionados);
     }
 
     @Override
     public List<Objeto> getObjetosRelacionados() {
-        return objetosRelacionados;
+        // Retorna uma lista plana de objetos relacionados
+        return new ArrayList<>(objetosRelacionados);
     }
 
     @Override
     public List<Personagem> getPersonagensRelacionados() {
-        return personagensRelacionados;
+        // Retorna uma lista plana de personagens relacionados
+        return new ArrayList<>(personagensRelacionados);
     }
 
     @Override
@@ -138,11 +144,16 @@ public class Evento extends EntradaDiario implements Associavel, Exportavel {
 
     @Override
     public String exportar() {
-        return String.format("Evento: %s (%s)\n%s", titulo, descricao);
+        return String.format("Evento: %s (%s)\n", titulo, descricao);
     }
 
     @Override
     public String resumo() {
         return titulo;
+    }
+
+    @Override
+    public String toString() {
+        return this.titulo;
     }
 }

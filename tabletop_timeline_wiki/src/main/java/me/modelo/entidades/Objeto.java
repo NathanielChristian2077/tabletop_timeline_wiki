@@ -15,4 +15,9 @@ public class Objeto extends ElementoNarrativo {
     public String exportar() {
         return String.format("Objeto: %s\n%s", nome, descricao != null ? descricao : "Sem descrição");
     }
+
+    @Override
+    public String toString() {
+        return this.nome;
+    }
 }
