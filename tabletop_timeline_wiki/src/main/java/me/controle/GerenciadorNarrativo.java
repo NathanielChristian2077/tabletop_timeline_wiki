@@ -1,11 +1,11 @@
 package me.controle;
 
-import me.modelo.abstracts.ElementoNarrativo;
-import me.modelo.exceptions.ElementoNaoEncontradoException;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import me.modelo.abstracts.ElementoNarrativo;
+import me.modelo.exceptions.ElementoNaoEncontradoException;
 /**
  * Gerenciador genérico para elementos narrativos como Personagem, Local e Objeto.
  * Aplica polimorfismo parametrizado com generics e contém métodos padrão de CRUD e busca.

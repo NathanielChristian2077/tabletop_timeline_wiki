@@ -1,13 +1,13 @@
 package me.persistencia;
 
-import me.modelo.entidades.Objeto;
-import me.modelo.entidades.Evento;
-import me.modelo.entidades.Local;
-import me.modelo.entidades.Personagem;
-import me.modelo.interfaces.Associavel;
-
 import java.sql.*;
 import java.util.*;
+
+import me.modelo.entidades.Evento;
+import me.modelo.entidades.Local;
+import me.modelo.entidades.Objeto;
+import me.modelo.entidades.Personagem;
+import me.modelo.interfaces.Associavel;
 
 public class DAOObjeto {
 

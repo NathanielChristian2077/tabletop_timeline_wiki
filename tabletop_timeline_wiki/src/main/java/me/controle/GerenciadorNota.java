@@ -1,13 +1,13 @@
 package me.controle;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import me.modelo.entidades.Nota;
 import me.modelo.entidades.Usuario;
 import me.modelo.enums.TipoNota;
-import me.modelo.exceptions.ElementoNaoEncontradoException;
 import me.modelo.exceptions.AssociacaoInvalidaException;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import me.modelo.exceptions.ElementoNaoEncontradoException;
 
 /**
  * Gerenciador responsável por criar e gerenciar notas com controle de visibilidade e autoria.

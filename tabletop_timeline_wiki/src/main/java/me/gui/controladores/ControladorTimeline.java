@@ -292,6 +292,7 @@ public class ControladorTimeline {
 
     private void mostrarDescricao(Object elemento) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
         alert.setTitle("Element Description");
         alert.setHeaderText("Details:");
 
@@ -306,7 +307,6 @@ public class ControladorTimeline {
         alert.showAndWait();
     }
 
-    // 3. ChoiceDialog só mostra elementos não relacionados
     private void adicionarRelacao(Object elemento, String tipo) {
         if (elemento == null || tipo == null)
             return;
@@ -450,6 +450,7 @@ public class ControladorTimeline {
                 }
                 if (disponiveis.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Não há personagens disponíveis para relacionar.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
                     alert.showAndWait();
                     return;
                 }
@@ -480,6 +481,7 @@ public class ControladorTimeline {
                 }
                 if (disponiveis.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Não há locais disponíveis para relacionar.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
                     alert.showAndWait();
                     return;
                 }
@@ -510,6 +512,7 @@ public class ControladorTimeline {
                 }
                 if (disponiveis.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Não há objetos disponíveis para relacionar.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
                     alert.showAndWait();
                     return;
                 }
@@ -543,6 +546,7 @@ public class ControladorTimeline {
                 }
                 if (disponiveis.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Não há eventos disponíveis para relacionar.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
                     alert.showAndWait();
                     return;
                 }
@@ -603,6 +607,7 @@ public class ControladorTimeline {
                 }
                 if (disponiveis.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Não há objetos disponíveis para relacionar.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
                     alert.showAndWait();
                     return;
                 }
@@ -666,6 +671,7 @@ public class ControladorTimeline {
                 }
                 if (disponiveis.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Não há personagens disponíveis para relacionar.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
                     alert.showAndWait();
                     return;
                 }
@@ -696,6 +702,7 @@ public class ControladorTimeline {
                 }
                 if (disponiveis.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Não há objetos disponíveis para relacionar.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
                     alert.showAndWait();
                     return;
                 }
@@ -729,6 +736,7 @@ public class ControladorTimeline {
                 }
                 if (disponiveis.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Não há eventos disponíveis para relacionar.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
                     alert.showAndWait();
                     return;
                 }
@@ -760,6 +768,7 @@ public class ControladorTimeline {
                 if (disponiveis.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION,
                             "Não há personagens disponíveis para relacionar.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
                     alert.showAndWait();
                     return;
                 }
@@ -790,6 +799,7 @@ public class ControladorTimeline {
                 }
                 if (disponiveis.isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Não há locais disponíveis para relacionar.");
+                    alert.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
                     alert.showAndWait();
                     return;
                 }
@@ -825,6 +835,7 @@ public class ControladorTimeline {
 
     private void editarElementoNarrativo(ElementoNarrativo en) {
         Dialog<Void> dialog = new Dialog<>();
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
         dialog.setTitle("Edit " + en.getClass().getSimpleName());
 
         TextField nameField = new TextField(en.getNome());
@@ -887,12 +898,14 @@ public class ControladorTimeline {
 
         if (resultados.isEmpty()) {
             Alert alerta = new Alert(Alert.AlertType.INFORMATION, "No results found.");
+            alerta.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
             alerta.setHeaderText(null);
             alerta.show();
             return;
         }
 
         ChoiceDialog<Object> dialog = new ChoiceDialog<>(resultados.get(0), resultados);
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
         dialog.setTitle("Search Results");
         dialog.setHeaderText("Select an element to explore:");
         dialog.setContentText("Matches:");
@@ -989,6 +1002,7 @@ public class ControladorTimeline {
 
     private void removerElemento(Object elemento, TreeView<Object> treeView) throws SQLException {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
         confirm.setTitle("Confirm Deletion");
         confirm.setHeaderText("Are you sure you want to delete this element?");
         confirm.setContentText(elemento.toString());
@@ -1067,6 +1081,7 @@ public class ControladorTimeline {
 
     private void editarEvento(Evento evento) {
         Dialog<Void> dialog = new Dialog<>();
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
         dialog.setTitle("Edit Event");
         TextField nameField = new TextField(evento.getNome());
         TextArea descriptionArea = new TextArea(evento.getDescricao());

@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import me.modelo.entidades.Local;
 import me.persistencia.DAOLocal;
+import me.modelo.entidades.Local;
 import me.persistencia.ConexaoBD;
 
 public class GerenciadorLocal extends GerenciadorNarrativo<Local> {

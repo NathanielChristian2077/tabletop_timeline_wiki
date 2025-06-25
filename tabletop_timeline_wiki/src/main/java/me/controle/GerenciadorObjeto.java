@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import me.modelo.entidades.Objeto;
 import me.persistencia.DAOObjeto;
+import me.modelo.entidades.Objeto;
 import me.persistencia.ConexaoBD;
 
 public class GerenciadorObjeto extends GerenciadorNarrativo<Objeto> {

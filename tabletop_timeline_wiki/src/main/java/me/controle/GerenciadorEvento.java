@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import me.persistencia.DAOEvento;
 import me.modelo.entidades.Evento;
 import me.modelo.exceptions.ElementoNaoEncontradoException;
-import me.persistencia.DAOEvento;
 import me.persistencia.ConexaoBD;
 
 /**

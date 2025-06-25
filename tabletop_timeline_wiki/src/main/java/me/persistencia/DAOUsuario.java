@@ -1,13 +1,13 @@
 package me.persistencia;
 
-import me.modelo.entidades.Usuario;
-import me.modelo.enums.TipoUsuario;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import me.modelo.entidades.Usuario;
+import me.modelo.enums.TipoUsuario;
 
 public class DAOUsuario {
 

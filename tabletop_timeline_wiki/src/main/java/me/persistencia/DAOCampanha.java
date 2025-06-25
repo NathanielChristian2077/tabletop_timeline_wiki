@@ -1,10 +1,10 @@
 package me.persistencia;
 
-import me.modelo.entidades.Campanha;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import me.modelo.entidades.Campanha;
 
 public class DAOCampanha {
 
