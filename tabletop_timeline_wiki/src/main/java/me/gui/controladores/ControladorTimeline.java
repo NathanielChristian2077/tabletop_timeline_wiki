@@ -1189,7 +1189,7 @@ public class ControladorTimeline {
         FlowPane flow = new FlowPane(10, 10);
 
         for (T rel : relacionados) {
-            HBox item = new HBox(5, new Label(rel.toString()), new Button("x"));
+            HBox item = new HBox(5, new Label(rel.toString()), new Button("❌"));
             ((Button) item.getChildren().get(1)).setOnAction(e -> {
                 remover.accept(elemento, rel);
                 recarregarDados();
@@ -1201,7 +1201,7 @@ public class ControladorTimeline {
 
         ComboBox<T> combo = new ComboBox<>();
         combo.getItems().addAll(todosDisponiveis);
-        Button btnAdd = new Button("+");
+        Button btnAdd = new Button("➕");
         btnAdd.setOnAction(e -> {
             T sel = combo.getValue();
             if (sel != null && !relacionados.contains(sel)) {

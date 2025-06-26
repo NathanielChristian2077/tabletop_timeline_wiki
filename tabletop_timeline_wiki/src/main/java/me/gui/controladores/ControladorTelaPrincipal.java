@@ -17,16 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -123,7 +114,11 @@ public class ControladorTelaPrincipal {
     }
 
     public void setBotaoPerfil(ImageView botaoPerfil) {
+        Tooltip tooltip = new Tooltip(usuario.getNome());
+        tooltip.getStyleClass().add(getClass().getResource("/me/gui/timeline.css").toExternalForm());
+        Tooltip.install(botaoPerfil, tooltip);
         this.botaoPerfil = botaoPerfil;
+        botaoPerfil.setPickOnBounds(true);
         botaoPerfil.setFitHeight(50);
         botaoPerfil.setFitWidth(50);
         botaoPerfil.setPreserveRatio(true);
@@ -140,6 +135,7 @@ public class ControladorTelaPrincipal {
 
     @FXML
     public void initialize() {
+        backgroundImage.setSmooth(true);
         root.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 backgroundImage.fitWidthProperty().bind(newScene.widthProperty());
@@ -497,6 +493,10 @@ public class ControladorTelaPrincipal {
         delete.setStyle("-fx-text-fill: red;");
         delete.setOnAction(e -> confirmarDeleteAccount());
 
+        MenuItem logout = new MenuItem("🔙Logout");
+        logout.getStyleClass().add("menu-item");
+        logout.setOnAction(e -> logout());
+
         menuPerfil.getItems().addAll(edit, delete);
         menuPerfil.getScene().getStylesheets().add(getClass().getResource("/me/gui/principal.css").toExternalForm());
 
@@ -514,13 +514,43 @@ public class ControladorTelaPrincipal {
         menuAtual = menuPerfil;
     }
 
+    private void logout() {
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/me/gui/Login.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root, labelTitle.getScene().getWidth(), labelTitle.getScene().getWidth());
+            scene.getStylesheets().add(getClass().getResource("login.css").toExternalForm());
+            Stage stage = (Stage) labelTitle.getScene().getWindow();
+            stage.setTitle("Codex Core - Login");
+            stage.setScene(scene);
+            stage.setResizable(true);
+            stage.setMinWidth(640);
+            stage.setMinHeight(480);
+            stage.show();
+        } catch (IOException e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Something went wrong :(");
+            alert.setHeaderText("Codex Core could not load the window.");
+            alert.setContentText("Try again or restart Codex Core.");
+            DialogPane pane = alert.getDialogPane();
+            pane.getStylesheets().add(getClass().getResource("/me/gui/principal.css").toExternalForm());
+            pane.getStyleClass().add("custom-alert");
+
+            alert.showAndWait();
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     private void mostrarPopupEditarPerfil(ContextMenuEvent event) {
         popupEditarPerfil.setVisible(true);
         labelMensagem.setText("");
         campoNovoNome.clear();
+        campoNovoNome.setPromptText(usuario.getNome());
         campoSenhaAtual.clear();
+        campoSenhaAtual.setPromptText("Current Password");
         campoNovaSenha.clear();
+        campoNovaSenha.setPromptText("New Password");
     }
 
     @FXML

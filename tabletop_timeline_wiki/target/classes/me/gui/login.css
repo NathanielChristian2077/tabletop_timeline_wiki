@@ -44,7 +44,7 @@
     border-radius: 20px;
     -fx-font-size: 16px;
     font-size: 16px;
-    -fx-effect: dropshadow(gaussian, #222831aa,4,0,0,2);
+    -fx-effect: dropshadow(gaussian, #222831,4,0,0,2);
 }
 
 .action-button {
@@ -84,11 +84,33 @@
 .choice-box {
     -fx-background-color: #f5ecd6;
     background-color: #f5ecd6;
+    -fx-mark-color: #C8A96A;
 }
 
 .choice-box .label {
     -fx-text-fill: #222831;
-    color: #222831;
+}
+
+.choice-box .context-menu {
+     -fx-background-color: #f5ecd6;
+     -fx-background-radius: 2;
+     background-color: #f5ecd622;
+     -fx-effect: dropshadow(gaussian, #222831,12,0.2,0,4);
+     -fx-opacity: 0.93;
+     opacity: 0.93;
+}
+
+#choice-box-menu-item:focused {
+    -fx-background-color: linear-gradient(to right, transparent, #c9b37c, transparent);
+    -fx-background-radius: 12;
+    -fx-border-color: linear-gradient(to right, transparent, #c9b37c, transparent);
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, #222831,12,0.2,0,4);
+    padding: 32px 24px;
+    -fx-opacity: 0.93;
+    opacity: 0.93;
 }
 
 .form-box {

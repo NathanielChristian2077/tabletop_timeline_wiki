@@ -25,9 +25,6 @@
                         <children>
                            <ImageView fx:id="botaoPerfil" cache="true" nodeOrientation="INHERIT" styleClass="profile-button">
                               <Image url="@images/profilePlaceholder.jpg" />
-                              <cursor>
-                                 <Cursor fx:constant="DEFAULT" />
-                              </cursor>
                            </ImageView>
                         </children>
                      </HBox>

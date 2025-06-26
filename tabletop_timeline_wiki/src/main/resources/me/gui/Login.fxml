@@ -30,15 +30,15 @@
             <StackPane fx:id="container" maxWidth="400" minWidth="300">
                 <!-- Login Form -->
                 <VBox fx:id="formLogin" alignment="CENTER" spacing="10" styleClass="form-box">
-                    <TextField fx:id="campoNomeLogin" promptText="Usuário" styleClass="input-field" />
-                    <PasswordField fx:id="campoSenhaLogin" promptText="Senha" styleClass="input-field" />
+                    <TextField fx:id="campoNomeLogin" promptText="👤Username" styleClass="input-field" />
+                    <PasswordField fx:id="campoSenhaLogin" promptText="🔒Password" styleClass="input-field" />
                     <Button fx:id="botaoLogin" onAction="#realizarLogin" styleClass="action-button" text="Login" />
                 </VBox>
                 <!-- Cadastro Form -->
                 <VBox fx:id="formCadastro" alignment="CENTER" managed="false" spacing="10" styleClass="form-box" visible="false">
-                    <TextField fx:id="campoNomeCadastro" promptText="Usuário" styleClass="input-field" />
-                    <PasswordField fx:id="campoSenhaCadastro" promptText="Senha" styleClass="input-field" />
-                    <PasswordField fx:id="campoSenhaConfirm" promptText="Confirmar Senha" styleClass="input-field" />
+                    <TextField fx:id="campoNomeCadastro" promptText="👤Username" styleClass="input-field" />
+                    <PasswordField fx:id="campoSenhaCadastro" promptText="🔒Password" styleClass="input-field" />
+                    <PasswordField fx:id="campoSenhaConfirm" promptText="🔒Confirm Password" styleClass="input-field" />
                     <ChoiceBox fx:id="choiceTipo" styleClass="input-field" />
                     <Button fx:id="botaoCadastrar" onAction="#realizarCadastro" styleClass="action-button" text="Sign up" />
                 </VBox>

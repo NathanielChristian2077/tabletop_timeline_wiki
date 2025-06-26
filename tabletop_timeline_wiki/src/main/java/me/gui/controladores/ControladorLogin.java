@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -71,6 +72,9 @@ public class ControladorLogin {
     public void initialize() {
         mostrarLoginAnimado();
         choiceTipo.getItems().addAll(TipoUsuario.values());
+        BoxBlur blur = new BoxBlur(0, 0, 1);
+        backgroundImage.setEffect(blur);
+        backgroundImage.setSmooth(true);
 
         backgroundImage.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
@@ -88,6 +92,20 @@ public class ControladorLogin {
 
                     targetOffsetX = offsetX;
                     targetOffsetY = offsetY;
+
+                    double buttonCenterX = botaoLogin.localToScene(botaoLogin.getBoundsInLocal()).getCenterX();
+                    double buttonCenterY = botaoLogin.localToScene(botaoLogin.getBoundsInLocal()).getCenterY();
+
+                    double dx = buttonCenterX - event.getSceneX();
+                    double dy = buttonCenterY - event.getSceneY();
+                    double distance = Math.hypot(dx, dy);
+
+                    double maxDistance = 720.0;
+
+                    double blurStrength = Math.max(0, (1.0 - distance / maxDistance)) * 20.0;
+
+                    blur.setWidth(blurStrength);
+                    blur.setHeight(blurStrength);
                 });
 
                 startParallax();
