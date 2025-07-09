@@ -182,3 +182,13 @@
 .custom-alert .button-bar .button:hover {
     -fx-background-color: #f5ecd6;
 }
+
+#campoBuscaCampanha {
+    -fx-font-family: "Constantia";
+    -fx-background-color: #1a1a1a;
+    -fx-text-fill: #C8A96A;
+    -fx-border-color: #c8a96a;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-prompt-text-fill: #c8a96a88;
+}

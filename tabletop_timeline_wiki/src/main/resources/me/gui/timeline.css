@@ -13,11 +13,9 @@
 
 .tree-view {
     -fx-background-color: transparent;
-    -fx-border-color: #c8a96a55;
-    -fx-border-width: 0 1 0 0;
-    -fx-border-radius: 0 16 16 0;
-    -fx-background-radius: 0 16 16 0;
     -fx-effect: dropshadow(gaussian, #c8a96a22, 8, 0.2, 0, 2);
+    -fx-border-color: linear-gradient(to top, transparent, #c9b37c, transparent);
+    -fx-border-width: 0 1 0 0;
 }
 
 .tree-view .tree-cell {
@@ -28,7 +26,7 @@
     -fx-font-family: "Constantia";
 }
 
-.tree-view .tree-cell:selected {
+.tree-view .tree-cell:focused {
     -fx-background-color: #c8a96a33;
     -fx-text-fill: #f5ecd6;
 }
@@ -46,7 +44,7 @@
     -fx-max-height: 42px;
     -fx-background-radius: 21px;
     -fx-border-radius: 21px;
-    -fx-border-width: 2px;
+    -fx-border-width: 1px;
     -fx-border-color: #c8a96a;
     -fx-effect: dropshadow(gaussian, #c8a96a22, 6, 0.2, 0, 1);
     -fx-padding: 0;
@@ -71,7 +69,7 @@
     -fx-text-fill: #C8A96A;
     -fx-font-size: 24px;
     -fx-border-color: #c8a96a;
-    -fx-border-width: 2px;
+    -fx-border-width: 1px;
     -fx-border-radius: 21px;
     -fx-background-radius: 21px;
     -fx-min-width: 42px;
@@ -101,11 +99,9 @@
     -fx-background-color: transparent;
     -fx-text-fill: #C8A96A;
     -fx-font-size: 15px;
-    -fx-background-radius: 20px;
-    -fx-border-color: #c8a96a;
-    -fx-border-width: 1px;
-    -fx-border-radius: 20px;
-    -fx-padding: 6 14;
+    -fx-border-color: linear-gradient(to top, transparent, #c9b37c, transparent);
+    -fx-border-width: 0 0 0 1;
+    -fx-padding: 6 12;
     -fx-cursor: hand;
 }
 
@@ -155,9 +151,7 @@ VBox, HBox, AnchorPane, StackPane, GridPane {
 .text-field {
     -fx-background-color: #1a1a1a;
     -fx-text-fill: #C8A96A;
-    -fx-border-color: #c8a96a;
-    -fx-border-radius: 12px;
-    -fx-background-radius: 12px;
+    -fx-border-color: linear-gradient(to right, transparent, #c9b37c, transparent);
     -fx-prompt-text-fill: #c8a96a88;
 }
 

@@ -49,6 +49,8 @@ public class ControladorTelaPrincipal {
     @FXML
     private TextArea campoDescricaoCampanha;
     @FXML
+    private TextField campoBuscaCampanha;
+    @FXML
     private Label labelMensagem;
     @FXML
     private Label labelTitle;
@@ -131,6 +133,13 @@ public class ControladorTelaPrincipal {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+        if (botaoPerfil != null) {
+            setBotaoPerfil(botaoPerfil);
+        }
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
     }
 
     @FXML
@@ -166,10 +175,8 @@ public class ControladorTelaPrincipal {
         backgroundImage.fitWidthProperty().bind(root.widthProperty());
         backgroundImage.fitHeightProperty().bind(root.heightProperty());
         sidebar.prefHeightProperty().bind(root.heightProperty());
-        setBotaoPerfil(botaoPerfil);
         botaoPerfil.setOnContextMenuRequested(this::abrirMenuPerfil);
 
-        // Adicione este bloco para abrir o menu com o botão esquerdo também
         botaoPerfil.setOnMouseClicked(event -> {
             if (event.isPrimaryButtonDown()) {
                 abrirMenuPerfil(new ContextMenuEvent(
@@ -181,7 +188,7 @@ public class ControladorTelaPrincipal {
                 event.consume();
             }
         });
-
+        campoBuscaCampanha.textProperty().addListener((obs, oldText, newText) -> carregarCampanhas());
         carregarCampanhas();
     }
 
@@ -229,6 +236,10 @@ public class ControladorTelaPrincipal {
         } catch (SQLException e) {
             showError("Erro ao listar campanhas.", e.getMessage());
             return;
+        }
+        String termoBusca = campoBuscaCampanha.getText() != null ? campoBuscaCampanha.getText().trim().toLowerCase() : "";
+        if (termoBusca.length() > 0) {
+            campanhas.removeIf(c -> !c.getNome().toLowerCase().contains(termoBusca));
         }
         int MAX_COLUNAS = 3;
         int col = 0;
@@ -620,6 +631,7 @@ public class ControladorTelaPrincipal {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/Timeline.fxml"));
             Parent rootCampanha = loader.load();
             ControladorTimeline controlador = loader.getController();
+            controlador.setUsuario(usuario);
             controlador.setCampanha(c);
             Scene scene = new Scene(rootCampanha, labelTitle.getScene().getWidth(), labelTitle.getScene().getHeight());
             Stage stage = (Stage) labelTitle.getScene().getWindow();

@@ -36,6 +36,7 @@ public class ControladorTimeline {
     private GerenciadorPersonagem gerenciadorPersonagem;
     private GerenciadorLocal gerenciadorLocal;
     private GerenciadorObjeto gerenciadorObjeto;
+    private Usuario usuario = null;
 
     private List<Evento> eventos;
     private List<Personagem> personagens;
@@ -49,6 +50,10 @@ public class ControladorTimeline {
         gerenciadorPersonagem = new GerenciadorPersonagem();
         gerenciadorLocal = new GerenciadorLocal();
         gerenciadorObjeto = new GerenciadorObjeto();
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public void setCampanha(Campanha c) {
@@ -208,8 +213,6 @@ public class ControladorTimeline {
             newRoot.getChildren().add(criarGrupoRelacionados("Locations", en.getLocaisRelacionados()));
             newRoot.getChildren().add(criarGrupoRelacionados("Objects", en.getObjetosRelacionados()));
             newRoot.getChildren().add(criarGrupoRelacionados("Events", en.getEventosRelacionados()));
-        } else if (elemento instanceof @SuppressWarnings("unused") String grupo) {
-            // Grupo textual, não faz nada especial
         }
 
         for (TreeItem<Object> child : newRoot.getChildren()) {
@@ -981,6 +984,8 @@ public class ControladorTimeline {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/me/gui/TelaPrincipal.fxml"));
             Parent root = loader.load();
+            ControladorTelaPrincipal controladorTelaPrincipal = loader.getController();
+            controladorTelaPrincipal.setUsuario(usuario);
             Scene novaCena = new Scene(root, (int) treeView.getScene().getWidth(),
                     (int) treeView.getScene().getHeight());
             Stage stage = (Stage) treeView.getScene().getWindow();
